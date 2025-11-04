@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canada Basketball AI Scouting - Debug UI</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Canada Basketball AI Scouting Agent</h1>
+            <p class="subtitle">Debug Interface - Real-time Node Execution</p>
+        </header>
+
+        <main class="chat-container">
+            <!-- Chat messages area -->
+            <div id="chat-box" class="chat-box" role="log" aria-live="polite"></div>
+
+            <!-- Message input area (pinned to bottom) -->
+            <div class="input-container">
+                <input type="text" id="message-input" class="message-input" placeholder="Ask about players, stats, or request scouting reports..."
+                    aria-label="Message input">
+                <button id="send-button" class="send-button" aria-label="Send message">
+                    Send
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Node details dialog -->
+    <dialog id="node-dialog" class="node-dialog">
+        <div class="dialog-header">
+            <h3 id="dialog-title">Node Details</h3>
+            <button id="close-dialog" class="close-dialog" aria-label="Close dialog">
+                &times;
+            </button>
+        </div>
+        <div id="dialog-content" class="dialog-content"></div>
+    </dialog>
+
+    <!-- Interrupt dialog (for scouting confirmation) -->
+    <dialog id="interrupt-dialog" class="interrupt-dialog">
+        <div class="dialog-header">
+            <h3>Confirm Scouting Report Generation</h3>
+        </div>
+        <div id="interrupt-message" class="dialog-content">
+            <p>Generate scouting report for this player?</p>
+            <div class="interrupt-buttons">
+                <button id="continue-button" class="continue-button">
+                    Generate Report
+                </button>
+                <button id="stop-button" class="stop-button">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </dialog>
+
+    <script src="/static/js/app.js"></script>
+</body>
+
+</html>

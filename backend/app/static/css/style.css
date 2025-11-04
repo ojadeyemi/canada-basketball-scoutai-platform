@@ -1,0 +1,606 @@
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: #1a202c;
+  color: #1a202c;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.header {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 12px 12px 0 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #718096;
+  font-weight: 500;
+}
+
+/* Chat container */
+.chat-container {
+  background: white;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Chat box (scrollable messages area) */
+.chat-box {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #f7fafc;
+}
+
+.chat-box::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chat-box::-webkit-scrollbar-track {
+  background: #edf2f7;
+}
+
+.chat-box::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 4px;
+}
+
+.chat-box::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+/* Messages */
+.message {
+  padding: 12px 16px;
+  border-radius: 8px;
+  max-width: 80%;
+  word-wrap: break-word;
+}
+
+.user-message {
+  background: #667eea;
+  color: white;
+  align-self: flex-end;
+  margin-left: auto;
+  font-weight: 500;
+}
+
+.error-message {
+  background: #fc8181;
+  color: white;
+  align-self: center;
+  text-align: center;
+}
+
+/* Node outputs */
+.node-output {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  max-width: 100%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.node-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e2e8f0;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Node type colors */
+.node-router .node-header {
+  color: #3182ce;
+  border-bottom-color: #3182ce;
+}
+
+.node-stats_lookup .node-header,
+.node-usports_lookup .node-header {
+  color: #38a169;
+  border-bottom-color: #38a169;
+}
+
+.node-confirm_scouting .node-header,
+.node-scouting_subgraph .node-header {
+  color: #d69e2e;
+  border-bottom-color: #d69e2e;
+}
+
+.node-generate_response {
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  border: 2px solid #805ad5;
+  box-shadow: 0 4px 12px rgba(128, 90, 213, 0.2);
+}
+
+.node-generate_response .node-header {
+  color: #805ad5;
+  border-bottom-color: #805ad5;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.node-gather_data .node-header,
+.node-analyze_strengths .node-header,
+.node-analyze_weaknesses .node-header,
+.node-trajectory_analysis .node-header,
+.node-national_team_fit .node-header,
+.node-comparative_stats .node-header,
+.node-combine_report .node-header,
+.node-generate_pdf .node-header {
+  color: #dd6b20;
+  border-bottom-color: #dd6b20;
+}
+
+.node-content {
+  font-size: 14px;
+  color: #2d3748;
+}
+
+/* View details button */
+.node-toggle {
+  background: #edf2f7;
+  border: 1px solid #cbd5e0;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.node-toggle:hover {
+  background: #e2e8f0;
+  border-color: #a0aec0;
+}
+
+/* Compact info display (for router, etc.) */
+.info-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 16px;
+  font-size: 14px;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.info-value {
+  color: #2d3748;
+  font-family: "Courier New", monospace;
+}
+
+/* Data table */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 13px;
+  overflow-x: auto;
+  display: block;
+}
+
+.data-table thead {
+  background: #edf2f7;
+}
+
+.data-table th,
+.data-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border: 1px solid #e2e8f0;
+}
+
+.data-table th {
+  font-weight: 600;
+  color: #2d3748;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+.data-table td {
+  color: #4a5568;
+}
+
+.data-table tbody tr:hover {
+  background: #f7fafc;
+}
+
+/* JSON display */
+.json-display {
+  background: #1a202c;
+  color: #68d391;
+  padding: 12px;
+  border-radius: 6px;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  margin-top: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Markdown response */
+.ai-response {
+  line-height: 1.7;
+  color: #2d3748;
+}
+
+.ai-response p {
+  margin-bottom: 12px;
+}
+
+.ai-response code {
+  background: #edf2f7;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+}
+
+.ai-response pre {
+  background: #1a202c;
+  color: #68d391;
+  padding: 12px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 12px 0;
+}
+
+.ai-response ul,
+.ai-response ol {
+  margin-left: 20px;
+  margin-bottom: 12px;
+}
+
+.ai-response li {
+  margin-bottom: 6px;
+}
+
+/* Response type badges */
+.response-type-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.badge-query_result {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.badge-usports_player_detail {
+  background: #bee3f8;
+  color: #2c5282;
+}
+
+.badge-scouting_report_plan {
+  background: #fbd38d;
+  color: #744210;
+}
+
+.badge-text_response {
+  background: #e9d8fd;
+  color: #44337a;
+}
+
+/* Data section labels */
+.data-section-label {
+  margin-top: 16px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  color: #2d3748;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.data-section-label::before {
+  content: "";
+  width: 4px;
+  height: 16px;
+  background: #805ad5;
+  border-radius: 2px;
+}
+
+/* Input container (pinned to bottom) */
+.input-container {
+  display: flex;
+  gap: 12px;
+  padding: 20px;
+  background: white;
+  border-top: 1px solid #e2e8f0;
+}
+
+.message-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+
+.message-input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.send-button {
+  padding: 12px 32px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.send-button:hover {
+  background: #5a67d8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.send-button:active {
+  transform: translateY(0);
+}
+
+/* Dialog styles */
+.node-dialog,
+.interrupt-dialog {
+  border: none;
+  border-radius: 12px;
+  padding: 0;
+  max-width: 800px;
+  width: 90%;
+  max-height: 80vh;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.node-dialog::backdrop,
+.interrupt-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f7fafc;
+}
+
+.dialog-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.close-dialog {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #718096;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.close-dialog:hover {
+  background: #e2e8f0;
+  color: #2d3748;
+}
+
+.dialog-content {
+  padding: 24px;
+  overflow-y: auto;
+  max-height: calc(80vh - 100px);
+}
+
+/* Interrupt dialog specific */
+.interrupt-dialog .dialog-content {
+  text-align: center;
+}
+
+.interrupt-dialog p {
+  margin-bottom: 24px;
+  font-size: 16px;
+  color: #4a5568;
+}
+
+.interrupt-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.continue-button,
+.stop-button {
+  padding: 12px 32px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.continue-button {
+  background: #48bb78;
+  color: white;
+}
+
+.continue-button:hover {
+  background: #38a169;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(72, 187, 120, 0.3);
+}
+
+.stop-button {
+  background: #fc8181;
+  color: white;
+}
+
+.stop-button:hover {
+  background: #f56565;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(252, 129, 129, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  .header h1 {
+    font-size: 20px;
+  }
+
+  .message {
+    max-width: 90%;
+  }
+
+  .node-dialog,
+  .interrupt-dialog {
+    width: 95%;
+  }
+}
+
+/* Interrupt node styling */
+.node-interrupt .node-header {
+  color: #d69e2e;
+  border-bottom-color: #d69e2e;
+}
+
+/* Player selection buttons */
+.player-selection-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.player-select-btn {
+  padding: 12px 16px;
+  background: #f7fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.player-select-btn:hover:not(:disabled) {
+  background: #edf2f7;
+  border-color: #667eea;
+  transform: translateX(4px);
+}
+
+.player-select-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Confirmation buttons (inline in chat) */
+.confirmation-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+/* PDF Download Button */
+.pdf-download-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 14px 28px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 15px;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.pdf-download-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.pdf-download-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(102, 126, 234, 0.4);
+}

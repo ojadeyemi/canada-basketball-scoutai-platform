@@ -1,0 +1,4 @@
+# Block all search engine crawlers
+# This is an internal tool, not for public indexing
+User-agent: *
+Disallow: /

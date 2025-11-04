@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canada Basketball - Scouting Report</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <div class="container" id="steps-container">
+        <!-- HEADER -->
+        <div class="header">
+            <a href="https://www.basketball.ca/" target="_blank" class="header-logo-link">
+                <img src="img/Canadbaskeball_full_logo.png" alt="Canada Basketball" class="header-logo">
+            </a>
+            <div class="header-title">
+                <h1>SCOUTING REPORT</h1>
+                <div class="header-subtitle">Canada Basketball Talent Identification</div>
+                <div class="header-disclaimer">⚠️ AI-Generated Report</div>
+            </div>
+            <div class="header-date">
+                <div id="generated-date"></div>
+                <div class="report-id" id="report-id"></div>
+            </div>
+        </div>
+
+        <!-- PLAYER PROFILE CARD -->
+        <div class="player-profile-card">
+            <div class="player-photo-container">
+                <img id="player-photo" class="player-photo" alt="Player Photo">
+                <img id="league-logo" class="league-logo" alt="League Logo">
+            </div>
+            <div class="player-info">
+                <h2 class="player-name" id="player-name"></h2>
+                <div class="player-details" id="player-details"></div>
+            </div>
+        </div>
+
+        <!-- ARCHETYPE -->
+        <div class="archetype-section">
+            <div class="archetype-badge" id="archetype-badge"></div>
+            <p class="archetype-description" id="archetype-description"></p>
+        </div>
+
+        <!-- LEAGUE COMPARISON & TEAM IMPACT BENTO GRID -->
+        <div class="bento-grid-2col" id="comparative-team-section" style="display: none;">
+            <!-- COMPARATIVE ANALYSIS -->
+            <div class="bento-card">
+                <h2 class="section-title">League Comparison</h2>
+                <table class="comparative-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Player</th>
+                            <th>Avg</th>
+                            <th>Percentile</th>
+                        </tr>
+                    </thead>
+                    <tbody id="comparative-body"></tbody>
+                </table>
+            </div>
+
+            <!-- TEAM IMPACT -->
+            <div class="bento-card" id="team-context-card" style="display: none;">
+                <h2 class="section-title">Team Impact</h2>
+                <p class="chart-description">% of team production</p>
+                <div class="team-context-grid" id="team-context-grid"></div>
+            </div>
+        </div>
+
+        <!-- PERFORMANCE LEGEND (After Team Impact) -->
+        <div class="performance-legend" id="performance-legend" style="display: none;">
+            <div class="legend-item">
+                <div class="legend-box" style="background: #10b981;"></div>
+                <span class="legend-label">Elite</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background: #3b82f6;"></div>
+                <span class="legend-label">Good</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background: #f59e0b;"></div>
+                <span class="legend-label">Avg</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background: #f97316;"></div>
+                <span class="legend-label">Below</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background: #ef4444;"></div>
+                <span class="legend-label">Poor</span>
+            </div>
+        </div>
+
+        <!-- CAREER AVERAGES (MOVED UP FOR BETTER FLOW) -->
+        <div class="bento-card-full" id="career-averages-card" style="display: none;">
+            <h2 class="section-title">Career Averages</h2>
+            <table class="career-table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>GP</th>
+                        <th>PPG</th>
+                        <th>RPG</th>
+                        <th>APG</th>
+                        <th>FG%</th>
+                        <th>3P%</th>
+                        <th>FT%</th>
+                    </tr>
+                </thead>
+                <tbody id="career-averages-body"></tbody>
+            </table>
+        </div>
+
+        <!-- CURRENT SEASON & SHOOTING RADAR SIDE-BY-SIDE -->
+        <div class="bento-grid-2col">
+            <!-- CURRENT SEASON STATS -->
+            <div class="bento-card">
+                <h2 class="section-title">Current Season</h2>
+                <div class="stats-grid" id="current-season-grid"></div>
+
+                <h3 class="subsection-title" id="advanced-metrics-title" style="display: none;">Advanced Metrics</h3>
+                <div class="stats-grid" id="advanced-metrics-grid"></div>
+
+                <h3 class="subsection-title" id="league-specific-title" style="display: none;">League-Specific</h3>
+                <div class="stats-grid" id="league-specific-grid"></div>
+            </div>
+
+            <!-- SHOOTING EFFICIENCY RADAR -->
+            <div class="bento-card" id="shooting-section" style="display: none;">
+                <h2 class="section-title">Shooting Efficiency</h2>
+                <p class="chart-description">Field Goal %, 3-Point %, Free Throw %, True Shooting %, Effective FG%</p>
+                <div class="chart-container radar-chart">
+                    <canvas id="shootingRadarChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- TREND CHARTS (2x2 GRID) -->
+        <div class="bento-grid-2col" id="trends-section-1" style="display: none;">
+            <!-- SCORING TRENDS -->
+            <div class="bento-card">
+                <h2 class="section-title">Scoring Trends</h2>
+                <p class="chart-description">PPG, FGM, 3PM, FTM by season</p>
+                <div class="chart-container">
+                    <canvas id="scoringTrendsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- REBOUNDING TRENDS -->
+            <div class="bento-card">
+                <h2 class="section-title">Rebounding Trends</h2>
+                <p class="chart-description">Total, offensive, defensive RPG by season</p>
+                <div class="chart-container">
+                    <canvas id="reboundingTrendsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="bento-grid-2col" id="trends-section-2" style="display: none;">
+            <!-- PLAYMAKING TRENDS -->
+            <div class="bento-card">
+                <h2 class="section-title">Playmaking Trends</h2>
+                <p class="chart-description">Assists, turnovers, AST/TO ratio by season</p>
+                <div class="chart-container">
+                    <canvas id="playmakingTrendsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- DEFENSIVE TRENDS CHART -->
+            <div class="bento-card" id="defensive-trends-container" style="display: none;">
+                <h2 class="section-title">Defensive Trends</h2>
+                <p class="chart-description">Steals, blocks, and personal fouls per game across seasons</p>
+                <div class="chart-container">
+                    <canvas id="defensiveTrendsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- STRENGTHS & WEAKNESSES -->
+        <div class="bento-grid-2col">
+            <div class="bento-card strengths-column">
+                <h2 class="section-title">💪 Strengths</h2>
+                <div id="strengths-list"></div>
+            </div>
+            <div class="bento-card weaknesses-column">
+                <h2 class="section-title">⚠️ Areas for Development</h2>
+                <div id="weaknesses-list"></div>
+            </div>
+        </div>
+
+        <!-- TRAJECTORY ANALYSIS -->
+        <div class="bento-card-full">
+            <h2 class="section-title">Development Trajectory</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div>
+                    <table class="trajectory-table">
+                        <thead>
+                            <tr>
+                                <th>Season</th>
+                                <th>PPG</th>
+                                <th>Trend</th>
+                                <th>% Change</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trajectory-body"></tbody>
+                    </table>
+                </div>
+                <div>
+                    <div class="trajectory-summary" id="trajectory-summary"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NATIONAL TEAM FIT ASSESSMENT -->
+        <div class="bento-card-full">
+            <h2 class="section-title">National Team Fit Assessment</h2>
+            <div class="national-team-grid" id="assessments-grid"></div>
+        </div>
+
+        <!-- FINAL RECOMMENDATION -->
+        <div id="final-recommendation-section" class="final-recommendation">
+            <h2 class="verdict-title" id="verdict-title"></h2>
+            <p class="recommendation-summary" id="recommendation-summary"></p>
+
+            <!-- USE CASES + GRADES SIDE-BY-SIDE -->
+            <div class="recommendation-grid">
+                <div class="use-cases">
+                    <h4>Best Use Cases:</h4>
+                    <ul id="use-cases-list"></ul>
+                </div>
+                <div class="grades-container">
+                    <div class="grade-box">
+                        <div class="grade-label">Domestic Grade</div>
+                        <div class="grade-value" id="grade-domestic"></div>
+                    </div>
+                    <div class="grade-box">
+                        <div class="grade-label">National Team Grade</div>
+                        <div class="grade-value" id="grade-national"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <img src="img/Canadbaskeball_full_logo.png" alt="Canada Basketball" class="footer-logo">
+            <div>
+                <p class="footer-text">© Canada Basketball | Confidential Scouting Report</p>
+                <p class="footer-attribution">Made by <a href="https://ojadeyemi.github.io/" target="_blank"
+                        class="footer-link">OJ Adeyemi</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===========================
+        // UTILITY FUNCTIONS
+        // ===========================
+
+        function formatDate(isoDate) {
+            const date = new Date(isoDate);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        function formatPercentage(value) {
+            if (value === null || value === undefined) return 'N/A';
+            return `${(value * 100).toFixed(1)}%`;
+        }
+
+        function formatStat(value, decimals = 1) {
+            if (value === null || value === undefined) return 'N/A';
+            return typeof value === 'number' ? value.toFixed(decimals) : value;
+        }
+
+        function getFitRatingClass(rating) {
+            return rating.toLowerCase().replace(/\s+/g, '-');
+        }
+
+        // Safe helper to set element display style
+        function safeSetDisplay(elementId, displayValue) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.style.display = displayValue;
+            }
+        }
+
+        // Unified performance color scheme
+        function getPerformanceColor(value, type = 'percentile') {
+            // Elite: 85%+ percentile or 25%+ team share
+            if ((type === 'percentile' && value >= 85) || (type === 'team_share' && value >= 25)) {
+                return '#10b981'; // Green
+            }
+            // Good: 65-84% percentile or 10-24% team share (UPDATED: 10%+ is now "good")
+            if ((type === 'percentile' && value >= 65) || (type === 'team_share' && value >= 10)) {
+                return '#3b82f6'; // Blue
+            }
+            // Average: 45-64% percentile or 7-9% team share
+            if ((type === 'percentile' && value >= 45) || (type === 'team_share' && value >= 7)) {
+                return '#f59e0b'; // Amber
+            }
+            // Below Average: 25-44% percentile or 5-6% team share
+            if ((type === 'percentile' && value >= 25) || (type === 'team_share' && value >= 5)) {
+                return '#f97316'; // Orange
+            }
+            // Poor: <25% percentile or <5% team share
+            return '#ef4444'; // Red
+        }
+
+        function getPercentileColor(percentile) {
+            return getPerformanceColor(percentile, 'percentile');
+        }
+
+        // ===========================
+        // COMPARATIVE ANALYSIS
+        // ===========================
+
+        function renderComparativeAnalysis(playerDetail) {
+            if (!playerDetail || !playerDetail.seasons || playerDetail.seasons.length === 0) return;
+
+            // Get latest REGULAR season (not playoff)
+            const latestSeason = playerDetail.seasons.find(s => s.season_type === 'regular' || !s.season_type) || playerDetail.seasons[0];
+            const leagueComparison = latestSeason.league_comparison;
+            if (!leagueComparison) return;
+
+            safeSetDisplay('comparative-team-section', 'grid');
+            safeSetDisplay('performance-legend', 'flex');
+            const tbody = document.getElementById('comparative-body');
+
+            const metrics = [
+                {
+                    label: 'Points Per Game',
+                    player: latestSeason.points_per_game,
+                    avg: latestSeason.points_per_game - (leagueComparison.ppg_vs_avg || 0),
+                    percentile: leagueComparison.ppg_percentile || 50
+                },
+                {
+                    label: 'Rebounds Per Game',
+                    player: latestSeason.rebounds_per_game,
+                    avg: latestSeason.rebounds_per_game - (leagueComparison.rpg_vs_avg || 0),
+                    percentile: leagueComparison.rpg_percentile || 50
+                },
+                {
+                    label: 'Assists Per Game',
+                    player: latestSeason.assists_per_game,
+                    avg: latestSeason.assists_per_game - (leagueComparison.apg_vs_avg || 0),
+                    percentile: leagueComparison.apg_percentile || 50
+                },
+                {
+                    label: 'Field Goal %',
+                    player: (latestSeason.field_goal_percentage || 0) * 100,
+                    avg: ((latestSeason.field_goal_percentage || 0) * 100) - (leagueComparison.fg_pct_vs_avg || 0),
+                    percentile: leagueComparison.fg_pct_percentile || 50
+                },
+                {
+                    label: 'True Shooting %',
+                    player: (latestSeason.advanced_stats?.true_shooting_pct || 0) * 100,
+                    avg: ((latestSeason.advanced_stats?.true_shooting_pct || 0) * 100) - 2,
+                    percentile: leagueComparison.ts_pct_percentile || 50
+                }
+            ];
+
+            metrics.forEach(metric => {
+                const row = document.createElement('tr');
+                const percentileWidth = metric.percentile;
+                const percentileColor = getPercentileColor(metric.percentile);
+
+                row.innerHTML = `
+                    <td class="metric-label">${metric.label}</td>
+                    <td class="metric-value">${formatStat(metric.player, 1)}</td>
+                    <td class="metric-avg">${formatStat(metric.avg, 1)}</td>
+                    <td class="percentile-cell">
+                        <div class="percentile-bar-container">
+                            <div class="percentile-bar" style="width: ${percentileWidth}%; background: ${percentileColor};"></div>
+                            <span class="percentile-text">${metric.percentile}%</span>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // ===========================
+        // TEAM CONTEXT STATS
+        // ===========================
+
+        function getTeamShareColor(value) {
+            return getPerformanceColor(value, 'team_share');
+        }
+
+        function renderTeamContext(playerDetail) {
+            if (!playerDetail || !playerDetail.seasons || playerDetail.seasons.length === 0) return;
+
+            // Get latest REGULAR season (not playoff)
+            const latestSeason = playerDetail.seasons.find(s => s.season_type === 'regular' || !s.season_type) || playerDetail.seasons[0];
+            const teamContext = latestSeason.team_context;
+            if (!teamContext) return;
+
+            safeSetDisplay('comparative-team-section', 'grid');
+            safeSetDisplay('team-context-card', 'block');
+            const grid = document.getElementById('team-context-grid');
+
+            const contextStats = [
+                { label: 'Points', value: teamContext.points_share || 0 },
+                { label: 'Rebounds', value: teamContext.rebounds_share || 0 },
+                { label: 'Assists', value: teamContext.assists_share || 0 },
+                { label: 'Steals', value: teamContext.steals_share || 0 },
+                { label: 'Blocks', value: teamContext.blocks_share || 0 },
+                { label: 'Shooting Vol.', value: teamContext.shooting_volume_share || 0 }
+            ];
+
+            contextStats.forEach(stat => {
+                const barColor = getTeamShareColor(stat.value);
+                // Scale to 50% max for better visual representation (anything over 30% is elite)
+                const barWidth = Math.min((stat.value / 50) * 100, 100);
+                const item = document.createElement('div');
+                item.className = 'team-share-item';
+                item.innerHTML = `
+                    <div class="team-share-label">${stat.label}</div>
+                    <div class="team-share-bar-container">
+                        <div class="team-share-bar" style="width: ${barWidth}%; background: ${barColor};"></div>
+                        <span class="team-share-value">${stat.value.toFixed(1)}%</span>
+                    </div>
+                `;
+                grid.appendChild(item);
+            });
+        }
+
+        // ===========================
+        // CAREER AVERAGES TABLE
+        // ===========================
+
+        function renderCareerAverages(playerDetail) {
+            if (!playerDetail || !playerDetail.career_stats || playerDetail.career_stats.length === 0) return;
+
+            safeSetDisplay('career-averages-card', 'block');
+            const tbody = document.getElementById('career-averages-body');
+
+            playerDetail.career_stats.forEach(careerType => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${careerType.season_type || 'Total'}</td>
+                    <td>${careerType.games_played || 0}</td>
+                    <td>${formatStat(careerType.points_per_game)}</td>
+                    <td>${formatStat(careerType.rebounds_per_game)}</td>
+                    <td>${formatStat(careerType.assists_per_game)}</td>
+                    <td>${formatPercentage(careerType.field_goal_percentage)}</td>
+                    <td>${formatPercentage(careerType.three_point_percentage)}</td>
+                    <td>${formatPercentage(careerType.free_throw_percentage)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // ===========================
+        // CURRENT SEASON STATS
+        // ===========================
+
+        function renderCurrentSeasonStats(playerDetail) {
+            if (!playerDetail || !playerDetail.seasons || playerDetail.seasons.length === 0) return;
+
+            // Get latest REGULAR season (not playoff)
+            const latestSeason = playerDetail.seasons.find(s => s.season_type === 'regular' || !s.season_type) || playerDetail.seasons[0];
+            const statsGrid = document.getElementById('current-season-grid');
+
+            // Helper function to check if value is valid (not null, undefined, N/A, or empty)
+            function isValidValue(value) {
+                if (value === null || value === undefined || value === 'N/A' || value === '') return false;
+                if (typeof value === 'number' && isNaN(value)) return false;
+                return true;
+            }
+
+            const stats = [
+                { label: 'GP', value: latestSeason.games_played, raw: latestSeason.games_played },
+                { label: 'MIN', value: formatStat(latestSeason.minutes_per_game), raw: latestSeason.minutes_per_game },
+                { label: 'PPG', value: formatStat(latestSeason.points_per_game), raw: latestSeason.points_per_game },
+                { label: 'RPG', value: formatStat(latestSeason.rebounds_per_game), raw: latestSeason.rebounds_per_game },
+                { label: 'APG', value: formatStat(latestSeason.assists_per_game), raw: latestSeason.assists_per_game },
+                { label: 'SPG', value: formatStat(latestSeason.steals_per_game), raw: latestSeason.steals_per_game },
+                { label: 'BPG', value: formatStat(latestSeason.blocks_per_game), raw: latestSeason.blocks_per_game },
+                { label: 'TO', value: formatStat(latestSeason.turnovers_per_game), raw: latestSeason.turnovers_per_game },
+                { label: 'FG%', value: formatPercentage(latestSeason.field_goal_percentage), raw: latestSeason.field_goal_percentage },
+                { label: '3P%', value: formatPercentage(latestSeason.three_point_percentage), raw: latestSeason.three_point_percentage },
+                { label: 'FT%', value: formatPercentage(latestSeason.free_throw_percentage), raw: latestSeason.free_throw_percentage },
+                { label: 'PF', value: formatStat(latestSeason.fouls_per_game), raw: latestSeason.fouls_per_game }
+            ];
+
+            // Only add stats with valid values
+            stats.filter(stat => isValidValue(stat.raw)).forEach(stat => {
+                const item = document.createElement('div');
+                item.className = 'stat-item';
+                item.innerHTML = `
+                    <span class="stat-label">${stat.label}</span>
+                    <span class="stat-value">${stat.value}</span>
+                `;
+                statsGrid.appendChild(item);
+            });
+
+            // Advanced Metrics
+            if (latestSeason.advanced_stats) {
+                const advancedGrid = document.getElementById('advanced-metrics-grid');
+
+                const advancedStats = [
+                    { label: 'TS%', value: formatPercentage(latestSeason.advanced_stats.true_shooting_pct), raw: latestSeason.advanced_stats.true_shooting_pct },
+                    { label: 'eFG%', value: formatPercentage(latestSeason.advanced_stats.effective_fg_pct), raw: latestSeason.advanced_stats.effective_fg_pct },
+                    { label: 'AST/TO', value: formatStat(latestSeason.advanced_stats.assist_to_turnover_ratio, 2), raw: latestSeason.advanced_stats.assist_to_turnover_ratio },
+                    { label: 'USG%', value: formatStat(latestSeason.advanced_stats.usage_rate, 1) + '%', raw: latestSeason.advanced_stats.usage_rate }
+                ];
+                console.log('Advanced stats:', advancedStats);
+
+                // Only show section if we have valid stats
+                const validStats = advancedStats.filter(stat => isValidValue(stat.raw));
+                if (validStats.length > 0) {
+                    safeSetDisplay('advanced-metrics-title', 'block');
+                    validStats.forEach(stat => {
+                        const item = document.createElement('div');
+                        item.className = 'stat-item';
+                        item.innerHTML = `
+                            <span class="stat-label">${stat.label}</span>
+                            <span class="stat-value">${stat.value}</span>
+                        `;
+                        advancedGrid.appendChild(item);
+                    });
+                }
+            }
+
+            // League-Specific Stats
+            if (latestSeason.league_specific) {
+                const leagueGrid = document.getElementById('league-specific-grid');
+                const leagueStats = latestSeason.league_specific;
+
+                const statsToShow = [];
+
+                if (isValidValue(leagueStats.double_doubles)) {
+                    statsToShow.push({ label: 'DD', value: leagueStats.double_doubles });
+                }
+                if (isValidValue(leagueStats.triple_doubles)) {
+                    statsToShow.push({ label: 'TD', value: leagueStats.triple_doubles });
+                }
+                if (isValidValue(leagueStats.plus_minus)) {
+                    statsToShow.push({ label: '+/-', value: formatStat(leagueStats.plus_minus, 1) });
+                }
+                if (isValidValue(leagueStats.target_scores)) {
+                    statsToShow.push({ label: 'Target', value: leagueStats.target_scores });
+                }
+
+                // Only show section if we have valid stats
+                if (statsToShow.length > 0) {
+                    safeSetDisplay('league-specific-title', 'block');
+                    statsToShow.forEach(stat => {
+                        const item = document.createElement('div');
+                        item.className = 'stat-item';
+                        item.innerHTML = `
+                            <span class="stat-label">${stat.label}</span>
+                            <span class="stat-value">${stat.value}</span>
+                        `;
+                        leagueGrid.appendChild(item);
+                    });
+                }
+            }
+        }
+
+        // ===========================
+        // CHARTS
+        // ===========================
+
+        function renderShootingRadarChart(playerDetail) {
+            if (!playerDetail || !playerDetail.seasons || playerDetail.seasons.length === 0) return;
+
+            // Get latest REGULAR season (not playoff)
+            const latestSeason = playerDetail.seasons.find(s => s.season_type === 'regular' || !s.season_type) || playerDetail.seasons[0];
+            safeSetDisplay('shooting-section', 'block');
+
+            const canvas = document.getElementById('shootingRadarChart');
+            const ctx = canvas.getContext('2d');
+
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['FG%', '3P%', 'FT%', 'TS%', 'eFG%'],
+                    datasets: [{
+                        label: 'Shooting %',
+                        data: [
+                            (latestSeason.field_goal_percentage || 0) * 100,
+                            (latestSeason.three_point_percentage || 0) * 100,
+                            (latestSeason.free_throw_percentage || 0) * 100,
+                            (latestSeason.advanced_stats?.true_shooting_pct || 0) * 100,
+                            (latestSeason.advanced_stats?.effective_fg_pct || 0) * 100
+                        ],
+                        backgroundColor: 'rgba(227, 25, 55, 0.2)',
+                        borderColor: 'rgba(227, 25, 55, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(227, 25, 55, 1)',
+                        pointBorderColor: '#fff',
+                        pointRadius: 2,
+                        pointHoverRadius: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                font: { size: 7, weight: 'bold' },
+                                stepSize: 25
+                            },
+                            pointLabels: {
+                                font: { size: 8, weight: 'bold' }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function renderPercentileBarChart(playerDetail) {
+            if (!playerDetail || !playerDetail.seasons || playerDetail.seasons.length === 0) return;
+
+            // Get latest REGULAR season (not playoff)
+            const latestSeason = playerDetail.seasons.find(s => s.season_type === 'regular' || !s.season_type) || playerDetail.seasons[0];
+            const leagueComparison = latestSeason.league_comparison;
+            if (!leagueComparison) return;
+
+            const percentileCard = document.getElementById('percentile-card');
+            if (percentileCard) {
+                percentileCard.style.display = 'block';
+            }
+
+            const canvas = document.getElementById('percentileBarChart');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+
+            const percentiles = [
+                leagueComparison.ppg_percentile || 0,
+                leagueComparison.rpg_percentile || 0,
+                leagueComparison.apg_percentile || 0,
+                leagueComparison.ts_pct_percentile || 0
+            ];
+
+            const backgroundColors = percentiles.map(p => getPercentileColor(p));
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['PPG', 'RPG', 'APG', 'TS%'],
+                    datasets: [{
+                        label: 'Percentile',
+                        data: percentiles,
+                        backgroundColor: backgroundColors,
+                        borderColor: backgroundColors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                font: { size: 8, weight: 'bold' }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Percentile (0-100)',
+                                font: { size: 9, weight: 'bold' }
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                font: { size: 9, weight: 'bold' }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function renderScoringTrendsChart(playerDetail) {
+            if (!playerDetail || !playerDetail.seasons || playerDetail.seasons.length < 2) return;
+
+            safeSetDisplay('trends-section-1', 'grid');
+            safeSetDisplay('trends-section-2', 'grid');
+
+            const canvas = document.getElementById('scoringTrendsChart');
+            const ctx = canvas.getContext('2d');
+
+            const seasons = [...playerDetail.seasons].reverse().filter(s => s.season_type === 'regular' || !s.season_type);
+            const labels = seasons.map(s => s.season);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Points Per Game',
+                            data: seasons.map(s => s.points_per_game),
+                            borderColor: '#e31937',
+                            backgroundColor: 'rgba(227, 25, 55, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 3,
+                            pointHoverRadius: 4,
+                            tension: 0.3,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Field Goals Made',
+                            data: seasons.map(s => s.total_field_goals_made / (s.games_played || 1)),
+                            borderColor: '#f59e0b',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 3,
+                            pointHoverRadius: 4,
+                            tension: 0.3,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: '3-Pointers Made',
+                            data: seasons.map(s => s.total_three_pointers_made / (s.games_played || 1)),
+                            borderColor: '#8b5cf6',
+                            backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 3,
+                            pointHoverRadius: 4,
+                            tension: 0.3,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Free Throws Made',
+                            data: seasons.map(s => s.total_free_throws_made / (s.games_played || 1)),
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 3,
+                            pointHoverRadius: 4,
+                            tension: 0.3,
+                            yAxisID: 'y'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        x: {
+                            ticks: {
+                                font: { size: 8, weight: 'bold' }
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                font: { size: 8, weight: 'bold' }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                font: { size: 9, weight: 'bold' },
+                                padding: 24
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderReboundingTrendsChart(playerDetail) {
+            if (!playerDetail || !playerDetail.seasons || playerDetail.seasons.length < 2) return;
+
+            const canvas = document.getElementById('reboundingTrendsChart');
+            const ctx = canvas.getContext('2d');
+
+            const seasons = [...playerDetail.seasons].reverse().filter(s => s.season_type === 'regular' || !s.season_type);
+            const labels = seasons.map(s => s.season);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Total Rebounds',
+                            data: seasons.map(s => s.rebounds_per_game),
+                            borderColor: '#e31937',
+                            backgroundColor: 'rgba(227, 25, 55, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 3,
+                            pointHoverRadius: 4,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Offensive Rebounds',
+                            data: seasons.map(s => s.offensive_rebounds_per_game || 0),
+                            borderColor: '#f59e0b',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 3,
+                            pointHoverRadius: 4,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Defensive Rebounds',
+                            data: seasons.map(s => s.defensive_rebounds_per_game || 0),
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 3,
+                            pointHoverRadius: 4,
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        x: {
+                            ticks: {
+                                font: { size: 8, weight: 'bold' }
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                font: { size: 8, weight: 'bold' }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                font: { size: 9, weight: 'bold' },
+                                padding: 24
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderPlaymakingTrendsChart(playerDetail) {
+            if (!playerDetail || !playerDetail.seasons || playerDetail.seasons.length < 2) return;
+
+            const canvas = document.getElementById('playmakingTrendsChart');
+            const ctx = canvas.getContext('2d');
+
+            const seasons = [...playerDetail.seasons].reverse().filter(s => s.season_type === 'regular' || !s.season_type);
+            const labels = seasons.map(s => s.season);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Assists Per Game',
+                            data: seasons.map(s => s.assists_per_game),
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 3,
+                            pointHoverRadius: 4,
+                            tension: 0.3,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Turnovers Per Game',
+                            data: seasons.map(s => s.turnovers_per_game),
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 3,
+                            pointHoverRadius: 4,
+                            tension: 0.3,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'AST/TO Ratio',
+                            data: seasons.map(s => s.advanced_stats?.assist_to_turnover_ratio || 0),
+                            borderColor: '#8b5cf6',
+                            backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 3,
+                            pointHoverRadius: 4,
+                            tension: 0.3,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        x: {
+                            ticks: {
+                                font: { size: 8, weight: 'bold' }
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            position: 'left',
+                            beginAtZero: true,
+                            ticks: {
+                                font: { size: 8, weight: 'bold' }
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            position: 'right',
+                            beginAtZero: true,
+                            ticks: {
+                                font: { size: 8, weight: 'bold' }
+                            },
+                            grid: {
+                                drawOnChartArea: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                font: { size: 9, weight: 'bold' },
+                                padding: 24
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderDefensiveTrendsChart(playerDetail) {
+            if (!playerDetail || !playerDetail.seasons || playerDetail.seasons.length < 2) return;
+
+            safeSetDisplay('defensive-trends-container', 'block');
+
+            const canvas = document.getElementById('defensiveTrendsChart');
+            const ctx = canvas.getContext('2d');
+
+            const seasons = [...playerDetail.seasons].reverse().filter(s => s.season_type === 'regular' || !s.season_type);
+            const labels = seasons.map(s => s.season);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Steals Per Game',
+                            data: seasons.map(s => s.steals_per_game),
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 3,
+                            pointHoverRadius: 4,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Blocks Per Game',
+                            data: seasons.map(s => s.blocks_per_game),
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 3,
+                            pointHoverRadius: 4,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Personal Fouls Per Game',
+                            data: seasons.map(s => s.personal_fouls_per_game),
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 3,
+                            pointHoverRadius: 4,
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        x: {
+                            ticks: {
+                                font: { size: 8, weight: 'bold' }
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                font: { size: 8, weight: 'bold' }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                font: { size: 9, weight: 'bold' },
+                                padding: 24
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ===========================
+        // MAIN CONTENT LOADER
+        // ===========================
+
+        function loadContent() {
+            try {
+                const data = window.jsonData;
+
+            // Header
+            document.getElementById('generated-date').textContent = formatDate(data.generated_at);
+            document.getElementById('report-id').textContent = `Report ID: ${data.report_id}`;
+
+            // Player Profile
+            const profile = data.player_profile;
+            document.getElementById('player-name').textContent = profile.name;
+
+            const playerPhoto = document.getElementById('player-photo');
+            if (playerPhoto) {
+                if (profile.player_photo_url) {
+                    playerPhoto.src = profile.player_photo_url;
+                    playerPhoto.style.objectFit = 'cover';
+                    playerPhoto.style.padding = '0';
+                } else {
+                    playerPhoto.src = 'img/canada_basketball_logo.png';
+                    playerPhoto.style.objectFit = 'contain';
+                    playerPhoto.style.padding = '16px';
+                    playerPhoto.style.background = 'white';
+                }
+            }
+
+            const leagueLogo = document.getElementById('league-logo');
+            if (leagueLogo) {
+                const leagueLogos = {
+                    'CEBL': 'img/cebl_logo.png',
+                    'U SPORTS': 'img/usports_logo.png',
+                    'CCAA': 'img/ccaa_logo.jpeg',
+                    'HoopQueens': 'img/hoopqueens_logo.png'
+                };
+                leagueLogo.src = leagueLogos[profile.league] || 'img/Canadbaskeball_full_logo.png';
+            }
+
+            const playerDetails = document.getElementById('player-details');
+            const details = [
+                { label: 'Position', value: profile.position || 'N/A' },
+                { label: 'Height', value: profile.height || 'N/A' },
+                { label: 'Age', value: profile.age || 'N/A' },
+                { label: 'Team', value: profile.current_team },
+                { label: 'League', value: profile.league },
+                { label: 'Jersey', value: profile.jersey_number || 'N/A' }
+            ];
+
+            details.forEach(detail => {
+                const div = document.createElement('div');
+                div.className = 'detail-item';
+                div.innerHTML = `
+                    <div class="detail-label">${detail.label}</div>
+                    <div class="detail-value">${detail.value}</div>
+                `;
+                playerDetails.appendChild(div);
+            });
+
+            // Archetype
+            document.getElementById('archetype-badge').textContent = data.archetype;
+            document.getElementById('archetype-description').textContent = data.archetype_description;
+
+            // Player Detail Stats & Charts
+            const playerDetail = data.player_detail;
+            if (playerDetail) {
+                renderComparativeAnalysis(playerDetail);
+                renderTeamContext(playerDetail);
+                renderCurrentSeasonStats(playerDetail);
+                renderCareerAverages(playerDetail);
+                renderShootingRadarChart(playerDetail);
+                renderPercentileBarChart(playerDetail);
+                renderScoringTrendsChart(playerDetail);
+                renderReboundingTrendsChart(playerDetail);
+                renderPlaymakingTrendsChart(playerDetail);
+                renderDefensiveTrendsChart(playerDetail);
+            }
+
+            // Strengths
+            const strengthsList = document.getElementById('strengths-list');
+            if (strengthsList && data.strengths && data.strengths.length > 0) {
+                data.strengths.forEach(strength => {
+                    const div = document.createElement('div');
+                    div.className = 'item';
+                    div.innerHTML = `
+                        <div class="item-title">${strength.title}</div>
+                        <div class="item-description">${strength.description}</div>
+                    `;
+                    strengthsList.appendChild(div);
+                });
+            }
+
+            // Weaknesses
+            const weaknessesList = document.getElementById('weaknesses-list');
+            if (weaknessesList && data.weaknesses && data.weaknesses.length > 0) {
+                data.weaknesses.forEach(weakness => {
+                    const div = document.createElement('div');
+                    div.className = 'item';
+                    div.innerHTML = `
+                        <div class="item-title">${weakness.title}</div>
+                        <div class="item-description">${weakness.description}</div>
+                    `;
+                    weaknessesList.appendChild(div);
+                });
+            }
+
+            // Trajectory Analysis
+            const trajectoryBody = document.getElementById('trajectory-body');
+            if (trajectoryBody && data.trajectory_analysis && data.trajectory_analysis.length > 0) {
+                data.trajectory_analysis.forEach(point => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${point.season}</td>
+                        <td>${formatStat(point.ppg)}</td>
+                        <td>${point.trend_description}</td>
+                        <td>${point.percentage_change !== null && point.percentage_change !== undefined ? formatStat(point.percentage_change, 1) + '%' : 'N/A'}</td>
+                    `;
+                    trajectoryBody.appendChild(row);
+                });
+            }
+            document.getElementById('trajectory-summary').textContent = data.trajectory_summary;
+
+            // National Team Assessments
+            const assessmentsGrid = document.getElementById('assessments-grid');
+            if (assessmentsGrid && data.national_team_assessments && data.national_team_assessments.length > 0) {
+                data.national_team_assessments.forEach(assessment => {
+                    const card = document.createElement('div');
+                    card.className = 'assessment-card';
+                    card.innerHTML = `
+                        <div class="assessment-team">${assessment.team_type}</div>
+                        <div class="fit-rating ${getFitRatingClass(assessment.fit_rating)}">${assessment.fit_rating}</div>
+                        <div class="assessment-rationale">${assessment.rationale}</div>
+                    `;
+                    assessmentsGrid.appendChild(card);
+                });
+            }
+
+            // Final Recommendation
+            if (data.final_recommendation) {
+                document.getElementById('verdict-title').textContent = data.final_recommendation.verdict_title;
+                document.getElementById('recommendation-summary').textContent = data.final_recommendation.summary;
+
+                const useCasesList = document.getElementById('use-cases-list');
+                if (useCasesList && data.final_recommendation.best_use_cases) {
+                    data.final_recommendation.best_use_cases.forEach(useCase => {
+                        const li = document.createElement('li');
+                        li.textContent = useCase;
+                        useCasesList.appendChild(li);
+                    });
+                }
+
+                document.getElementById('grade-domestic').textContent = data.final_recommendation.overall_grade_domestic;
+                document.getElementById('grade-national').textContent = data.final_recommendation.overall_grade_national;
+            }
+            } catch (error) {
+                console.error('Error in loadContent():', error);
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: scoutai-postgres
+    environment:
+      POSTGRES_USER: scoutai
+      POSTGRES_PASSWORD: scoutai_local
+      POSTGRES_DB: scoutai
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U scoutai"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - scoutai-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: scoutai-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://scoutai:scoutai_local@postgres:5432/scoutai
+      - FRONTEND_URL=http://localhost:80
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/service-account.json
+      - GCS_BUCKET_NAME=${GCS_BUCKET_NAME}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - scoutai-network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: scoutai-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - scoutai-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+networks:
+  scoutai-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

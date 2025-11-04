@@ -1,0 +1,31 @@
+# FastAPI & Web Framework
+fastapi[standard]==0.120.4
+
+# Database
+aiosqlite==0.21.0
+psycopg[binary,pool]==3.2.12
+
+# LangGraph & LLM
+langchain==1.0.3
+langchain-community==0.4.1
+langchain-google-genai==3.0.0
+langchain-openai==1.0.1
+langgraph==1.0.2
+langgraph-checkpoint-postgres==3.0.0
+
+# Web Scraping
+httpx==0.28.1
+beautifulsoup4==4.14.2
+
+# PDF Generation
+playwright==1.55.0
+
+# Google Cloud
+google-cloud-storage==3.4.1
+
+# Search & Utils
+rapidfuzz==3.14.1
+python-dotenv==1.2.1
+
+# USports & CEBL SDKs
+git+https://github.com/ojadeyemi/cebl-sdk.git
