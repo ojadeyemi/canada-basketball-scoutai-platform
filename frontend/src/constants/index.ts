@@ -5,7 +5,7 @@ export const SEARCH_RESULTS_MAX_HEIGHT = "400px";
 
 export const APP_CONFIG = {
   BETA_BADGE_TEXT: "Research Preview",
-  FEEDBACK_URL: "https://forms.google.com/YOUR_FORM_ID", // TODO: Replace with actual form URL
+  FEEDBACK_URL: "https://forms.gle/GYFRnofDUpDNJ6ySA",
   FEEDBACK_TOAST_INTERVAL: 5 * 60 * 1000, // 5 minutes
   WELCOME_TOAST_STORAGE_KEY: "cb-scout-welcome-shown",
   AUTHOR: {

@@ -113,7 +113,7 @@ def calculate_team_context_stats(
         player_fga = player_stats.get("field_goal_attempted", 0) or 0
         player_fta = player_stats.get("free_throws_attempted", 0) or 0
         player_tov = player_stats.get("turnovers", 0) or 0
-        games_played = player_stats.get("games_played", 1) or 1
+        # games_played = player_stats.get("games_played", 1) or 1
     elif league == "cebl":
         # CEBL passes per-game values already calculated
         player_ppg = player_stats.get("ppg", 0) or 0
@@ -125,7 +125,7 @@ def calculate_team_context_stats(
         player_fga = player_stats.get("fga_pg", 0) or 0
         player_fta = player_stats.get("fta_pg", 0) or 0
         player_tov = player_stats.get("tov_pg", 0) or 0
-        games_played = player_stats.get("games_played", 1) or 1
+        # games_played = player_stats.get("games_played", 1) or 1
     else:
         # HoopQueens passes per-game values
         player_ppg = player_stats.get("total_points", 0) or 0
@@ -137,7 +137,7 @@ def calculate_team_context_stats(
         player_fga = player_stats.get("total_fg_attempted", 0) or 0
         player_fta = player_stats.get("total_ft_attempted", 0) or 0
         player_tov = player_stats.get("total_turnovers", 0) or 0
-        games_played = player_stats.get("games_played", 1) or 1
+        # games_played = player_stats.get("games_played", 1) or 1
 
     # Extract team stats (per game)
     team_ppg = team_stats.get("points_per_game", 0) or team_stats.get("ppg", 0) or 0
@@ -356,7 +356,7 @@ def calculate_league_specific_stats(
             league_stats.playoff_rpg_delta = round(playoff_delta.get("rpg", 0), 1)
             league_stats.playoff_apg_delta = round(playoff_delta.get("apg", 0), 1)
             league_stats.playoff_fg_pct_delta = round(playoff_delta.get("fg_pct", 0), 1)
-            league_stats.playoff_sample_size = playoff_delta.get("games_played")
+            league_stats.playoff_sample_size = playoff_delta.get("games_played")  # type: ignore
 
     return league_stats
 

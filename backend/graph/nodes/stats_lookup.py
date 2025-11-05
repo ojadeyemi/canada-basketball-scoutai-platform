@@ -4,6 +4,7 @@ import ast
 import json
 import os
 
+
 from langchain.agents import create_agent
 from langchain_community.agent_toolkits import SQLDatabaseToolkit
 from langchain_community.utilities import SQLDatabase
@@ -118,13 +119,26 @@ async def stats_lookup(state: AgentState) -> dict:
         }
 
     except Exception as e:
-        error_msg = f"Stats lookup failed: {str(e)}"
+        error_str = str(e)
+        if "message" in error_str:
+            # Try to extract message from JSON-like string
+            try:
+                error_dict = ast.literal_eval(error_str.split("body: ")[-1])
+                error_message = error_dict.get("message", error_str)
+            except Exception:
+                error_message = error_str
+        else:
+            error_message = error_str
+
+        error_message = error_message[:500]  # Truncate to first 500 chars
+
+        error_msg = f"Stats lookup failed: {error_message}"
         error_result = QueryResult(
             data=[],
             sql_query="",
             db_name=db_name,
             chart_config=None,
-            summary_text=f"I encountered an error: {str(e)}. Please try rephrasing your question.",
+            summary_text=f"I encountered an error: {str(error_message)}....\n Please try rephrasing your question.",
         )
 
         return {

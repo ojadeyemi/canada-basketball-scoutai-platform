@@ -1,6 +1,5 @@
-"""Application settings using Pydantic."""
+"""Application settings."""
 
-import os
 from typing import Optional
 
 from pydantic import Field
@@ -8,8 +7,6 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    """Application settings."""
-
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8", extra="ignore"
     )
@@ -35,7 +32,13 @@ class Settings(BaseSettings):
     openai_api_key: Optional[str] = Field(default=None, alias="OPENAI_API_KEY")
     cohere_api_key: Optional[str] = Field(default=None, alias="COHERE_API_KEY")
     gemini_api_key: Optional[str] = Field(default=None, alias="GEMINI_API_KEY")
-    llm_provider: str = Field(default="google", alias="LLM_PROVIDER")
+
+    # LLM Models
+    default_model: str = Field(default="command-a-03-2025", alias="DEFAULT_MODEL")
+    routing_model: Optional[str] = Field(default=None, alias="ROUTING_MODEL")
+    sql_model: Optional[str] = Field(default=None, alias="SQL_MODEL")
+    scouting_model: Optional[str] = Field(default=None, alias="SCOUTING_MODEL")
+    html_parser_model: Optional[str] = Field(default=None, alias="HTML_PARSER_MODEL")
 
     # Google Cloud Storage
     google_application_credentials: Optional[str] = Field(
@@ -46,7 +49,6 @@ class Settings(BaseSettings):
     )
 
     def get_postgres_conn_string(self) -> str:
-        """Construct and return PostgreSQL connection string."""
         if self.node_env == "local":
             return "postgresql://localhost:5432/canada_basketball"
 

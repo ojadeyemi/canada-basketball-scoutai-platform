@@ -20,7 +20,7 @@ export default function FAQPage() {
     {
       question: "What leagues does this platform cover?",
       answer:
-        "Canada Basketball AI Scouting Platform covers four major Canadian basketball leagues: U SPORTS (university), CCAA (college), CEBL (professional men's league), and HoopQueens (professional women's 3x3 league).",
+        "Canada Basketball AI Scouting Platform covers four major Canadian basketball leagues: U SPORTS (university), CCAA (college), CEBL (professional men's league), and HoopQueens (professional women's summer league).",
     },
     {
       question: "How does the AI Scouting Agent work?",

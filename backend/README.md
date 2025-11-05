@@ -1,246 +1,131 @@
 # Canada Basketball ScoutAI - Backend
 
-FastAPI backend with LangGraph multi-agent AI orchestration for Canadian basketball scouting.
+FastAPI + LangGraph multi-agent system for Canadian basketball scouting.
 
 ---
 
 ## Features
 
-- **LangGraph Agent**: 5-node workflow (router, SQL agent, chart generator, text generator, scouting planner)
-- **4 League Databases**: SQLite databases for U SPORTS, CCAA, CEBL, HoopQueens
-- **NDJSON Streaming**: Real-time AI responses via Server-Sent Events
-- **PDF Generation**: Automated scouting reports with Playwright
-- **Custom Data Engineering**: Scrapers, CEBL SDK, fuzzy search
+- **LangGraph Agent** – 5-node AI workflow (router, SQL agent, chart gen, text gen, scouting planner)
+- **4 League Databases** – SQLite DBs for U SPORTS, CCAA, CEBL, HoopQueens (25K+ players)
+- **NDJSON Streaming** – Real-time AI responses via Server-Sent Events
+- **PDF Reports** – Automated scouting reports with Playwright
+- **Custom Data Tools** – CEBL SDK, web scrapers, fuzzy search
 
 ---
 
 ## Quick Start
 
-### Option 1: Docker (Recommended)
+### Poetry (Recommended)
 
 ```bash
-# 1. Create .env.docker file (see Environment Variables below)
-cp .env.example .env.docker
+poetry install
+poetry run playwright install chromium
+poetry run uvicorn app.main:app --reload
+```
 
-# 2. Build and run
+**API Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
+
+### Docker
+
+```bash
+cp .env.example .env  # Add API keys
 docker build -t scoutai-backend .
-docker run -p 8000:8000 --env-file .env.docker scoutai-backend
-
-# 3. Test
-curl http://localhost:8000/health
+docker run -p 8000:8000 --env-file .env scoutai-backend
 ```
 
-### Option 2: Local Development
-
-```bash
-# 1. Install dependencies
-.venv/pip install -r requirements.txt
-
-# 2. Install Playwright browsers
-.venv/python -m playwright install chromium
-
-# 3. Create .env file (see Environment Variables below)
-cp .env.example .env
-
-# 4. Run server
-.venv/python -m uvicorn app.main:app --reload --port 8000
-```
-
-Access API docs: http://localhost:8000/docs
+**Health Check:** `curl http://localhost:8000/health`
 
 ---
 
 ## Environment Variables
 
-### For Docker (.env.docker)
-
-Create `.env.docker` with:
+Create `.env`:
 
 ```bash
-# Database
-DATABASE_URL=postgresql://user:password@host:5432/canada_basketball
+# PostgreSQL (for session state)
+DATABASE_URL=postgresql://user:pass@host:5432/canada_basketball
 
-# Google Cloud Storage (for PDFs)
-GOOGLE_APPLICATION_CREDENTIALS=/app/service-account.json
-GCS_BUCKET_NAME=scouting-reports
-
-# LLM Providers
+# LLM Providers (pick one or both)
 GEMINI_API_KEY=your-gemini-key
 OPENAI_API_KEY=sk-your-openai-key
-LLM_PROVIDER=google
+LLM_PROVIDER=google  # or "openai"
+
+# Optional: PDF Storage
+GOOGLE_APPLICATION_CREDENTIALS=./service-account.json
+GCS_BUCKET_NAME=scouting-reports
 
 # App Config
-FRONTEND_URL=http://localhost:3000
-API_BASE_URL=http://localhost:8000
-ENVIRONMENT=production
-LOG_LEVEL=INFO
+FRONTEND_URL=http://localhost:5173
+ENVIRONMENT=development
 ```
 
-### For Local Development (.env)
-
-Same variables as above, but use local paths:
-
-```bash
-GOOGLE_APPLICATION_CREDENTIALS=./service-account.json
-```
-
----
-
-## Docker Setup
-
-### Build Image
-
-```bash
-docker build -t scoutai-backend .
-```
-
-### Run Container
-
-```bash
-# Basic run
-docker run -p 8000:8000 --env-file .env.docker scoutai-backend
-
-# With volume for local SQLite databases
-docker run -p 8000:8000 \
-  --env-file .env.docker \
-  -v $(pwd)/db:/app/db \
-  scoutai-backend
-
-# With logs
-docker run -p 8000:8000 --env-file .env.docker scoutai-backend --log-level debug
-```
-
-### Health Check
-
-```bash
-curl http://localhost:8000/health
-```
+For Docker, use `/app/service-account.json` for `GOOGLE_APPLICATION_CREDENTIALS`.
 
 ---
 
 ## API Endpoints
 
-### Search
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/health` | GET | Health check |
+| `/api/search/player` | GET | Fuzzy player search |
+| `/api/search/player/{league}/{id}` | GET | Player details |
+| `/api/agent/chat` | POST | AI chat (NDJSON streaming) |
+| `/api/pdf/generate` | POST | Generate scouting report |
+| `/api/pdf/status/{job_id}` | GET | PDF job status |
 
-```bash
-# Fuzzy player search
-GET /api/search/player?query=rhooms&league=cebl
-
-# Player details
-GET /api/search/player/{league}/{player_id}
-```
-
-### AI Agent
-
-```bash
-# Natural language queries (NDJSON streaming)
-POST /api/agent/chat
-Content-Type: application/json
-
-{
-  "user_input": "Top 5 CEBL scorers in 2024",
-  "session_id": "uuid-here"
-}
-```
-
-### PDF Reports
-
-```bash
-# Generate scouting report
-POST /api/pdf/generate
-{
-  "player_id": "123",
-  "league": "cebl"
-}
-
-# Check status
-GET /api/pdf/status/{job_id}
-```
+**Interactive Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
-## Data Engineering
+## Custom Data Engineering
 
-### Custom Libraries & Tools
+**1. CEBL SDK** – Custom Python library for official CEBL API access (`graph/tools/cebl_sdk/`)
 
-**1. CEBL SDK (Custom Python Library)**
-- Official CEBL API wrapper
-- Player profiles, statistics, team data
-- Located in `graph/tools/cebl_sdk/`
+**2. U SPORTS Scraper** – AI-powered HTML parsing for biographical data (usportshoops.ca)
 
-**2. U SPORTS Web Scraper**
-- POST requests to usportshoops.ca
-- AI parsing to extract structured bio data
-- Handles player name variations
+**3. Fuzzy Search** – rapidfuzz for typo-tolerant queries (e.g., "Xavier Mun" → "Xavier Moon")
 
-**3. Fuzzy Search (rapidfuzz)**
-- Typo-tolerant player queries
-- Nickname matching (e.g., "RJ" → "R.J. Barrett")
-- Cross-league search
-
-**4. Database Automation**
-- Seasonal data updates via cron jobs
-- CSV ingestion for CCAA
-- SQLite schema management
-
-### League Databases
-
-Located in `db/` folder:
-
-- `usports.db` - University basketball (2019-2024)
-- `ccaa.db` - College basketball (OCAA + PacWest)
-- `cebl.db` - Professional league (2019-2024)
-- `hoopqueens.db` - Women's 3x3 league
+**4. SQLite Databases** – 4 league DBs in `db/` folder:
+- `usports.db` – University (2019-2024)
+- `ccaa.db` – College (OCAA + PacWest)
+- `cebl.db` – Professional (2019-2024)
+- `hoopqueens.db` – Women's summer league
 
 ---
 
-## Architecture
+## LangGraph Architecture
 
-### LangGraph Workflow (5 Nodes)
+**5-Node AI Workflow:**
 
 ```
-User Query
-    ↓
-┌──────────────┐
-│   ROUTER     │ (Intent classification)
-└──────┬───────┘
-       │
-   ┌───┴────┬──────────┬──────────┐
-   ▼        ▼          ▼          ▼
-┌─────┐ ┌──────┐ ┌────────┐ ┌──────────┐
-│ SQL │ │Chart │ │  Text  │ │ Scouting │
-│Agent│ │ Gen  │ │  Gen   │ │ Planner  │
-└─────┘ └──────┘ └────────┘ └──────────┘
+User Query → Router → [SQL Agent | Chart Gen | Text Gen | Scouting Planner]
 ```
 
-**Node Descriptions:**
-1. **Router**: Classifies intent (stats, comparison, bio, scouting)
-2. **SQL Agent**: Executes database queries across 4 SQLite databases
-3. **Chart Generator**: Recommends visualization (bar, line, table)
-4. **Text Generator**: Fetches bio data via CEBL SDK or web scraper
-5. **Scouting Planner**: Triggers 8-node sub-graph for PDF reports
+1. **Router** – Classifies intent (stats, comparison, bio, scouting)
+2. **SQL Agent** – Queries 4 SQLite databases (25K+ players)
+3. **Chart Generator** – Recommends visualizations (bar, line, table)
+4. **Text Generator** – Fetches bio data via CEBL SDK or web scraper
+5. **Scouting Planner** – Triggers 8-node sub-graph for PDF reports
+
+**State Management:** PostgreSQL (LangGraph checkpointer for session persistence)
 
 ---
 
 ## Development
 
-### Install New Package
-
 ```bash
-.venv/pip install package-name
-.venv/pip freeze > requirements.txt
-```
+# Install package (poetry preferred)
+poetry add package-name
 
-### Run Tests
+# OR with pip
+pip install package-name && pip freeze > requirements.txt
 
-```bash
-.venv/python -m pytest tests/
-```
+# Run tests
+poetry run pytest tests/
 
-### Database Migrations
-
-```bash
-# Initialize PostgreSQL schema
+# Database migrations
 psql $DATABASE_URL < db/init.sql
 ```
 
@@ -249,54 +134,37 @@ psql $DATABASE_URL < db/init.sql
 ## Deployment
 
 ### Google Cloud Run
-
 ```bash
-# Build and push
-docker build -t gcr.io/project-id/scoutai-backend .
-docker push gcr.io/project-id/scoutai-backend
-
-# Deploy
-gcloud run deploy scoutai-backend \
-  --image gcr.io/project-id/scoutai-backend \
-  --platform managed \
-  --region us-central1 \
-  --allow-unauthenticated \
-  --memory 1Gi \
-  --timeout 300 \
-  --set-env-vars "DATABASE_URL=postgresql://...,GCS_BUCKET_NAME=reports"
+docker build -t gcr.io/project-id/backend .
+docker push gcr.io/project-id/backend
+gcloud run deploy backend --image gcr.io/project-id/backend --memory 1Gi --timeout 300
 ```
-
----
-
-## Troubleshooting
-
-**Docker build fails**
-- Ensure `service-account.json` exists in root directory
-- Check Docker has enough memory (4GB+ recommended for Playwright)
-
-**Playwright PDF errors**
-- Run: `playwright install --with-deps chromium`
-- Check `--disable-dev-shm-usage` flag in Chromium options
-
-**Database connection timeout**
-- Verify `DATABASE_URL` has `sslmode=require` for Railway
-- Check PostgreSQL is accessible from container
-
-**CORS errors**
-- Add production domain to `allow_origins` in `app/main.py`
 
 ---
 
 ## Tech Stack
 
-- **Python 3.12** (Bookworm base image)
-- **FastAPI 0.115+** (async web framework)
-- **LangGraph 1.0+** (AI orchestration)
-- **SQLite** (league databases)
-- **PostgreSQL** (session state)
-- **Playwright 1.55+** (PDF rendering)
-- **Google Cloud Storage** (PDF storage)
-- **OpenAI / Gemini** (LLMs)
+| Tech | Version | Purpose |
+|------|---------|---------|
+| **Python** | 3.13+ | Runtime |
+| **FastAPI** | 0.120+ | Web framework |
+| **LangGraph** | 1.0+ | Multi-agent orchestration |
+| **SQLite** | - | 4 league databases |
+| **PostgreSQL** | - | Session state |
+| **Playwright** | 1.55+ | PDF rendering |
+| **Google Cloud Storage** | - | PDF storage |
+| **Gemini / OpenAI** | - | LLMs |
+
+---
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Docker build fails | Ensure `service-account.json` exists, 4GB+ Docker memory |
+| Playwright errors | `poetry run playwright install --with-deps chromium` |
+| DB connection timeout | Check `DATABASE_URL` has `sslmode=require` |
+| CORS errors | Add domain to `allow_origins` in `app/main.py` |
 
 ---
 

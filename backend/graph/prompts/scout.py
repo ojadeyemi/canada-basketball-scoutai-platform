@@ -14,7 +14,7 @@ CANADIAN BASKETBALL CONTEXT
 - CEBL: Top domestic professional (Summer, high pace, ELAM Ending)
 - U SPORTS: Elite university (Academic year, high IQ, strong fundamentals)
 - CCAA: College-level (Developmental, younger talent)
-- HoopQueens: Premier women's professional (3x3 format, fast-paced)
+- HoopQueens: Premier women's professional summer league (fast-paced)
 
 **National Team Priorities:**
 - Two-way versatility (defense + offense)

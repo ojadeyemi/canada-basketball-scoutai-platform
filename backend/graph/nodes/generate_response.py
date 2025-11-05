@@ -1,5 +1,6 @@
 """Generate response node: Final node that formats output based on state."""
 
+import re
 from typing import Any
 
 from langchain_core.messages import SystemMessage
@@ -49,7 +50,7 @@ async def generate_response(state: AgentState) -> dict[str, Any]:
     if error:
         response: AgentResponse = {
             "response_type": RESPONSE_TYPE_TEXT,
-            "main_response": f"I encountered an error: {error}. Please try rephrasing your question.",
+            "main_response": f"I encountered an error: {error[:100]}. Please try rephrasing your question.",
         }
         return {"response": response}
 
@@ -92,7 +93,7 @@ async def generate_response(state: AgentState) -> dict[str, Any]:
         }
         return {"response": response}
 
-    llm = get_llm(model="gemini-2.5-flash", temperature=0.7)
+    llm = get_llm(temperature=0.7)
 
     additional_context = ""
     if query_context:
@@ -115,9 +116,16 @@ async def generate_response(state: AgentState) -> dict[str, Any]:
             [SystemMessage(content=system_prompt), *state["messages"]]
         )
 
+        # Strip Cohere citation tags from response
+        clean_response = re.sub(
+            r'<co>|</co:\s*\d+:\[\d+\]>',
+            '',
+            response_output.main_response
+        )
+
         response: AgentResponse = {
             "response_type": RESPONSE_TYPE_TEXT,
-            "main_response": response_output.main_response,
+            "main_response": clean_response,
         }
         return {"response": response}
 

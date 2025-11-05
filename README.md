@@ -1,16 +1,26 @@
 # Canada Basketball ScoutAI Platform
 
-AI-powered scouting system for Canadian basketball talent identification across 4 leagues (U SPORTS, CCAA, CEBL, HoopQueens). Built with natural language queries, automated PDF reports, and cross-league player tracking.
+![Canada Basketball ScoutAI](./assets/oldscreenshot.png)
+
+**AI-powered scouting for Canadian basketball.** Ask questions in plain English, get instant insights across 25,000+ players from [U SPORTS](https://en.usports.ca/landing/index), [CCAA](https://www.ccaa.ca/landing/index), [CEBL](https://cebl.ca), and [HoopQueens](https://www.thehoopqueens.com/the-league).
+
+**Powered by [Cohere](https://cohere.com) and [Google Gemini](https://deepmind.google/technologies/gemini/)** – Enterprise-grade AI models optimized for accuracy and speed. Default uses Cohere's Command-A-03-2025, with Gemini 2.5 Flash/Pro recommended for enhanced performance on stats queries and scouting reports.
+
+_Built for the [Canada Basketball](https://www.basketball.ca/) Data Challenge submission._
 
 ---
 
-## Features
+## Overview
 
-- **Natural Language Queries**: Ask questions like "Top 5 CEBL scorers in 2024" and get instant results
-- **Automated Scouting Reports**: AI-generated PDF reports with strengths, weaknesses, and national team fit
-- **Player Search**: Fuzzy search across 25,000+ players with interactive charts
-- **Multi-League Coverage**: U SPORTS, CCAA, CEBL, HoopQueens (men's and women's programs)
-- **Real-Time Streaming**: Watch AI analyze data in real-time via NDJSON streaming
+Traditional scouting requires hours of manual research. ScoutAI lets you ask **"Who are the top 5 CEBL scorers in 2024 with PER above 20?"** and get answers instantly—complete with charts, stats, and AI-generated scouting reports.
+
+### Key Features
+
+- **Natural Language Queries** – No SQL, no spreadsheets. Just ask.
+- **Automated Scouting Reports** – AI-generated PDFs with strengths, weaknesses, and national team fit.
+- **25,000+ Players** – Fuzzy search with typo-tolerance across 4 Canadian leagues.
+- **Real-Time Insights** – Watch the AI think as it streams responses.
+- **Interactive Charts** – Visualize stats instantly (bar, line, scatter plots).
 
 ---
 
@@ -18,191 +28,104 @@ AI-powered scouting system for Canadian basketball talent identification across 
 
 ### Prerequisites
 
-- **Docker** (recommended) OR Python 3.11+ and Node.js 18+
-- **Google Cloud Storage** (optional, for PDF storage)
+- Docker (recommended) **OR** Python 3.13+ and Node.js 18+
+- Cohere API key (default) – [Get your free key](https://cohere.com)
+- Google Gemini API key (recommended for stats/scouting) – [Get your free key](https://ai.google.dev/)
 
-### Option 1: Docker Compose (Recommended)
-
-Run everything locally with PostgreSQL, backend, and frontend:
+### Option 1: Docker Compose (Fastest)
 
 ```bash
-# Clone repository
-git clone https://github.com/your-org/canada-basketball-scoutai-platform.git
+# Clone and configure
+git clone https://github.com/ojadeyemi/canada-basketball-scoutai-platform.git
 cd canada-basketball-scoutai-platform
+cp .env.example .env  # Add your API keys
 
-# Copy and configure environment variables
-cp .env.example .env
-# Edit .env with your API keys
-
-# Start all services (PostgreSQL + Backend + Frontend)
+# Start all services
 docker-compose -f docker-compose.local.yml up --build
-
-# Or run in detached mode
-docker-compose -f docker-compose.local.yml up -d --build
-
-# Stop all services
-docker-compose -f docker-compose.local.yml down
 ```
 
-Access:
-- **Frontend**: http://localhost
-- **Backend API**: http://localhost:8000
-- **API Docs**: http://localhost:8000/docs
-- **PostgreSQL**: localhost:5432
+**Access:**
 
-### Option 2: Frontend Dev Mode (Backend + Postgres via Docker)
+- Frontend: [http://localhost](http://localhost)
+- Backend API: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-Run backend and database in Docker, frontend with hot reload:
+### Option 2: Local Development
 
 ```bash
-# Start backend + PostgreSQL
-docker-compose -f docker-compose.local.yml up postgres backend -d
-
-# Run frontend locally with hot reload
-cd frontend
-pnpm install
-pnpm dev
-# Frontend: http://localhost:3000
-```
-
-### Option 3: Full Local Development
-
-```bash
-# Backend
+# Backend (with poetry)
 cd backend
-.venv/pip install -r requirements.txt
-.venv/python -m uvicorn app.main:app --reload --port 8000
+poetry install
+poetry run python -m playwright install chromium
+poetry run uvicorn app.main:app --reload
 
 # Frontend
 cd frontend
-pnpm install
-pnpm dev
+pnpm install && pnpm dev
 ```
 
-Access:
-- **Frontend**: http://localhost:3000 (dev)
-- **Backend API**: http://localhost:8000
-- **API Docs**: http://localhost:8000/docs
+**Access:**
+
+- Frontend: [http://localhost:5173](http://localhost:5173)
+- Backend: [http://localhost:8000](http://localhost:8000)
 
 ---
 
-## Architecture
+## How It Works
 
 ```
-┌─────────────────────────┐
-│   React Frontend        │
-│   (Vite + TypeScript)   │
-└───────────┬─────────────┘
-            │
-            ▼
-┌─────────────────────────┐
-│   FastAPI Backend       │
-│   (LangGraph Agent)     │
-└───────────┬─────────────┘
-            │
-    ┌───────┴───────┐
-    ▼               ▼
-┌─────────┐   ┌──────────┐
-│ SQLite  │   │PostgreSQL│
-│4 Leagues│   │ (State)  │
-└─────────┘   └──────────┘
+User Query → LangGraph AI Agent → Multi-League SQLite DBs → Real-Time Response
 ```
 
-For detailed architecture, see [backend/README.md](./backend/README.md)
+1. **Ask in plain English** – "Top CEBL scorers with 20+ PER in 2024"
+2. **AI Router classifies intent** – Stats query, comparison, scouting report?
+3. **SQL Agent queries 4 leagues** – U SPORTS, CCAA, CEBL, HoopQueens (25K+ players)
+4. **AI generates insights** – Charts, text summaries, PDF reports
+5. **Stream results in real-time** – Watch the AI think via NDJSON streaming
+
+**Tech:** LangGraph (multi-agent orchestration), FastAPI, React, PostgreSQL (session state), SQLite (league data)
 
 ---
 
 ## Tech Stack
 
-**Backend**
-- Python 3.12 + FastAPI 0.115+
-- LangGraph 1.0 (multi-agent AI orchestration)
-- SQLite (4 league databases)
-- PostgreSQL (session persistence)
-- Playwright (PDF rendering)
-- Google Cloud Storage
-
-**Frontend**
-- React 18 + TypeScript 5.9
-- Vite 5.4 (build tool)
-- TanStack Query 5.90 (data fetching)
-- Recharts 2.15 (charts)
-- Tailwind CSS 3.4 + shadcn/ui
-
-**AI/LLM**
-- Google Gemini 2.0 Flash (primary)
-- OpenAI GPT-4o (secondary)
+| Layer                | Tech                                                                   |
+| -------------------- | ---------------------------------------------------------------------- |
+| **AI Orchestration** | LangGraph 1.0 (multi-agent workflows)                                  |
+| **Backend**          | FastAPI 0.120, Python 3.13, Playwright (PDF rendering)                 |
+| **Frontend**         | React 18, TypeScript 5.9, Vite 5.4, TailwindCSS 3.4                    |
+| **Data**             | SQLite (4 league DBs), PostgreSQL (sessions), rapidfuzz (fuzzy search) |
+| **LLM Provider**     | Cohere (default: command-a-03-2025), Google Gemini (recommended: 2.5-flash/pro), OpenAI |
+| **Deployment**       | Docker, Google Cloud Run, Vercel                                       |
 
 ---
 
-## Project Structure
+## Data Coverage
 
-```
-canada-basketball-scoutai-platform/
-├── backend/               # FastAPI + LangGraph agent
-│   ├── app/              # API routes + services
-│   ├── graph/            # LangGraph nodes + tools
-│   ├── db/               # SQLite databases (4 leagues)
-│   ├── Dockerfile
-│   └── requirements.txt
-├── frontend/             # React + Vite
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   └── services/
-│   ├── Dockerfile
-│   └── package.json
-└── README.md
-```
+**4 Canadian Leagues (25,000+ Players)**
+
+- **U SPORTS** – 60+ university programs (2019-2024 seasons)
+- **CCAA** – College basketball (OCAA + PacWest conferences)
+- **CEBL** – Canadian Elite Basketball League (professional, 2019-2024)
+- **HoopQueens** – Women's professional summer league
+
+**Custom Data Engineering:**
+
+- Built a custom CEBL SDK (Python library) for official API access
+- Web scrapers with AI-powered HTML parsing for biographical data
+- Fuzzy search with rapidfuzz for typo-tolerant queries (e.g., "Xavier Mun" → "Xavier Moon")
 
 ---
 
-## Data Sources
+## Configuration
 
-### Leagues
-- **U SPORTS**: Canadian university basketball (60+ schools)
-- **CCAA**: Canadian college basketball (OCAA + PacWest)
-- **CEBL**: Canadian Elite Basketball League (professional)
-- **HoopQueens**: Women's professional 3x3 league
-
-### Data Engineering
-- **Custom scrapers** for U SPORTS biographical data
-- **CEBL SDK** (custom Python library) for official API access
-- **AI parsing** to extract structured data from HTML
-- **Fuzzy search** with rapidfuzz for typo-tolerant queries
-
----
-
-## Environment Variables
-
-See [backend/README.md](./backend/README.md) for complete environment setup.
-
-**Key Variables:**
-```bash
-DATABASE_URL=postgresql://...
-GOOGLE_APPLICATION_CREDENTIALS=./service-account.json
-GCS_BUCKET_NAME=scouting-reports
-OPENAI_API_KEY=sk-...
-GEMINI_API_KEY=...
-```
-
----
-
-## Documentation
-
-- [Backend README](./backend/README.md) - API setup, data engineering, Docker
-- [Frontend README](./frontend/README.md) - React app setup, build process
-
----
-
-## License
-
-MIT License
+See [backend/README.md](./backend/README.md) and [frontend/README.md](./frontend/README.md) for environment setup and LLM provider configuration.
 
 ---
 
 ## Contact
 
-For questions or collaboration:
-- **Email**: ojieadeyemi@gmail.com
-- **GitHub**: https://github.com/ojadeyemi/canada-basketball-scoutai-platform
+**OJ Adeyemi**
+
+- Email: [ojieadeyemi@gmail.com](mailto:ojieadeyemi@gmail.com)
+- LinkedIn: [linkedin.com/in/ojadeyemi](https://www.linkedin.com/in/ojadeyemi/)
+- Portfolio: [ojadeyemi](https://ojadeyemi.github.io/)

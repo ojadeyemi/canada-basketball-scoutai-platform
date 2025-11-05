@@ -6,7 +6,7 @@ AVAILABLE LEAGUES:
 - CEBL (Canadian Elite Basketball League - men's pro)
 - U SPORTS (University - men's & women's)
 - CCAA (College - men's & women's)
-- HoopQueens (Women's pro 3x3)
+- HoopQueens (Women's pro summer league)
 
 CAPABILITIES:
 1. Statistics queries - Answer data questions about players, teams, conferences

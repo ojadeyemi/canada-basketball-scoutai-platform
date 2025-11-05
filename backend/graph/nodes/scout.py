@@ -1,5 +1,6 @@
 """Scout node: Generate comprehensive scouting reports with PDF output."""
 
+import ast
 import json
 import os
 import uuid
@@ -8,9 +9,6 @@ from pathlib import Path
 from typing import Sequence
 
 import httpx
-from langchain.agents import create_agent
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
-
 from config.pdf_constants import PDF_STORAGE_DIR
 from graph.configuration import get_scouting_llm
 from graph.prompts.scout import SCOUT_PROMPT
@@ -23,6 +21,8 @@ from graph.schemas.scouting import (
 from graph.state import AgentState
 from graph.tools.pdf_generator.pdf_generator import PDFGenerator
 from graph.utils.gcs_helpers import generate_signed_url, upload_pdf_to_gcs
+from langchain.agents import create_agent
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 
 
 def _summarize_conversation(messages: Sequence[BaseMessage]) -> str:
@@ -88,9 +88,7 @@ async def scout(state: AgentState) -> dict:
             "error": "Missing player_id or league for scouting report generation",
             "scouting_report": None,
             "pdf_url": None,
-            "messages": [
-                AIMessage(content="**Scouting Error**: Missing player information.")
-            ],
+            "messages": [AIMessage(content="**Scouting Error**: Missing player information.")],
         }
 
     try:
@@ -110,9 +108,7 @@ async def scout(state: AgentState) -> dict:
     try:
         async with httpx.AsyncClient(timeout=30.0) as client:
             league_path = league.value.lower().replace(" ", "")
-            response = await client.get(
-                f"{api_base}/api/search/player/{league_path}/{player_id}"
-            )
+            response = await client.get(f"{api_base}/api/search/player/{league_path}/{player_id}")
             response.raise_for_status()
             player_detail_dict = response.json()
 
@@ -128,9 +124,7 @@ async def scout(state: AgentState) -> dict:
             "error": f"HTTP error {e.response.status_code}: {e.response.text}",
             "scouting_report": None,
             "pdf_url": None,
-            "messages": [
-                AIMessage(content=f"**Scouting Error**: HTTP {e.response.status_code}")
-            ],
+            "messages": [AIMessage(content=f"**Scouting Error**: HTTP {e.response.status_code}")],
         }
     except Exception as e:
         return {
@@ -158,11 +152,7 @@ async def scout(state: AgentState) -> dict:
         )
 
         agent_input = {
-            "messages": [
-                HumanMessage(
-                    content=f"Generate a comprehensive scouting analysis for {player_name}."
-                )
-            ]
+            "messages": [HumanMessage(content=f"Generate a comprehensive scouting analysis for {player_name}.")]
         }
 
         result = await agent.ainvoke(agent_input)  # type: ignore
@@ -173,13 +163,24 @@ async def scout(state: AgentState) -> dict:
         scouting_analysis: ScoutingAnalysis = result["structured_response"]
 
     except Exception as e:
+        error_str = str(e)
+        if "message" in error_str:
+            # Try to extract message from JSON-like string
+            try:
+                error_dict = ast.literal_eval(error_str.split("body: ")[-1])
+                error_message = error_dict.get("message", error_str)
+            except Exception:
+                error_message = error_str
+        else:
+            error_message = error_str
+
+        error_message = error_message[:500]  # Truncate to first 500 chars
+
         return {
-            "error": f"Scouting analysis generation failed: {str(e)}",
+            "error": f"Scouting analysis generation failed: {str(error_message)}",
             "scouting_report": None,
             "pdf_url": None,
-            "messages": [
-                AIMessage(content=f"**Scouting Error**: Analysis failed - {str(e)}")
-            ],
+            "messages": [AIMessage(content=f"**Scouting Error**: Analysis failed - {str(e)}")],
         }
 
     try:
@@ -208,9 +209,7 @@ async def scout(state: AgentState) -> dict:
             "error": f"Failed to build scouting report: {str(e)}",
             "scouting_report": None,
             "pdf_url": None,
-            "messages": [
-                AIMessage(content=f"**Scouting Error**: Report build failed - {str(e)}")
-            ],
+            "messages": [AIMessage(content=f"**Scouting Error**: Report build failed - {str(e)}")],
         }
 
     pdf_url = None

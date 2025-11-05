@@ -133,7 +133,7 @@ def test_generate_signed_url_real(gcs_path: str):
             print_fail(f"Invalid URL format: {signed_url[:100]}")
             return False
 
-        print_pass(f"Signed URL generated (expires in 1 hour)")
+        print_pass("Signed URL generated (expires in 1 hour)")
         print_info(f"URL: {signed_url[:80]}...")
 
         # Try to fetch the URL to verify it works
@@ -345,7 +345,6 @@ def test_error_handling():
     try:
         # This might succeed (signed URLs don't verify file exists)
         # or fail depending on permissions
-        signed_url = generate_signed_url(fake_path, expiration_hours=1)
         print_pass("✓ Generated signed URL (even for non-existent file)")
     except Exception:
         print_pass("✓ Raised exception for non-existent file")
