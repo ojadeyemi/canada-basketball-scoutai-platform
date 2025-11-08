@@ -16,9 +16,7 @@ from ..schemas.player import (
 )
 
 
-def calculate_advanced_stats(
-    player_stats: dict[str, Any], league: str
-) -> AdvancedStats:
+def calculate_advanced_stats(player_stats: dict[str, Any], league: str) -> AdvancedStats:
     """
     Calculate advanced statistical metrics for a player.
 
@@ -145,11 +143,7 @@ def calculate_team_context_stats(
     team_apg = team_stats.get("assists_per_game", 0) or team_stats.get("apg", 0) or 0
     team_spg = team_stats.get("steals_per_game", 0) or team_stats.get("spg", 0) or 0
     team_bpg = team_stats.get("blocks_per_game", 0) or team_stats.get("bpg", 0) or 0
-    team_fga = (
-        team_stats.get("field_goals_attempted_per_game", 0)
-        or team_stats.get("fga_per_game", 0)
-        or 0
-    )
+    team_fga = team_stats.get("field_goals_attempted_per_game", 0) or team_stats.get("fga_per_game", 0) or 0
 
     # Calculate percentage shares
     points_share = round((player_ppg / team_ppg) * 100, 1) if team_ppg > 0 else None
@@ -161,30 +155,16 @@ def calculate_team_context_stats(
     # Minutes share: player minutes / (total game minutes / 5 players) * 100
     # Assuming 40-minute games (adjust if needed)
     available_minutes_per_game = 40  # minutes per game for one player position
-    minutes_share = (
-        round((player_mpg / available_minutes_per_game) * 100, 1)
-        if player_mpg > 0
-        else None
-    )
+    minutes_share = round((player_mpg / available_minutes_per_game) * 100, 1) if player_mpg > 0 else None
 
     # Shooting volume share
-    shooting_volume_share = (
-        round((player_fga / team_fga) * 100, 1) if team_fga > 0 else None
-    )
+    shooting_volume_share = round((player_fga / team_fga) * 100, 1) if team_fga > 0 else None
 
     # Calculate usage rate (requires team stats)
     usage_rate = None
     if team_fga > 0:
-        team_fta = (
-            team_stats.get("free_throws_attempted_per_game", 0)
-            or team_stats.get("fta_per_game", 0)
-            or 0
-        )
-        team_tov = (
-            team_stats.get("turnovers_per_game", 0)
-            or team_stats.get("tov_per_game", 0)
-            or 0
-        )
+        team_fta = team_stats.get("free_throws_attempted_per_game", 0) or team_stats.get("fta_per_game", 0) or 0
+        team_tov = team_stats.get("turnovers_per_game", 0) or team_stats.get("tov_per_game", 0) or 0
 
         player_possessions = player_fga + 0.44 * player_fta + player_tov
         team_possessions = team_fga + 0.44 * team_fta + team_tov
@@ -235,31 +215,21 @@ def calculate_league_specific_stats(
 
         # Calculate rate stats from counting stats
         if league_stats.double_doubles is not None:
-            league_stats.double_double_rate = round(
-                (league_stats.double_doubles / games_played) * 100, 1
-            )
+            league_stats.double_double_rate = round((league_stats.double_doubles / games_played) * 100, 1)
         if league_stats.triple_doubles is not None:
-            league_stats.triple_double_rate = round(
-                (league_stats.triple_doubles / games_played) * 100, 1
-            )
+            league_stats.triple_double_rate = round((league_stats.triple_doubles / games_played) * 100, 1)
         if league_stats.target_scores is not None:
-            league_stats.target_score_rate = round(
-                (league_stats.target_scores / games_played) * 100, 1
-            )
+            league_stats.target_score_rate = round((league_stats.target_scores / games_played) * 100, 1)
 
         # Process game-level aggregates (from player_boxscores table)
         if game_aggregates:
             # Plus/minus average
             if game_aggregates.get("avg_plus_minus") is not None:
-                league_stats.plus_minus_avg = round(
-                    game_aggregates["avg_plus_minus"], 1
-                )
+                league_stats.plus_minus_avg = round(game_aggregates["avg_plus_minus"], 1)
 
             # Fouls drawn per game
             if game_aggregates.get("total_fouls_drawn"):
-                league_stats.fouls_drawn_per_game = round(
-                    game_aggregates["total_fouls_drawn"] / games_played, 1
-                )
+                league_stats.fouls_drawn_per_game = round(game_aggregates["total_fouls_drawn"] / games_played, 1)
 
             # Situational scoring (per game)
             if game_aggregates.get("total_second_chance_points"):
@@ -267,30 +237,22 @@ def calculate_league_specific_stats(
                     game_aggregates["total_second_chance_points"] / games_played, 1
                 )
             if game_aggregates.get("total_fast_break_points"):
-                league_stats.fast_break_points = round(
-                    game_aggregates["total_fast_break_points"] / games_played, 1
-                )
+                league_stats.fast_break_points = round(game_aggregates["total_fast_break_points"] / games_played, 1)
             if game_aggregates.get("total_points_in_paint"):
-                league_stats.points_in_paint = round(
-                    game_aggregates["total_points_in_paint"] / games_played, 1
-                )
+                league_stats.points_in_paint = round(game_aggregates["total_points_in_paint"] / games_played, 1)
 
             # 2-point shooting stats
             total_2pt_made = game_aggregates.get("total_2pt_made", 0) or 0
             total_2pt_attempted = game_aggregates.get("total_2pt_attempted", 0) or 0
 
             if total_2pt_attempted > 0:
-                league_stats.two_point_percentage = round(
-                    (total_2pt_made / total_2pt_attempted) * 100, 1
-                )
+                league_stats.two_point_percentage = round((total_2pt_made / total_2pt_attempted) * 100, 1)
 
             # 2-point rate (% of FGA that are 2-pointers)
             total_3pt_attempted = player_stats.get("three_points_attempted", 0) or 0
             total_fga = total_2pt_attempted + total_3pt_attempted
             if total_fga > 0:
-                league_stats.two_point_rate = round(
-                    (total_2pt_attempted / total_fga) * 100, 1
-                )
+                league_stats.two_point_rate = round((total_2pt_attempted / total_fga) * 100, 1)
 
     elif league == "hoopqueens" and game_logs:
         # HoopQueens-specific stats from game logs
@@ -308,21 +270,13 @@ def calculate_league_specific_stats(
                 league_stats.plus_minus_max = max(plus_minus_values)
 
             # Fouls drawn per game
-            total_fouls_drawn = sum(
-                game.get("fouls_drawn", 0) or 0 for game in game_logs
-            )
-            league_stats.fouls_drawn_per_game = round(
-                total_fouls_drawn / games_played, 1
-            )
+            total_fouls_drawn = sum(game.get("fouls_drawn", 0) or 0 for game in game_logs)
+            league_stats.fouls_drawn_per_game = round(total_fouls_drawn / games_played, 1)
 
             # Foul drawing efficiency (fouls drawn per FGA)
-            total_fga = sum(
-                game.get("field_goals_attempted", 0) or 0 for game in game_logs
-            )
+            total_fga = sum(game.get("field_goals_attempted", 0) or 0 for game in game_logs)
             if total_fga > 0:
-                league_stats.foul_drawing_efficiency = round(
-                    total_fouls_drawn / total_fga, 3
-                )
+                league_stats.foul_drawing_efficiency = round(total_fouls_drawn / total_fga, 3)
 
             # PPG variance and consistency score
             ppg_values = [game.get("points", 0) or 0 for game in game_logs]
@@ -334,9 +288,7 @@ def calculate_league_specific_stats(
                 # Consistency score (Coefficient of Variation)
                 # Lower = more consistent
                 if mean_ppg > 0:
-                    league_stats.consistency_score = round(
-                        (std_ppg / mean_ppg) * 100, 1
-                    )
+                    league_stats.consistency_score = round((std_ppg / mean_ppg) * 100, 1)
 
     elif league in ["usports", "ccaa"] and player_stats:
         # U SPORTS/CCAA-specific stats
@@ -346,9 +298,7 @@ def calculate_league_specific_stats(
         # DQ rate (disqualifications per 100 games)
         if league_stats.disqualifications:
             games_played = player_stats.get("games_played", 1) or 1
-            league_stats.dq_rate = round(
-                (league_stats.disqualifications / games_played) * 100, 2
-            )
+            league_stats.dq_rate = round((league_stats.disqualifications / games_played) * 100, 2)
 
         # Playoff performance delta
         if playoff_delta:
@@ -429,38 +379,14 @@ def calculate_league_comparison(
         ts_pct_vs_avg = round((player_ts_pct - league_avg_ts_pct) * 100, 1)
 
     # Calculate percentage differences
-    ppg_pct_diff = (
-        round(((player_ppg / league_avg_ppg) - 1) * 100, 1)
-        if league_avg_ppg > 0
-        else None
-    )
-    rpg_pct_diff = (
-        round(((player_rpg / league_avg_rpg) - 1) * 100, 1)
-        if league_avg_rpg > 0
-        else None
-    )
-    apg_pct_diff = (
-        round(((player_apg / league_avg_apg) - 1) * 100, 1)
-        if league_avg_apg > 0
-        else None
-    )
+    ppg_pct_diff = round(((player_ppg / league_avg_ppg) - 1) * 100, 1) if league_avg_ppg > 0 else None
+    rpg_pct_diff = round(((player_rpg / league_avg_rpg) - 1) * 100, 1) if league_avg_rpg > 0 else None
+    apg_pct_diff = round(((player_apg / league_avg_apg) - 1) * 100, 1) if league_avg_apg > 0 else None
 
     # Calculate percentile ranks from distributions
-    ppg_percentile = (
-        _calculate_percentile(player_ppg, league_ppg_distribution)
-        if league_ppg_distribution
-        else None
-    )
-    rpg_percentile = (
-        _calculate_percentile(player_rpg, league_rpg_distribution)
-        if league_rpg_distribution
-        else None
-    )
-    apg_percentile = (
-        _calculate_percentile(player_apg, league_apg_distribution)
-        if league_apg_distribution
-        else None
-    )
+    ppg_percentile = _calculate_percentile(player_ppg, league_ppg_distribution) if league_ppg_distribution else None
+    rpg_percentile = _calculate_percentile(player_rpg, league_rpg_distribution) if league_rpg_distribution else None
+    apg_percentile = _calculate_percentile(player_apg, league_apg_distribution) if league_apg_distribution else None
     ts_pct_percentile = (
         _calculate_percentile(player_ts_pct, league_ts_pct_distribution)
         if player_ts_pct is not None and league_ts_pct_distribution

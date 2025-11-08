@@ -18,7 +18,7 @@ interface AgentPromptInputProps {
   isStreaming?: boolean;
   placeholder?: string;
 }
-
+//TODO make search player have the league image i search result if possible
 export default function AgentPromptInput({
   onSubmit,
   disabled,

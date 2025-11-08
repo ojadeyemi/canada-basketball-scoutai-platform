@@ -1,3 +1,5 @@
+export type LeagueDBName = "cebl" | "usports" | "ccaa" | "hoopqueens";
+
 // ============================================================================
 // INTENT & RESPONSE TYPES
 // ============================================================================
@@ -58,7 +60,7 @@ export interface ChartConfig {
 export interface QueryResult {
   data: Record<string, any>[];
   sql_query: string | null;
-  db_name: string;
+  db_name: LeagueDBName;
   chart_config: ChartConfig | null;
   summary_text: string;
 }

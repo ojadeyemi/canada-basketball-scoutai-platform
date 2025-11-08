@@ -51,24 +51,19 @@ function App() {
       textColor: "#fff",
       links: [
         {
+          label: "Feedback",
+          href: APP_CONFIG.FEEDBACK_URL,
+          ariaLabel: "Submit feedback",
+        },
+        {
           label: "LinkedIn",
           href: APP_CONFIG.AUTHOR.LINKEDIN,
           ariaLabel: "Connect on LinkedIn",
         },
         {
-          label: "GitHub",
-          href: APP_CONFIG.AUTHOR.GITHUB,
-          ariaLabel: "Visit GitHub profile",
-        },
-        {
           label: "Email",
           href: `mailto:${APP_CONFIG.AUTHOR.EMAIL}`,
           ariaLabel: "Send an email",
-        },
-        {
-          label: "Feedback",
-          href: APP_CONFIG.FEEDBACK_URL,
-          ariaLabel: "Submit feedback",
         },
       ],
     },

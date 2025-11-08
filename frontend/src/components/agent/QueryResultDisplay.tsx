@@ -42,9 +42,25 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
-import { ChevronDown, Database } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  ChevronDown,
+  Database,
+  Play,
+  Loader2,
+  Table as TableIcon,
+} from "lucide-react";
 import { useState } from "react";
+import { runRawSQL } from "@/services/agentService";
 
 interface QueryResultDisplayProps {
   queryResult: QueryResult;
@@ -62,12 +78,73 @@ const CHART_COLORS = [
   "#f97316",
   "#6366f1",
 ];
+//TODO change defualt colors of bar
+//for table on side remove toggle and maybe try to round decimal numebrs to two decimal places if needed
+//TO DO move title and other stuff of sheet lower of  firue out a way for navbar to not cover everywhere
+
+//TODO make chart result as well smaller overall covering alot of space right now
+
+function RawQueryResultTable({ data }: { data: Record<string, any>[] }) {
+  if (!data || data.length === 0) {
+    return <p className="text-sm text-muted-foreground">No results found.</p>;
+  }
+  const columns = Object.keys(data[0]);
+  return (
+    <div className="rounded-lg border overflow-hidden mt-4">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            {columns.map((col) => (
+              <TableHead key={col} className="font-semibold">
+                {col}
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {data.map((row, idx) => (
+            <TableRow key={idx}>
+              {columns.map((col) => (
+                <TableCell key={col}>{String(row[col])}</TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
+}
 
 export default function QueryResultDisplay({
   queryResult,
 }: QueryResultDisplayProps) {
   const { data, chart_config, sql_query, db_name } = queryResult;
   const [isQueryOpen, setIsQueryOpen] = useState(false);
+  const [rawQueryResults, setRawQueryResults] = useState<
+    Record<string, any>[] | null
+  >(null);
+  const [isRawQueryLoading, setIsRawQueryLoading] = useState(false);
+  const [rawQueryError, setRawQueryError] = useState<string | null>(null);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [isTableCollapsed, setIsTableCollapsed] = useState(false);
+
+  const handleRunQuery = async () => {
+    if (!sql_query) return;
+    setIsRawQueryLoading(true);
+    setRawQueryError(null);
+    setRawQueryResults(null);
+    try {
+      const results = await runRawSQL(sql_query, db_name);
+      setRawQueryResults(results);
+    } catch (error) {
+      console.error("Failed to run raw SQL query:", error);
+      setRawQueryError(
+        error instanceof Error ? error.message : "An unknown error occurred.",
+      );
+    } finally {
+      setIsRawQueryLoading(false);
+    }
+  };
 
   const formatValue = (value: any, format?: ChartConfig["value_format"]) => {
     if (typeof value !== "number") return value;
@@ -260,10 +337,74 @@ export default function QueryResultDisplay({
                 {db_name}
               </Badge>
             </CollapsibleTrigger>
-            <CollapsibleContent className="mt-2">
-              <pre className="bg-muted p-3 rounded-lg text-xs overflow-x-auto">
+            <CollapsibleContent className="mt-2 space-y-3">
+              <pre className="bg-muted p-3 rounded-lg text-xs overflow-x-auto relative">
                 <code className="text-foreground">{sql_query}</code>
               </pre>
+              <Button
+                onClick={handleRunQuery}
+                disabled={isRawQueryLoading}
+                size="sm"
+                variant="secondary"
+                className="flex items-center gap-2"
+              >
+                {isRawQueryLoading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Play className="w-4 h-4" />
+                )}
+                <span>Run Query</span>
+              </Button>
+
+              {rawQueryError && (
+                <div className="text-red-500 text-xs bg-red-500/10 p-2 rounded-md">
+                  {rawQueryError}
+                </div>
+              )}
+
+              {rawQueryResults && (
+                <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                  <SheetTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex items-center gap-2"
+                    >
+                      <TableIcon className="w-4 h-4" />
+                      <span>View Results ({rawQueryResults.length} rows)</span>
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent
+                    side="right"
+                    className="w-full sm:max-w-3xl overflow-y-auto"
+                  >
+                    <SheetHeader>
+                      <SheetTitle>
+                        {chart_config?.title || `Query Results - ${db_name}`}
+                      </SheetTitle>
+                      <SheetDescription>
+                        Showing {rawQueryResults.length} rows from {db_name}
+                      </SheetDescription>
+                    </SheetHeader>
+                    <div className="mt-6">
+                      <Collapsible
+                        open={!isTableCollapsed}
+                        onOpenChange={(open) => setIsTableCollapsed(!open)}
+                      >
+                        <CollapsibleTrigger className="flex items-center gap-2 text-sm font-medium mb-3 hover:text-foreground transition-colors">
+                          <ChevronDown
+                            className={`w-4 h-4 transition-transform ${!isTableCollapsed ? "rotate-180" : ""}`}
+                          />
+                          <span>Data Table</span>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent>
+                          <RawQueryResultTable data={rawQueryResults} />
+                        </CollapsibleContent>
+                      </Collapsible>
+                    </div>
+                  </SheetContent>
+                </Sheet>
+              )}
             </CollapsibleContent>
           </Collapsible>
         )}

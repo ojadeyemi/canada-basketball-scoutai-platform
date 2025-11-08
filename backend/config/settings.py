@@ -7,9 +7,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(
-        env_file=".env", env_file_encoding="utf-8", extra="ignore"
-    )
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
     # Environment
     environment: str = Field(default="development", alias="ENVIRONMENT")
@@ -18,6 +16,7 @@ class Settings(BaseSettings):
 
     # API Configuration
     api_base_url: str = Field(default="http://localhost:8000", alias="API_BASE_URL")
+    api_key: str = Field(default="dev-key-change-in-production", alias="API_KEY")
     frontend_url: str = Field(default="http://localhost:5173", alias="FRONTEND_URL")
 
     # Database
@@ -41,12 +40,8 @@ class Settings(BaseSettings):
     html_parser_model: Optional[str] = Field(default=None, alias="HTML_PARSER_MODEL")
 
     # Google Cloud Storage
-    google_application_credentials: Optional[str] = Field(
-        default=None, alias="GOOGLE_APPLICATION_CREDENTIALS"
-    )
-    gcs_bucket_name: str = Field(
-        default="canada-basketball-scouting-reports", alias="GCS_BUCKET_NAME"
-    )
+    google_application_credentials: Optional[str] = Field(default=None, alias="GOOGLE_APPLICATION_CREDENTIALS")
+    gcs_bucket_name: str = Field(default="canada-basketball-scouting-reports", alias="GCS_BUCKET_NAME")
 
     def get_postgres_conn_string(self) -> str:
         if self.node_env == "local":

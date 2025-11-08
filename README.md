@@ -1,4 +1,4 @@
-# Canada Basketball ScoutAI Platform
+# canada-basketball-scoutai-platform
 
 ![Canada Basketball ScoutAI](./assets/oldscreenshot.png)
 
@@ -16,109 +16,45 @@ Traditional scouting requires hours of manual research. ScoutAI lets you ask **"
 
 ### Key Features
 
+- **Advanced Player Search Engine** – Instant search across 25,000+ players with comprehensive stats and typo-tolerant matching.
 - **Natural Language Queries** – No SQL, no spreadsheets. Just ask.
 - **Automated Scouting Reports** – AI-generated PDFs with strengths, weaknesses, and national team fit.
-- **25,000+ Players** – Fuzzy search with typo-tolerance across 4 Canadian leagues.
 - **Real-Time Insights** – Watch the AI think as it streams responses.
 - **Interactive Charts** – Visualize stats instantly (bar, line, scatter plots).
 
 ---
 
-## Quick Start
+## International Context: Canada Basketball Competitions
 
-### Prerequisites
+This platform is designed to identify talent that can compete on the world stage. Canada Basketball participates in numerous FIBA competitions across various levels:
 
-- Docker (recommended) **OR** Python 3.13+ and Node.js 18+
-- Cohere API key (default) – [Get your free key](https://cohere.com)
-- Google Gemini API key (recommended for stats/scouting) – [Get your free key](https://ai.google.dev/)
+### Senior Level
 
-### Option 1: Docker Compose (Fastest)
+- **FIBA Basketball World Cup (Men's):** The men's national team competes in this premier global tournament, held every four years.
+- **FIBA Women's Basketball World Cup:** The women's national team competes in this major global event.
+- **FIBA Olympic Qualifying Tournaments (Men's and Women's):** Canada's teams participate in these tournaments to earn berths in the Olympic Games.
+- **FIBA AmeriCup (Men's and Women's):** Both men's and women's senior teams compete in this Americas zone tournament.
+- **FIBA World Cup Qualifiers (Men's):** Qualification tournaments are held to determine which teams will play in the FIBA World Cup.
 
-```bash
-# Clone and configure
-git clone https://github.com/ojadeyemi/canada-basketball-scoutai-platform.git
-cd canada-basketball-scoutai-platform
-cp .env.example .env  # Add your API keys
+### Youth Level
 
-# Start all services
-docker-compose -f docker-compose.local.yml up --build
-```
+- **FIBA U19 Basketball World Cup (Men's and Women's):** Canada sends teams to compete at the world junior level.
+- **FIBA U17 Basketball World Cup (Men's and Women's):** Teams also compete in this event for the U17 age group.
+- **FIBA U18 AmeriCup (Men's and Women's):** Canada participates in this continental championship for youth.
 
-**Access:**
+### FIBA 3x3 Competitions
 
-- Frontend: [http://localhost](http://localhost)
-- Backend API: [http://localhost:8000/docs](http://localhost:8000/docs)
-
-### Option 2: Local Development
-
-```bash
-# Backend (with poetry)
-cd backend
-poetry install
-poetry run python -m playwright install chromium
-poetry run uvicorn app.main:app --reload
-
-# Frontend
-cd frontend
-pnpm install && pnpm dev
-```
-
-**Access:**
-
-- Frontend: [http://localhost:5173](http://localhost:5173)
-- Backend: [http://localhost:8000](http://localhost:8000)
+- **FIBA 3x3 World Tour:** Canada sends teams to participate in this international circuit.
+- **FIBA 3x3 Women's Series:** The Canadian women's team is a top contender in this global competition.
+- **FIBA 3x3 AmeriCup (Men's and Women's):** Canada competes in this continental championship for 3x3 basketball.
+- **FIBA 3x3 Olympic Qualifying Tournament (Men's and Women's):** Canadian teams have played in these to qualify for the Olympics.
+- **FIBA 3x3 Champions Cup (Women's):** The women's national team has recently competed and won this global event.
 
 ---
 
-## How It Works
+## Developer Quick Start & Configuration
 
-```
-User Query → LangGraph AI Agent → Multi-League SQLite DBs → Real-Time Response
-```
-
-1. **Ask in plain English** – "Top CEBL scorers with 20+ PER in 2024"
-2. **AI Router classifies intent** – Stats query, comparison, scouting report?
-3. **SQL Agent queries 4 leagues** – U SPORTS, CCAA, CEBL, HoopQueens (25K+ players)
-4. **AI generates insights** – Charts, text summaries, PDF reports
-5. **Stream results in real-time** – Watch the AI think via NDJSON streaming
-
-**Tech:** LangGraph (multi-agent orchestration), FastAPI, React, PostgreSQL (session state), SQLite (league data)
-
----
-
-## Tech Stack
-
-| Layer                | Tech                                                                   |
-| -------------------- | ---------------------------------------------------------------------- |
-| **AI Orchestration** | LangGraph 1.0 (multi-agent workflows)                                  |
-| **Backend**          | FastAPI 0.120, Python 3.13, Playwright (PDF rendering)                 |
-| **Frontend**         | React 18, TypeScript 5.9, Vite 5.4, TailwindCSS 3.4                    |
-| **Data**             | SQLite (4 league DBs), PostgreSQL (sessions), rapidfuzz (fuzzy search) |
-| **LLM Provider**     | Cohere (default: command-a-03-2025), Google Gemini (recommended: 2.5-flash/pro), OpenAI |
-| **Deployment**       | Docker, Google Cloud Run, Vercel                                       |
-
----
-
-## Data Coverage
-
-**4 Canadian Leagues (25,000+ Players)**
-
-- **U SPORTS** – 60+ university programs (2019-2024 seasons)
-- **CCAA** – College basketball (OCAA + PacWest conferences)
-- **CEBL** – Canadian Elite Basketball League (professional, 2019-2024)
-- **HoopQueens** – Women's professional summer league
-
-**Custom Data Engineering:**
-
-- Built a custom CEBL SDK (Python library) for official API access
-- Web scrapers with AI-powered HTML parsing for biographical data
-- Fuzzy search with rapidfuzz for typo-tolerant queries (e.g., "Xavier Mun" → "Xavier Moon")
-
----
-
-## Configuration
-
-See [backend/README.md](./backend/README.md) and [frontend/README.md](./frontend/README.md) for environment setup and LLM provider configuration.
+For developers looking to run the project locally, configure it, or understand the architecture, please see the **[DEVELOPMENT.md](./DEVELOPMENT.md)** guide.
 
 ---
 

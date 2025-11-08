@@ -93,9 +93,7 @@ def test_get_gcs_client_success():
 
     with (
         patch("graph.utils.gcs_helpers.storage.Client") as mock_storage_client,
-        patch(
-            "graph.utils.gcs_helpers.service_account.Credentials.from_service_account_file"
-        ) as mock_credentials,
+        patch("graph.utils.gcs_helpers.service_account.Credentials.from_service_account_file") as mock_credentials,
         patch("graph.utils.gcs_helpers.Path") as mock_path,
     ):
         # Mock file exists
@@ -111,9 +109,7 @@ def test_get_gcs_client_success():
         mock_client = Mock()
         mock_storage_client.return_value = mock_client
 
-        with patch.dict(
-            os.environ, {"GOOGLE_APPLICATION_CREDENTIALS": "/path/to/service.json"}
-        ):
+        with patch.dict(os.environ, {"GOOGLE_APPLICATION_CREDENTIALS": "/path/to/service.json"}):
             client = _get_gcs_client()
 
             if client == mock_client:
@@ -281,9 +277,7 @@ def test_generate_signed_url_success_default_expiration():
         mock_client = Mock()
         mock_bucket = Mock()
         mock_blob = Mock()
-        mock_blob.generate_signed_url.return_value = (
-            "https://storage.googleapis.com/signed-url"
-        )
+        mock_blob.generate_signed_url.return_value = "https://storage.googleapis.com/signed-url"
         mock_client.bucket.return_value = mock_bucket
         mock_bucket.blob.return_value = mock_blob
         mock_get_client.return_value = mock_client
@@ -320,9 +314,7 @@ def test_generate_signed_url_custom_expiration():
         mock_client = Mock()
         mock_bucket = Mock()
         mock_blob = Mock()
-        mock_blob.generate_signed_url.return_value = (
-            "https://storage.googleapis.com/signed-url"
-        )
+        mock_blob.generate_signed_url.return_value = "https://storage.googleapis.com/signed-url"
         mock_client.bucket.return_value = mock_bucket
         mock_bucket.blob.return_value = mock_blob
         mock_get_client.return_value = mock_client
@@ -355,16 +347,12 @@ def test_generate_signed_url_gcs_error():
         mock_client = Mock()
         mock_bucket = Mock()
         mock_blob = Mock()
-        mock_blob.generate_signed_url.side_effect = Exception(
-            "SignBlob permission denied"
-        )
+        mock_blob.generate_signed_url.side_effect = Exception("SignBlob permission denied")
         mock_client.bucket.return_value = mock_bucket
         mock_bucket.blob.return_value = mock_blob
         mock_get_client.return_value = mock_client
 
-        if assert_raises(
-            Exception, generate_signed_url, "gs://test-bucket/reports/file.pdf"
-        ):
+        if assert_raises(Exception, generate_signed_url, "gs://test-bucket/reports/file.pdf"):
             print_pass("Exception raised on signed URL failure")
             return True
         else:

@@ -33,9 +33,7 @@ def get_team_stats(league: str, team: str, season: str) -> dict[str, Any] | None
     return None
 
 
-def _get_usports_ccaa_team_stats(
-    league: str, team: str, season: str
-) -> dict[str, Any] | None:
+def _get_usports_ccaa_team_stats(league: str, team: str, season: str) -> dict[str, Any] | None:
     """Get U SPORTS/CCAA team statistics."""
     query = """
         SELECT
@@ -121,9 +119,7 @@ def _get_cebl_team_stats(team: str, season: str) -> dict[str, Any] | None:
         "fta_per_game": round(total_fta / games_played, 1) if total_fta else None,
         "rpg": round(total_rebounds / games_played, 1) if total_rebounds else None,
         "apg": round(total_assists / games_played, 1) if total_assists else None,
-        "tov_per_game": round(total_turnovers / games_played, 1)
-        if total_turnovers
-        else None,
+        "tov_per_game": round(total_turnovers / games_played, 1) if total_turnovers else None,
         "spg": round(total_steals / games_played, 1) if total_steals else None,
         "bpg": round(total_blocks / games_played, 1) if total_blocks else None,
     }
@@ -170,17 +166,11 @@ def _get_hoopqueens_team_stats(team: str, season: str) -> dict[str, Any] | None:
     stats = stats_rows[0]
     return {
         "ppg": round(stats["ppg"], 1) if stats.get("ppg") else None,
-        "fga_per_game": round(stats["fga_per_game"], 1)
-        if stats.get("fga_per_game")
-        else None,
-        "fta_per_game": round(stats["fta_per_game"], 1)
-        if stats.get("fta_per_game")
-        else None,
+        "fga_per_game": round(stats["fga_per_game"], 1) if stats.get("fga_per_game") else None,
+        "fta_per_game": round(stats["fta_per_game"], 1) if stats.get("fta_per_game") else None,
         "rpg": round(stats["rpg"], 1) if stats.get("rpg") else None,
         "apg": round(stats["apg"], 1) if stats.get("apg") else None,
-        "tov_per_game": round(stats["tov_per_game"], 1)
-        if stats.get("tov_per_game")
-        else None,
+        "tov_per_game": round(stats["tov_per_game"], 1) if stats.get("tov_per_game") else None,
         "spg": round(stats["spg"], 1) if stats.get("spg") else None,
         "bpg": round(stats["bpg"], 1) if stats.get("bpg") else None,
     }

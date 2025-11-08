@@ -37,9 +37,7 @@ async def get_pdf(pdf_path: str):
     try:
         requested_file.relative_to(ALLOWED_PDF_DIR)
     except ValueError:
-        raise HTTPException(
-            status_code=403, detail="Access denied: Path outside allowed directory"
-        )
+        raise HTTPException(status_code=403, detail="Access denied: Path outside allowed directory")
 
     # Check if file exists
     if not requested_file.exists():
@@ -54,8 +52,6 @@ async def get_pdf(pdf_path: str):
         raise HTTPException(status_code=400, detail="Requested file is not a PDF")
 
     try:
-        return FileResponse(
-            requested_file, media_type="application/pdf", filename=requested_file.name
-        )
+        return FileResponse(requested_file, media_type="application/pdf", filename=requested_file.name)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error serving PDF: {str(e)}")

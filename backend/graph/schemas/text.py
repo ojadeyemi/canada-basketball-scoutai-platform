@@ -14,13 +14,9 @@ class TextPlan(BaseModel):
     Used for simple lookups, biographical data, or when visualization is not appropriate.
     """
 
-    response_type: Literal["text_plan"] = Field(
-        default="text_plan", description="Response type discriminator"
-    )
+    response_type: Literal["text_plan"] = Field(default="text_plan", description="Response type discriminator")
 
-    message: str = Field(
-        ..., min_length=1, description="Natural language response message"
-    )
+    message: str = Field(..., min_length=1, description="Natural language response message")
 
     # Optional structured data (for tables in text mode)
     data: list[dict[str, Any]] | None = Field(

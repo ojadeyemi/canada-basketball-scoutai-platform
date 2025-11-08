@@ -30,6 +30,10 @@ name = "canada-basketball-scoutai-platform-api"
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.14.3"
 
+[tool.ruff]
+# Global settings for Ruff
+line-length = 120
+
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"

@@ -5,8 +5,7 @@ import type {
   ShotChartData,
 } from "../types/player";
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+const API_BASE_URL = "/api";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -35,7 +34,7 @@ export const searchPlayers = async (params: {
   seasons?: string[];
   limit?: number; // Per-league limit (e.g., 3 per league across 4 leagues = max 12 results)
 }): Promise<PlayerSearchResult[]> => {
-  const { data } = await api.get("/api/search/player", {
+  const { data } = await api.get("/search/player", {
     params: {
       query: params.query,
       leagues: params.leagues?.join(","),
@@ -51,7 +50,7 @@ export const getPlayerDetail = async (
   league: string,
   playerId: string,
 ): Promise<PlayerDetail> => {
-  const { data } = await api.get(`/api/search/player/${league}/${playerId}`);
+  const { data } = await api.get(`/search/player/${league}/${playerId}`);
   return data;
 };
 
@@ -60,7 +59,7 @@ export const getShotChartData = async (
   playerId: string,
 ): Promise<ShotChartData> => {
   const { data } = await api.get(
-    `/api/search/player/${league}/${playerId}/shot-chart`,
+    `/search/player/${league}/${playerId}/shot-chart`,
   );
   return data;
 };

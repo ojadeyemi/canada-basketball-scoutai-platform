@@ -46,9 +46,7 @@ class PDFGenerator:
         return data_with_date
 
     def _ensure_pdf_extension(self, filename: str) -> str:
-        safe_filename = "".join(
-            c for c in filename if c.isalnum() or c in (" ", "-", "_")
-        ).strip()
+        safe_filename = "".join(c for c in filename if c.isalnum() or c in (" ", "-", "_")).strip()
         if not safe_filename:
             safe_filename = "output"
 
@@ -73,9 +71,7 @@ class PDFGenerator:
 
         return template_path
 
-    async def generate_pdf(
-        self, data: dict[str, Any], pdf_title: str, width: str = "816px", **pdf_options
-    ) -> Path:
+    async def generate_pdf(self, data: dict[str, Any], pdf_title: str, width: str = "816px", **pdf_options) -> Path:
         if not isinstance(data, dict):
             raise ValueError("Data must be a dictionary")
 
@@ -87,15 +83,11 @@ class PDFGenerator:
         html_path = self._validate_template_path()
 
         async with async_playwright() as p:
-            browser: Browser = await p.chromium.launch(
-                args=["--no-sandbox", "--disable-dev-shm-usage"]
-            )
+            browser: Browser = await p.chromium.launch(args=["--no-sandbox", "--disable-dev-shm-usage"])
             page: Page = await browser.new_page()
 
             await page.set_extra_http_headers(
-                {
-                    "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline';"
-                }
+                {"Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline';"}
             )
 
             await page.goto(f"file://{html_path}", wait_until="load")
@@ -121,9 +113,7 @@ class PDFGenerator:
             await page.set_viewport_size({"width": 816, "height": 1200})
             await page.emulate_media(media="screen")
 
-            content_height = await page.evaluate(
-                "document.documentElement.scrollHeight"
-            )
+            content_height = await page.evaluate("document.documentElement.scrollHeight")
 
             output_path = Path(output_pdf).resolve()
             output_path.parent.mkdir(parents=True, exist_ok=True)

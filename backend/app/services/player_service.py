@@ -259,9 +259,7 @@ def _get_usports_ccaa_details(league: str, player_id: str) -> PlayerDetail | Non
         }
 
         # Calculate team context stats
-        team_context, usage_rate = calculate_team_context_stats(
-            player_pg_stats, team_stats, league
-        )
+        team_context, usage_rate = calculate_team_context_stats(player_pg_stats, team_stats, league)
         if usage_rate is not None:
             advanced_stats.usage_rate = usage_rate
 
@@ -271,12 +269,7 @@ def _get_usports_ccaa_details(league: str, player_id: str) -> PlayerDetail | Non
             # Find corresponding regular season stats for the same season year
             current_season_year = row["season"]
             regular_season_row = next(
-                (
-                    r
-                    for r in rows
-                    if r["season"] == current_season_year
-                    and r.get("season_type") == "regular"
-                ),
+                (r for r in rows if r["season"] == current_season_year and r.get("season_type") == "regular"),
                 None,
             )
 
@@ -294,32 +287,21 @@ def _get_usports_ccaa_details(league: str, player_id: str) -> PlayerDetail | Non
                         (row.get("total_rebounds") or 0) / playoff_gp
                         - (regular_season_row.get("total_rebounds") or 0) / reg_gp
                     ),
-                    "apg": (
-                        (row.get("assists") or 0) / playoff_gp
-                        - (regular_season_row.get("assists") or 0) / reg_gp
-                    ),
+                    "apg": ((row.get("assists") or 0) / playoff_gp - (regular_season_row.get("assists") or 0) / reg_gp),
                     "fg_pct": (
-                        (row.get("field_goal_percentage") or 0)
-                        - (regular_season_row.get("field_goal_percentage") or 0)
+                        (row.get("field_goal_percentage") or 0) - (regular_season_row.get("field_goal_percentage") or 0)
                     ),
                     "games_played": playoff_gp,
                 }
 
         # Calculate league-specific stats
-        league_specific = calculate_league_specific_stats(
-            league, player_stats=row, playoff_delta=playoff_delta
-        )
+        league_specific = calculate_league_specific_stats(league, player_stats=row, playoff_delta=playoff_delta)
 
         # Calculate league comparison (player vs league average) - only for regular season
         league_comparison = None
         if row.get("season_type") == "regular":
             league_data = _get_league_distributions(league, row["season"])
-            if (
-                league_data
-                and league_data["ppg"]
-                and league_data["rpg"]
-                and league_data["apg"]
-            ):
+            if league_data and league_data["ppg"] and league_data["rpg"] and league_data["apg"]:
                 player_ppg = player_pg_stats["ppg"]
                 player_rpg = player_pg_stats["rpg"]
                 player_apg = player_pg_stats["apg"]
@@ -348,9 +330,7 @@ def _get_usports_ccaa_details(league: str, player_id: str) -> PlayerDetail | Non
             games_played=row.get("games_played"),
             games_started=row.get("games_started"),
             total_minutes=row.get("minutes_played"),
-            minutes_per_game=round(row["minutes_played"] / gp, 1)
-            if row.get("minutes_played")
-            else None,
+            minutes_per_game=round(row["minutes_played"] / gp, 1) if row.get("minutes_played") else None,
             # Scoring (totals)
             total_points=row.get("total_points"),
             total_field_goals_made=row.get("field_goal_made"),
@@ -360,9 +340,7 @@ def _get_usports_ccaa_details(league: str, player_id: str) -> PlayerDetail | Non
             total_free_throws_made=row.get("free_throws_made"),
             total_free_throws_attempted=row.get("free_throws_attempted"),
             # Scoring (per game)
-            points_per_game=round(row["total_points"] / gp, 1)
-            if row.get("total_points")
-            else None,
+            points_per_game=round(row["total_points"] / gp, 1) if row.get("total_points") else None,
             field_goal_percentage=row.get("field_goal_percentage") / 100
             if row.get("field_goal_percentage") is not None
             else None,
@@ -377,9 +355,7 @@ def _get_usports_ccaa_details(league: str, player_id: str) -> PlayerDetail | Non
             total_offensive_rebounds=row.get("offensive_rebounds"),
             total_defensive_rebounds=row.get("defensive_rebounds"),
             # Rebounds (per game)
-            rebounds_per_game=round(row["total_rebounds"] / gp, 1)
-            if row.get("total_rebounds")
-            else None,
+            rebounds_per_game=round(row["total_rebounds"] / gp, 1) if row.get("total_rebounds") else None,
             offensive_rebounds_per_game=round(row["offensive_rebounds"] / gp, 1)
             if row.get("offensive_rebounds")
             else None,
@@ -393,17 +369,11 @@ def _get_usports_ccaa_details(league: str, player_id: str) -> PlayerDetail | Non
             total_turnovers=row.get("turnovers"),
             total_personal_fouls=row.get("personal_fouls"),
             # Playmaking & Defense (per game)
-            assists_per_game=round(row["assists"] / gp, 1)
-            if row.get("assists")
-            else None,
+            assists_per_game=round(row["assists"] / gp, 1) if row.get("assists") else None,
             steals_per_game=round(row["steals"] / gp, 1) if row.get("steals") else None,
             blocks_per_game=round(row["blocks"] / gp, 1) if row.get("blocks") else None,
-            turnovers_per_game=round(row["turnovers"] / gp, 1)
-            if row.get("turnovers")
-            else None,
-            personal_fouls_per_game=round(row["personal_fouls"] / gp, 1)
-            if row.get("personal_fouls")
-            else None,
+            turnovers_per_game=round(row["turnovers"] / gp, 1) if row.get("turnovers") else None,
+            personal_fouls_per_game=round(row["personal_fouls"] / gp, 1) if row.get("personal_fouls") else None,
             # Enhanced stats
             advanced_stats=advanced_stats,
             team_context=team_context,
@@ -546,9 +516,7 @@ def _get_cebl_details(player_id: str) -> PlayerDetail | None:
         }
 
         # Calculate team context stats
-        team_context, usage_rate = calculate_team_context_stats(
-            player_pg_stats, team_stats, "cebl"
-        )
+        team_context, usage_rate = calculate_team_context_stats(player_pg_stats, team_stats, "cebl")
         if usage_rate is not None:
             advanced_stats.usage_rate = usage_rate
 
@@ -557,19 +525,12 @@ def _get_cebl_details(player_id: str) -> PlayerDetail | None:
         game_aggregates = game_stats_by_season.get(season_key)
 
         # Calculate league-specific stats (CEBL has unique stats)
-        league_specific = calculate_league_specific_stats(
-            "cebl", player_stats=row, game_aggregates=game_aggregates
-        )
+        league_specific = calculate_league_specific_stats("cebl", player_stats=row, game_aggregates=game_aggregates)
 
         # Calculate league comparison (player vs league average)
         league_comparison = None
         league_data = _get_league_distributions("cebl", str(row["season"]))
-        if (
-            league_data
-            and league_data["ppg"]
-            and league_data["rpg"]
-            and league_data["apg"]
-        ):
+        if league_data and league_data["ppg"] and league_data["rpg"] and league_data["apg"]:
             player_ppg = player_pg_stats["ppg"]
             player_rpg = player_pg_stats["rpg"]
             player_apg = player_pg_stats["apg"]
@@ -597,26 +558,18 @@ def _get_cebl_details(player_id: str) -> PlayerDetail | None:
             games_played=row.get("games_played"),
             games_started=None,  # Not available in CEBL data
             total_minutes=int(row.get("minutes")) if row.get("minutes") else None,
-            minutes_per_game=round(row["minutes"] / gp, 1)
-            if row.get("minutes")
-            else None,
+            minutes_per_game=round(row["minutes"] / gp, 1) if row.get("minutes") else None,
             # Scoring (totals)
             total_points=int(float(row["points"])) if row.get("points") else None,
-            total_field_goals_made=int(float(row["field_goals_made"]))
-            if row.get("field_goals_made")
-            else None,
+            total_field_goals_made=int(float(row["field_goals_made"])) if row.get("field_goals_made") else None,
             total_field_goals_attempted=int(float(row["field_goals_attempted"]))
             if row.get("field_goals_attempted")
             else None,
-            total_three_pointers_made=int(float(row["three_points_made"]))
-            if row.get("three_points_made")
-            else None,
+            total_three_pointers_made=int(float(row["three_points_made"])) if row.get("three_points_made") else None,
             total_three_pointers_attempted=int(float(row["three_points_attempted"]))
             if row.get("three_points_attempted")
             else None,
-            total_free_throws_made=int(float(row["free_throws_made"]))
-            if row.get("free_throws_made")
-            else None,
+            total_free_throws_made=int(float(row["free_throws_made"])) if row.get("free_throws_made") else None,
             total_free_throws_attempted=int(float(row["free_throws_attempted"]))
             if row.get("free_throws_attempted")
             else None,
@@ -633,16 +586,10 @@ def _get_cebl_details(player_id: str) -> PlayerDetail | None:
             else None,
             # Rebounds (totals)
             total_rebounds=int(float(row["rebounds"])) if row.get("rebounds") else None,
-            total_offensive_rebounds=int(float(row["offensive_rebounds"]))
-            if row.get("offensive_rebounds")
-            else None,
-            total_defensive_rebounds=int(float(row["defensive_rebounds"]))
-            if row.get("defensive_rebounds")
-            else None,
+            total_offensive_rebounds=int(float(row["offensive_rebounds"])) if row.get("offensive_rebounds") else None,
+            total_defensive_rebounds=int(float(row["defensive_rebounds"])) if row.get("defensive_rebounds") else None,
             # Rebounds (per game)
-            rebounds_per_game=round(row["rebounds"] / gp, 1)
-            if row.get("rebounds")
-            else None,
+            rebounds_per_game=round(row["rebounds"] / gp, 1) if row.get("rebounds") else None,
             offensive_rebounds_per_game=round(row["offensive_rebounds"] / gp, 1)
             if row.get("offensive_rebounds")
             else None,
@@ -653,22 +600,14 @@ def _get_cebl_details(player_id: str) -> PlayerDetail | None:
             total_assists=int(float(row["assists"])) if row.get("assists") else None,
             total_steals=int(float(row["steals"])) if row.get("steals") else None,
             total_blocks=int(float(row["blocks"])) if row.get("blocks") else None,
-            total_turnovers=int(float(row["turnovers"]))
-            if row.get("turnovers")
-            else None,
+            total_turnovers=int(float(row["turnovers"])) if row.get("turnovers") else None,
             total_personal_fouls=int(float(row["fouls"])) if row.get("fouls") else None,
             # Playmaking & Defense (per game)
-            assists_per_game=round(row["assists"] / gp, 1)
-            if row.get("assists")
-            else None,
+            assists_per_game=round(row["assists"] / gp, 1) if row.get("assists") else None,
             steals_per_game=round(row["steals"] / gp, 1) if row.get("steals") else None,
             blocks_per_game=round(row["blocks"] / gp, 1) if row.get("blocks") else None,
-            turnovers_per_game=round(row["turnovers"] / gp, 1)
-            if row.get("turnovers")
-            else None,
-            personal_fouls_per_game=round(row["fouls"] / gp, 1)
-            if row.get("fouls")
-            else None,
+            turnovers_per_game=round(row["turnovers"] / gp, 1) if row.get("turnovers") else None,
+            personal_fouls_per_game=round(row["fouls"] / gp, 1) if row.get("fouls") else None,
             # Enhanced stats
             advanced_stats=advanced_stats,
             team_context=team_context,
@@ -800,9 +739,7 @@ def _get_hoopqueens_details(player_id: str) -> PlayerDetail | None:
         advanced_stats = calculate_advanced_stats(row, "hoopqueens")
 
         # Get team stats for context
-        team_stats = get_team_stats(
-            "hoopqueens", player_info["team"], str(row["season"])
-        )
+        team_stats = get_team_stats("hoopqueens", player_info["team"], str(row["season"]))
 
         # Prepare per-game stats dict for team context calculation
         player_pg_stats = {
@@ -819,9 +756,7 @@ def _get_hoopqueens_details(player_id: str) -> PlayerDetail | None:
         }
 
         # Calculate team context stats
-        team_context, usage_rate = calculate_team_context_stats(
-            player_pg_stats, team_stats, "hoopqueens"
-        )
+        team_context, usage_rate = calculate_team_context_stats(player_pg_stats, team_stats, "hoopqueens")
         if usage_rate is not None:
             advanced_stats.usage_rate = usage_rate
 
@@ -830,19 +765,12 @@ def _get_hoopqueens_details(player_id: str) -> PlayerDetail | None:
         season_game_logs = game_logs_by_season.get(season_key, [])
 
         # Calculate league-specific stats (HoopQueens has plus/minus, variance)
-        league_specific = calculate_league_specific_stats(
-            "hoopqueens", game_logs=season_game_logs
-        )
+        league_specific = calculate_league_specific_stats("hoopqueens", game_logs=season_game_logs)
 
         # Calculate league comparison (player vs league average)
         league_comparison = None
         league_data = _get_league_distributions("hoopqueens", str(row["season"]))
-        if (
-            league_data
-            and league_data["ppg"]
-            and league_data["rpg"]
-            and league_data["apg"]
-        ):
+        if league_data and league_data["ppg"] and league_data["rpg"] and league_data["apg"]:
             player_ppg = player_pg_stats["total_points"]
             player_rpg = player_pg_stats["total_rebounds"]
             player_apg = player_pg_stats["total_assists"]
@@ -869,12 +797,8 @@ def _get_hoopqueens_details(player_id: str) -> PlayerDetail | None:
             # Core counting stats
             games_played=row.get("games_played"),
             games_started=None,  # Not tracked in HoopQueens
-            total_minutes=int(row.get("total_minutes"))
-            if row.get("total_minutes")
-            else None,
-            minutes_per_game=round(row["total_minutes"] / gp, 1)
-            if row.get("total_minutes")
-            else None,
+            total_minutes=int(row.get("total_minutes")) if row.get("total_minutes") else None,
+            minutes_per_game=round(row["total_minutes"] / gp, 1) if row.get("total_minutes") else None,
             # Scoring (totals)
             total_points=row.get("total_points"),
             total_field_goals_made=row.get("total_fg_made"),
@@ -884,9 +808,7 @@ def _get_hoopqueens_details(player_id: str) -> PlayerDetail | None:
             total_free_throws_made=row.get("total_ft_made"),
             total_free_throws_attempted=row.get("total_ft_attempted"),
             # Scoring (per game)
-            points_per_game=round(row["total_points"] / gp, 1)
-            if row.get("total_points")
-            else None,
+            points_per_game=round(row["total_points"] / gp, 1) if row.get("total_points") else None,
             field_goal_percentage=fg_pct,
             three_point_percentage=three_pct,
             free_throw_percentage=ft_pct,
@@ -895,9 +817,7 @@ def _get_hoopqueens_details(player_id: str) -> PlayerDetail | None:
             total_offensive_rebounds=row.get("total_offensive_rebounds"),
             total_defensive_rebounds=row.get("total_defensive_rebounds"),
             # Rebounds (per game)
-            rebounds_per_game=round(row["total_rebounds"] / gp, 1)
-            if row.get("total_rebounds")
-            else None,
+            rebounds_per_game=round(row["total_rebounds"] / gp, 1) if row.get("total_rebounds") else None,
             offensive_rebounds_per_game=round(row["total_offensive_rebounds"] / gp, 1)
             if row.get("total_offensive_rebounds")
             else None,
@@ -911,21 +831,11 @@ def _get_hoopqueens_details(player_id: str) -> PlayerDetail | None:
             total_turnovers=row.get("total_turnovers"),
             total_personal_fouls=row.get("total_fouls"),
             # Playmaking & Defense (per game)
-            assists_per_game=round(row["total_assists"] / gp, 1)
-            if row.get("total_assists")
-            else None,
-            steals_per_game=round(row["total_steals"] / gp, 1)
-            if row.get("total_steals")
-            else None,
-            blocks_per_game=round(row["total_blocks"] / gp, 1)
-            if row.get("total_blocks")
-            else None,
-            turnovers_per_game=round(row["total_turnovers"] / gp, 1)
-            if row.get("total_turnovers")
-            else None,
-            personal_fouls_per_game=round(row["total_fouls"] / gp, 1)
-            if row.get("total_fouls")
-            else None,
+            assists_per_game=round(row["total_assists"] / gp, 1) if row.get("total_assists") else None,
+            steals_per_game=round(row["total_steals"] / gp, 1) if row.get("total_steals") else None,
+            blocks_per_game=round(row["total_blocks"] / gp, 1) if row.get("total_blocks") else None,
+            turnovers_per_game=round(row["total_turnovers"] / gp, 1) if row.get("total_turnovers") else None,
+            personal_fouls_per_game=round(row["total_fouls"] / gp, 1) if row.get("total_fouls") else None,
             # Enhanced stats
             advanced_stats=advanced_stats,
             team_context=team_context,
@@ -952,9 +862,7 @@ def _get_hoopqueens_details(player_id: str) -> PlayerDetail | None:
     )
 
 
-def _calculate_career_stats(
-    rows: list[dict[str, Any]], league: str
-) -> list[PlayerSeasonStats]:
+def _calculate_career_stats(rows: list[dict[str, Any]], league: str) -> list[PlayerSeasonStats]:
     """Calculate aggregated career statistics from raw database rows, grouped by season_type."""
     if not rows:
         return []
@@ -997,12 +905,8 @@ def _calculate_career_stats_for_type(
     if league in ["usports", "ccaa"]:
         total_points = sum(row.get("total_points") or 0 for row in rows)
         total_rebounds = sum(row.get("total_rebounds") or 0 for row in rows)
-        total_offensive_rebounds = sum(
-            row.get("offensive_rebounds") or 0 for row in rows
-        )
-        total_defensive_rebounds = sum(
-            row.get("defensive_rebounds") or 0 for row in rows
-        )
+        total_offensive_rebounds = sum(row.get("offensive_rebounds") or 0 for row in rows)
+        total_defensive_rebounds = sum(row.get("defensive_rebounds") or 0 for row in rows)
         total_assists = sum(row.get("assists") or 0 for row in rows)
         total_steals = sum(row.get("steals") or 0 for row in rows)
         total_blocks = sum(row.get("blocks") or 0 for row in rows)
@@ -1012,50 +916,29 @@ def _calculate_career_stats_for_type(
         total_fg_made = sum(row.get("field_goal_made") or 0 for row in rows)
         total_fg_attempted = sum(row.get("field_goal_attempted") or 0 for row in rows)
         total_three_made = sum(row.get("three_pointers_made") or 0 for row in rows)
-        total_three_attempted = sum(
-            row.get("three_pointers_attempted") or 0 for row in rows
-        )
+        total_three_attempted = sum(row.get("three_pointers_attempted") or 0 for row in rows)
         total_ft_made = sum(row.get("free_throws_made") or 0 for row in rows)
         total_ft_attempted = sum(row.get("free_throws_attempted") or 0 for row in rows)
 
         # Weighted average for percentages - divide by 100 to convert to decimal (0-1 scale)
         fg_pct = (
-            sum(
-                (row.get("field_goal_percentage") or 0)
-                / 100
-                * (row.get("games_played") or 0)
-                for row in rows
-            )
+            sum((row.get("field_goal_percentage") or 0) / 100 * (row.get("games_played") or 0) for row in rows)
             / total_gp
         )
         three_pct = (
-            sum(
-                (row.get("three_pointers_percentage") or 0)
-                / 100
-                * (row.get("games_played") or 0)
-                for row in rows
-            )
+            sum((row.get("three_pointers_percentage") or 0) / 100 * (row.get("games_played") or 0) for row in rows)
             / total_gp
         )
         ft_pct = (
-            sum(
-                (row.get("free_throws_percentage") or 0)
-                / 100
-                * (row.get("games_played") or 0)
-                for row in rows
-            )
+            sum((row.get("free_throws_percentage") or 0) / 100 * (row.get("games_played") or 0) for row in rows)
             / total_gp
         )
 
     elif league == "cebl":
         total_points = sum(row.get("points") or 0 for row in rows)
         total_rebounds = sum(row.get("rebounds") or 0 for row in rows)
-        total_offensive_rebounds = sum(
-            row.get("offensive_rebounds") or 0 for row in rows
-        )
-        total_defensive_rebounds = sum(
-            row.get("defensive_rebounds") or 0 for row in rows
-        )
+        total_offensive_rebounds = sum(row.get("offensive_rebounds") or 0 for row in rows)
+        total_defensive_rebounds = sum(row.get("defensive_rebounds") or 0 for row in rows)
         total_assists = sum(row.get("assists") or 0 for row in rows)
         total_steals = sum(row.get("steals") or 0 for row in rows)
         total_blocks = sum(row.get("blocks") or 0 for row in rows)
@@ -1065,38 +948,21 @@ def _calculate_career_stats_for_type(
         total_fg_made = sum(row.get("field_goals_made") or 0 for row in rows)
         total_fg_attempted = sum(row.get("field_goals_attempted") or 0 for row in rows)
         total_three_made = sum(row.get("three_points_made") or 0 for row in rows)
-        total_three_attempted = sum(
-            row.get("three_points_attempted") or 0 for row in rows
-        )
+        total_three_attempted = sum(row.get("three_points_attempted") or 0 for row in rows)
         total_ft_made = sum(row.get("free_throws_made") or 0 for row in rows)
         total_ft_attempted = sum(row.get("free_throws_attempted") or 0 for row in rows)
 
         # Weighted average for percentages - divide by 100 to convert to decimal (0-1 scale)
         fg_pct = (
-            sum(
-                (row.get("field_goal_percentage") or 0)
-                / 100
-                * (row.get("games_played") or 0)
-                for row in rows
-            )
+            sum((row.get("field_goal_percentage") or 0) / 100 * (row.get("games_played") or 0) for row in rows)
             / total_gp
         )
         three_pct = (
-            sum(
-                (row.get("three_point_percentage") or 0)
-                / 100
-                * (row.get("games_played") or 0)
-                for row in rows
-            )
+            sum((row.get("three_point_percentage") or 0) / 100 * (row.get("games_played") or 0) for row in rows)
             / total_gp
         )
         ft_pct = (
-            sum(
-                (row.get("free_throw_percentage") or 0)
-                / 100
-                * (row.get("games_played") or 0)
-                for row in rows
-            )
+            sum((row.get("free_throw_percentage") or 0) / 100 * (row.get("games_played") or 0) for row in rows)
             / total_gp
         )
 
@@ -1121,46 +987,30 @@ def _calculate_career_stats_for_type(
         total_minutes=int(total_minutes) if total_minutes else None,
         total_points=int(total_points),
         total_rebounds=int(total_rebounds),
-        total_offensive_rebounds=int(total_offensive_rebounds)
-        if total_offensive_rebounds
-        else None,
-        total_defensive_rebounds=int(total_defensive_rebounds)
-        if total_defensive_rebounds
-        else None,
+        total_offensive_rebounds=int(total_offensive_rebounds) if total_offensive_rebounds else None,
+        total_defensive_rebounds=int(total_defensive_rebounds) if total_defensive_rebounds else None,
         total_assists=int(total_assists),
         total_steals=int(total_steals),
         total_blocks=int(total_blocks),
         total_turnovers=int(total_turnovers),
         total_personal_fouls=int(total_fouls) if total_fouls else None,
         total_field_goals_made=int(total_fg_made) if total_fg_made else None,
-        total_field_goals_attempted=int(total_fg_attempted)
-        if total_fg_attempted
-        else None,
+        total_field_goals_attempted=int(total_fg_attempted) if total_fg_attempted else None,
         total_three_pointers_made=int(total_three_made) if total_three_made else None,
-        total_three_pointers_attempted=int(total_three_attempted)
-        if total_three_attempted
-        else None,
+        total_three_pointers_attempted=int(total_three_attempted) if total_three_attempted else None,
         total_free_throws_made=int(total_ft_made) if total_ft_made else None,
-        total_free_throws_attempted=int(total_ft_attempted)
-        if total_ft_attempted
-        else None,
+        total_free_throws_attempted=int(total_ft_attempted) if total_ft_attempted else None,
         # Per-game stats
         minutes_per_game=round(total_minutes / total_gp, 1) if total_minutes else None,
         points_per_game=round(total_points / total_gp, 1),
         rebounds_per_game=round(total_rebounds / total_gp, 1),
-        offensive_rebounds_per_game=round(total_offensive_rebounds / total_gp, 1)
-        if total_offensive_rebounds
-        else None,
-        defensive_rebounds_per_game=round(total_defensive_rebounds / total_gp, 1)
-        if total_defensive_rebounds
-        else None,
+        offensive_rebounds_per_game=round(total_offensive_rebounds / total_gp, 1) if total_offensive_rebounds else None,
+        defensive_rebounds_per_game=round(total_defensive_rebounds / total_gp, 1) if total_defensive_rebounds else None,
         assists_per_game=round(total_assists / total_gp, 1),
         steals_per_game=round(total_steals / total_gp, 1),
         blocks_per_game=round(total_blocks / total_gp, 1),
         turnovers_per_game=round(total_turnovers / total_gp, 1),
-        personal_fouls_per_game=round(total_fouls / total_gp, 1)
-        if total_fouls
-        else None,
+        personal_fouls_per_game=round(total_fouls / total_gp, 1) if total_fouls else None,
         # Percentages
         field_goal_percentage=round(fg_pct, 3) if fg_pct else None,
         three_point_percentage=round(three_pct, 3) if three_pct else None,
@@ -1193,9 +1043,7 @@ def _calculate_career_stats_from_seasons(
     sum_total_fg_made = sum(s.total_field_goals_made or 0 for s in seasons)
     sum_total_fg_attempted = sum(s.total_field_goals_attempted or 0 for s in seasons)
     sum_total_three_made = sum(s.total_three_pointers_made or 0 for s in seasons)
-    sum_total_three_attempted = sum(
-        s.total_three_pointers_attempted or 0 for s in seasons
-    )
+    sum_total_three_attempted = sum(s.total_three_pointers_attempted or 0 for s in seasons)
     sum_total_ft_made = sum(s.total_free_throws_made or 0 for s in seasons)
     sum_total_ft_attempted = sum(s.total_free_throws_attempted or 0 for s in seasons)
 
@@ -1205,20 +1053,12 @@ def _calculate_career_stats_from_seasons(
     total_apg = sum((s.assists_per_game or 0) * (s.games_played or 0) for s in seasons)
     total_spg = sum((s.steals_per_game or 0) * (s.games_played or 0) for s in seasons)
     total_bpg = sum((s.blocks_per_game or 0) * (s.games_played or 0) for s in seasons)
-    total_tpg = sum(
-        (s.turnovers_per_game or 0) * (s.games_played or 0) for s in seasons
-    )
+    total_tpg = sum((s.turnovers_per_game or 0) * (s.games_played or 0) for s in seasons)
     total_mpg = sum((s.minutes_per_game or 0) * (s.games_played or 0) for s in seasons)
 
-    total_fg_pct = sum(
-        (s.field_goal_percentage or 0) * (s.games_played or 0) for s in seasons
-    )
-    total_three_pct = sum(
-        (s.three_point_percentage or 0) * (s.games_played or 0) for s in seasons
-    )
-    total_ft_pct = sum(
-        (s.free_throw_percentage or 0) * (s.games_played or 0) for s in seasons
-    )
+    total_fg_pct = sum((s.field_goal_percentage or 0) * (s.games_played or 0) for s in seasons)
+    total_three_pct = sum((s.three_point_percentage or 0) * (s.games_played or 0) for s in seasons)
+    total_ft_pct = sum((s.free_throw_percentage or 0) * (s.games_played or 0) for s in seasons)
 
     # For HoopQueens/CEBL which don't have season_type in DB, return single career total
     return [
@@ -1231,35 +1071,19 @@ def _calculate_career_stats_from_seasons(
             total_minutes=int(sum_total_minutes) if sum_total_minutes else None,
             total_points=int(sum_total_points),
             total_rebounds=int(sum_total_rebounds),
-            total_offensive_rebounds=int(sum_total_offensive_rebounds)
-            if sum_total_offensive_rebounds
-            else None,
-            total_defensive_rebounds=int(sum_total_defensive_rebounds)
-            if sum_total_defensive_rebounds
-            else None,
+            total_offensive_rebounds=int(sum_total_offensive_rebounds) if sum_total_offensive_rebounds else None,
+            total_defensive_rebounds=int(sum_total_defensive_rebounds) if sum_total_defensive_rebounds else None,
             total_assists=int(sum_total_assists),
             total_steals=int(sum_total_steals),
             total_blocks=int(sum_total_blocks),
             total_turnovers=int(sum_total_turnovers),
             total_personal_fouls=int(sum_total_fouls) if sum_total_fouls else None,
-            total_field_goals_made=int(sum_total_fg_made)
-            if sum_total_fg_made
-            else None,
-            total_field_goals_attempted=int(sum_total_fg_attempted)
-            if sum_total_fg_attempted
-            else None,
-            total_three_pointers_made=int(sum_total_three_made)
-            if sum_total_three_made
-            else None,
-            total_three_pointers_attempted=int(sum_total_three_attempted)
-            if sum_total_three_attempted
-            else None,
-            total_free_throws_made=int(sum_total_ft_made)
-            if sum_total_ft_made
-            else None,
-            total_free_throws_attempted=int(sum_total_ft_attempted)
-            if sum_total_ft_attempted
-            else None,
+            total_field_goals_made=int(sum_total_fg_made) if sum_total_fg_made else None,
+            total_field_goals_attempted=int(sum_total_fg_attempted) if sum_total_fg_attempted else None,
+            total_three_pointers_made=int(sum_total_three_made) if sum_total_three_made else None,
+            total_three_pointers_attempted=int(sum_total_three_attempted) if sum_total_three_attempted else None,
+            total_free_throws_made=int(sum_total_ft_made) if sum_total_ft_made else None,
+            total_free_throws_attempted=int(sum_total_ft_attempted) if sum_total_ft_attempted else None,
             # Per-game stats
             minutes_per_game=round(total_mpg / total_gp, 1) if total_mpg else None,
             points_per_game=round(total_ppg / total_gp, 1),
@@ -1269,15 +1093,9 @@ def _calculate_career_stats_from_seasons(
             blocks_per_game=round(total_bpg / total_gp, 1) if total_bpg else None,
             turnovers_per_game=round(total_tpg / total_gp, 1) if total_tpg else None,
             # Percentages
-            field_goal_percentage=round(total_fg_pct / total_gp, 3)
-            if total_fg_pct
-            else None,
-            three_point_percentage=round(total_three_pct / total_gp, 3)
-            if total_three_pct
-            else None,
-            free_throw_percentage=round(total_ft_pct / total_gp, 3)
-            if total_ft_pct
-            else None,
+            field_goal_percentage=round(total_fg_pct / total_gp, 3) if total_fg_pct else None,
+            three_point_percentage=round(total_three_pct / total_gp, 3) if total_three_pct else None,
+            free_throw_percentage=round(total_ft_pct / total_gp, 3) if total_ft_pct else None,
         )
     ]
 
@@ -1324,6 +1142,4 @@ def get_shot_chart_data(player_id: int):
 
     seasons = sorted(set(row["season"] for row in rows), reverse=True)
 
-    return ShotChartData(
-        player_id=player_id_val, full_name=full_name, shots=shots, seasons=seasons
-    )
+    return ShotChartData(player_id=player_id_val, full_name=full_name, shots=shots, seasons=seasons)

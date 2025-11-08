@@ -85,9 +85,7 @@ async def stats_lookup(state: AgentState) -> dict:
         agent_response: SQLAgentResponse = result["structured_response"]
 
         try:
-            raw_results = db.run(
-                agent_response.sql_query, fetch="all", include_columns=True
-            )
+            raw_results = db.run(agent_response.sql_query, fetch="all", include_columns=True)
 
             if isinstance(raw_results, str):
                 query_data = ast.literal_eval(raw_results)
@@ -108,7 +106,9 @@ async def stats_lookup(state: AgentState) -> dict:
             summary_text=agent_response.summary_text or "Query completed successfully.",
         )
 
-        ai_summary = f"**Stats Query Result** ({league.upper()}, {season}):\n{agent_response.summary_text or 'Query completed.'}"
+        ai_summary = (
+            f"**Stats Query Result** ({league.upper()}, {season}):\n{agent_response.summary_text or 'Query completed.'}"
+        )
         if query_data:
             ai_summary += f" Found {len(query_data)} result(s)."
 

@@ -16,17 +16,13 @@ class SQLAgentResponse(BaseModel):
     - Natural language summary
     """
 
-    sql_query: str = Field(
-        description="Final SQL query executed (with explicit column names)"
-    )
+    sql_query: str = Field(description="Final SQL query executed (with explicit column names)")
     db_name: str = Field(description="Database used (cebl, usports, ccaa, hoopqueens)")
     chart_config: "ChartConfig | None" = Field(
         default=None,
         description="Chart configuration (None if table-only is better)",
     )
-    summary_text: str = Field(
-        description="Natural language summary of results (2-3 sentences)"
-    )
+    summary_text: str = Field(description="Natural language summary of results (2-3 sentences)")
 
 
 class ChartConfig(BaseModel):
@@ -37,14 +33,10 @@ class ChartConfig(BaseModel):
     Frontend receives this and passes directly to chart components.
     """
 
-    chart_type: Literal["bar", "line", "table", "radar", "pie"] = Field(
-        description="Type of chart to render"
-    )
+    chart_type: Literal["bar", "line", "table", "radar", "pie"] = Field(description="Type of chart to render")
 
     # Column mappings (exact SQL column names)
-    x_column: str | None = Field(
-        default=None, description="X-axis column name (e.g., 'season', 'player_name')"
-    )
+    x_column: str | None = Field(default=None, description="X-axis column name (e.g., 'season', 'player_name')")
     y_columns: list[str] = Field(
         default_factory=list,
         description="Y-axis column names (e.g., ['points_per_game', 'assists_per_game'])",
@@ -71,14 +63,10 @@ class ChartConfig(BaseModel):
     value_format: Literal["number", "percentage", "decimal"] | None = Field(
         default="number", description="How to format Y-axis values"
     )
-    show_data_labels: bool = Field(
-        default=False, description="Show values on data points"
-    )
+    show_data_labels: bool = Field(default=False, description="Show values on data points")
 
     # Table-specific options
-    sortable: bool = Field(
-        default=True, description="Enable column sorting (table only)"
-    )
+    sortable: bool = Field(default=True, description="Enable column sorting (table only)")
     paginated: bool = Field(default=True, description="Enable pagination (table only)")
 
     class Config:
@@ -108,15 +96,11 @@ class QueryResult(BaseModel):
 
     data: list[dict] = Field(description="Query result rows as list of dicts")
     sql_query: str = Field(description="SQL query that generated this result")
-    db_name: str = Field(
-        description="Database name used (cebl, usports, ccaa, hoopqueens)"
-    )
+    db_name: str = Field(description="Database name used (cebl, usports, ccaa, hoopqueens)")
     chart_config: ChartConfig | None = Field(
         default=None, description="Chart configuration (None for text-only responses)"
     )
-    summary_text: str = Field(
-        description="Natural language summary of the data (always provided)"
-    )
+    summary_text: str = Field(description="Natural language summary of the data (always provided)")
 
     class Config:
         json_schema_extra = {

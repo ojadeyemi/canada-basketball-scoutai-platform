@@ -31,9 +31,7 @@ def get_db_connection(league: str) -> sqlite3.Connection:
     """
     league = league.lower()
     if league not in LEAGUE_DBS:
-        raise ValueError(
-            f"Unknown league: {league}. Must be one of {list(LEAGUE_DBS.keys())}"
-        )
+        raise ValueError(f"Unknown league: {league}. Must be one of {list(LEAGUE_DBS.keys())}")
 
     db_path = LEAGUE_DBS[league]
     if not db_path.exists():

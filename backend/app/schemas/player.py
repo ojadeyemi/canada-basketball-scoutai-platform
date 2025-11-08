@@ -10,9 +10,7 @@ class PlayerSearchResult(BaseModel):
     player_id: str | int
     full_name: str
     league: str
-    teams: list[str] = Field(
-        default_factory=list
-    )  # All teams/schools player played for
+    teams: list[str] = Field(default_factory=list)  # All teams/schools player played for
     seasons: list[str] = Field(default_factory=list)  # All seasons player played
     positions: list[str] = Field(default_factory=list)  # All positions (if available)
     matches: list[str] = Field(default_factory=list)  # Fields that matched the search
@@ -172,9 +170,7 @@ class LeagueSpecificStats(BaseModel):
     ppg_variance: float | None = None  # Consistency metric (std deviation)
 
     # HoopQueens - Advanced Stats (NEW)
-    consistency_score: float | None = (
-        None  # Coefficient of variation (lower = more consistent)
-    )
+    consistency_score: float | None = None  # Coefficient of variation (lower = more consistent)
     foul_drawing_efficiency: float | None = None  # Fouls drawn per FGA
     plus_minus_min: int | None = None  # Worst single-game plus/minus
     plus_minus_max: int | None = None  # Best single-game plus/minus
@@ -187,9 +183,7 @@ class LeagueSpecificStats(BaseModel):
     dq_rate: float | None = None  # Disqualifications per 100 games
 
     # U SPORTS/CCAA - Playoff Performance (NEW)
-    playoff_ppg_delta: float | None = (
-        None  # Points per game difference (playoff - regular)
-    )
+    playoff_ppg_delta: float | None = None  # Points per game difference (playoff - regular)
     playoff_rpg_delta: float | None = None  # Rebounds per game difference
     playoff_apg_delta: float | None = None  # Assists per game difference
     playoff_fg_pct_delta: float | None = None  # FG% difference (in percentage points)
@@ -221,9 +215,7 @@ class PlayerSeasonStats(BaseModel):
     """Statistics for a single season."""
 
     season: str
-    season_type: str | None = (
-        None  # "regular", "playoffs", "championship", or "total" for career aggregates
-    )
+    season_type: str | None = None  # "regular", "playoffs", "championship", or "total" for career aggregates
     team: str | None = None
 
     # Core counting stats
@@ -295,9 +287,7 @@ class PlayerDetail(BaseModel):
     career_stats: list[PlayerSeasonStats] = Field(
         default_factory=list
     )  # Career totals by season_type (regular, playoffs, championship, total)
-    additional_info: dict[str, Any] = Field(
-        default_factory=dict
-    )  # League-specific data
+    additional_info: dict[str, Any] = Field(default_factory=dict)  # League-specific data
 
     # Biographical data (for player detail header)
     nationality: str | None = None  # ISO country code (e.g., "CAN", "USA")

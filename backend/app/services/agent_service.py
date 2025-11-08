@@ -48,24 +48,15 @@ async def event_generator(chat_input: ChatInput, request: Request):
     # and pass the value to the next interrupt() invocation in that node.
     # See graph/graph.py:confirm_scouting_report for interrupt usage.
     if chat_input.is_resume:
-        print(
-            f"[RESUME] Type: {chat_input.interrupt_type}, Value: {chat_input.user_input}"
-        )
+        print(f"[RESUME] Type: {chat_input.interrupt_type}, Value: {chat_input.user_input}")
         user_input_state = Command(resume=chat_input.user_input)
     else:
-        user_input_state = {
-            "messages": [HumanMessage(content=str(chat_input.user_input))]
-        }
+        user_input_state = {"messages": [HumanMessage(content=str(chat_input.user_input))]}
 
     try:
-        async for event in graph.astream(
-            user_input_state, config, stream_mode="updates"
-        ):
+        async for event in graph.astream(user_input_state, config, stream_mode="updates"):
             for node_name, node_output in event.items():
-                yield (
-                    json.dumps({NODE: node_name, OUTPUT: jsonable_encoder(node_output)})
-                    + "\n"
-                )
+                yield (json.dumps({NODE: node_name, OUTPUT: jsonable_encoder(node_output)}) + "\n")
 
     except Exception as e:
         error_message = _get_error_message(e)
@@ -79,32 +70,23 @@ def _get_error_message(exception: Exception) -> str:
     exception_type = type(exception).__name__
 
     # Token/credential errors
-    if any(
-        keyword in error_str
-        for keyword in ["ExpiredToken", "InvalidToken", "expired", "invalid_grant"]
-    ):
+    if any(keyword in error_str for keyword in ["ExpiredToken", "InvalidToken", "expired", "invalid_grant"]):
         return ERROR_EXPIRED_TOKEN
 
     # Authentication errors
-    if any(
-        keyword in exception_type for keyword in ["AuthenticationError", "Unauthorized"]
-    ) or any(keyword in error_str for keyword in ["401", "unauthorized", "forbidden"]):
+    if any(keyword in exception_type for keyword in ["AuthenticationError", "Unauthorized"]) or any(
+        keyword in error_str for keyword in ["401", "unauthorized", "forbidden"]
+    ):
         return ERROR_AUTHENTICATION
 
     # Connection errors
-    if any(
-        keyword in exception_type for keyword in ["ConnectionError", "NetworkError"]
-    ) or any(
-        keyword in error_str
-        for keyword in ["connection", "network", "unreachable", "refused"]
+    if any(keyword in exception_type for keyword in ["ConnectionError", "NetworkError"]) or any(
+        keyword in error_str for keyword in ["connection", "network", "unreachable", "refused"]
     ):
         return ERROR_CONNECTION
 
     # Timeout errors
-    if (
-        any(keyword in exception_type for keyword in ["TimeoutError", "Timeout"])
-        or "timeout" in error_str.lower()
-    ):
+    if any(keyword in exception_type for keyword in ["TimeoutError", "Timeout"]) or "timeout" in error_str.lower():
         return ERROR_TIMEOUT
 
     # Rate limit errors

@@ -89,9 +89,7 @@ async def router(state: AgentState) -> dict:
         )  # type: ignore
 
         print(f"[ROUTER] Intent: {result.intent}")
-        print(
-            f"[ROUTER] Entities: player={result.player_name}, league={result.league}, season={result.season}"
-        )
+        print(f"[ROUTER] Entities: player={result.player_name}, league={result.league}, season={result.season}")
 
         entities = {
             "player_name": result.player_name,

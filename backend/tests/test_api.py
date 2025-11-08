@@ -176,9 +176,7 @@ def test_search_all_leagues():
     """Test search across all leagues."""
     print_section("TEST 4: Multi-League Search - 'James'")
     try:
-        response = requests.get(
-            f"{API_BASE_URL}/api/search/player", params={"query": "James", "limit": 50}
-        )
+        response = requests.get(f"{API_BASE_URL}/api/search/player", params={"query": "James", "limit": 50})
         response.raise_for_status()
         data = response.json()
 
@@ -227,9 +225,7 @@ def test_player_detail_usports():
         print(f"Fetching details for: {player['full_name']} (ID: {player_id})")
 
         # Get player details
-        detail_response = requests.get(
-            f"{API_BASE_URL}/api/search/player/{league}/{player_id}"
-        )
+        detail_response = requests.get(f"{API_BASE_URL}/api/search/player/{league}/{player_id}")
         detail_response.raise_for_status()
         detail_data = detail_response.json()
 
@@ -280,9 +276,7 @@ def test_player_detail_cebl():
         print(f"Fetching details for: {player['full_name']} (ID: {player_id})")
 
         # Get player details
-        detail_response = requests.get(
-            f"{API_BASE_URL}/api/search/player/{league}/{player_id}"
-        )
+        detail_response = requests.get(f"{API_BASE_URL}/api/search/player/{league}/{player_id}")
         detail_response.raise_for_status()
         detail_data = detail_response.json()
 

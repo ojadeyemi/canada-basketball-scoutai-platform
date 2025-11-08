@@ -1,7 +1,6 @@
-import type { AgentNodeOutput } from "@/types/agent";
+import type { AgentNodeOutput, LeagueDBName } from "@/types/agent";
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+const API_BASE_URL = "/api";
 
 interface StreamEvent {
   node: string;
@@ -14,7 +13,7 @@ export async function* streamChat(
   isResume = false,
   interruptType?: "player_selection_for_scouting" | "scouting_confirmation",
 ): AsyncGenerator<StreamEvent> {
-  const response = await fetch(`${API_BASE_URL}/api/agent/chat`, {
+  const response = await fetch(`${API_BASE_URL}/agent/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -58,4 +57,22 @@ export async function* streamChat(
   } finally {
     reader.releaseLock();
   }
+}
+
+export async function runRawSQL(
+  sql: string,
+  dbName: LeagueDBName,
+): Promise<Record<string, any>[]> {
+  const response = await fetch(`${API_BASE_URL}/agent/run-sql`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ sql_query: sql, db_name: dbName }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.detail || "Failed to run SQL query");
+  }
+
+  return response.json();
 }

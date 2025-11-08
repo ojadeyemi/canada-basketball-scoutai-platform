@@ -185,9 +185,7 @@ def test_upload_with_default_blob_name():
     print_test("Upload with default blob name (auto-generated)")
 
     # Create temporary test PDF
-    with tempfile.NamedTemporaryFile(
-        suffix=".pdf", delete=False, prefix="test-report-"
-    ) as tmp:
+    with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False, prefix="test-report-") as tmp:
         tmp.write(b"%PDF-1.4\n%Test content\n%%EOF")
         test_pdf = tmp.name
 
@@ -252,9 +250,7 @@ def test_signed_url_expiration_times():
                 print_info(f"Testing expiration: {description}")
                 signed_url = generate_signed_url(gcs_path, expiration_hours=hours)
 
-                if signed_url and signed_url.startswith(
-                    "https://storage.googleapis.com/"
-                ):
+                if signed_url and signed_url.startswith("https://storage.googleapis.com/"):
                     print_pass(f"✓ {description}")
                 else:
                     print_fail(f"✗ {description}")

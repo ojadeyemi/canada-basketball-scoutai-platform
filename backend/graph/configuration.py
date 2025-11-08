@@ -8,9 +8,7 @@ from langchain_openai import ChatOpenAI
 from config.settings import settings
 
 
-def get_llm(
-    model: str | None = None, temperature: float = 0.0, **kwargs
-) -> BaseChatModel:
+def get_llm(model: str | None = None, temperature: float = 0.0, **kwargs) -> BaseChatModel:
     """Get LLM instance with flexible multi-provider configuration."""
     # Use provided model or fallback to default
     model_name = model or settings.default_model
@@ -18,17 +16,13 @@ def get_llm(
 
     # Provider-specific initialization
     if provider == "google":
-        return ChatGoogleGenerativeAI(
-            model=model_name, temperature=temperature, **kwargs
-        )
+        return ChatGoogleGenerativeAI(model=model_name, temperature=temperature, **kwargs)
     elif provider == "openai":
         return ChatOpenAI(model=model_name, temperature=temperature, **kwargs)
     elif provider == "cohere":
         return ChatCohere(model=model_name, temperature=temperature, **kwargs)
     else:
-        raise ValueError(
-            f"Unsupported LLM provider: {provider}. Use 'openai', 'google', or 'cohere'."
-        )
+        raise ValueError(f"Unsupported LLM provider: {provider}. Use 'openai', 'google', or 'cohere'.")
 
 
 def _detect_provider_from_model(model: str) -> str:

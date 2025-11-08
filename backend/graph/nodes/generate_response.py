@@ -97,18 +97,12 @@ async def generate_response(state: AgentState) -> dict[str, Any]:
 
     additional_context = ""
     if query_context:
-        if (
-            "needs" in query_context.lower()
-            or "clarify" in query_context.lower()
-            or "missing" in query_context.lower()
-        ):
+        if "needs" in query_context.lower() or "clarify" in query_context.lower() or "missing" in query_context.lower():
             additional_context = f"\n\nIMPORTANT: {query_context}\nThe user's query needs more information. Politely ask them to provide missing details (player name, league, or season)."
         else:
             additional_context = f"\n\nQuery context: {query_context}"
 
-    system_prompt = GENERATE_RESPONSE_PROMPT.format(
-        additional_context=additional_context
-    )
+    system_prompt = GENERATE_RESPONSE_PROMPT.format(additional_context=additional_context)
 
     try:
         llm_with_struct = llm.with_structured_output(TextResponseOutput)
@@ -117,11 +111,7 @@ async def generate_response(state: AgentState) -> dict[str, Any]:
         )
 
         # Strip Cohere citation tags from response
-        clean_response = re.sub(
-            r'<co>|</co:\s*\d+:\[\d+\]>',
-            '',
-            response_output.main_response
-        )
+        clean_response = re.sub(r"<co>|</co:\s*\d+:\[\d+\]>", "", response_output.main_response)
 
         response: AgentResponse = {
             "response_type": RESPONSE_TYPE_TEXT,

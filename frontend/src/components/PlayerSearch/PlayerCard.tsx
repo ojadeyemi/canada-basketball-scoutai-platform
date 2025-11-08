@@ -34,14 +34,13 @@ const LEAGUE_CONFIG: Record<
     color: "bg-purple-50 text-purple-700",
   },
 };
-
+//TODO add playerurl image to this form backend (i.e cebl players, make sure to cache images)
 export default function PlayerCard({ player, onClick }: PlayerCardProps) {
   const leagueConfig = LEAGUE_CONFIG[player.league.toLowerCase()] || {
     logo: "",
     alt: player.league.toUpperCase(),
     color: DEFAULT_LEAGUE_COLOR,
   };
-
   return (
     <div
       onClick={onClick}

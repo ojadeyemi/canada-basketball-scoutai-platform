@@ -62,9 +62,7 @@ def create_cebl_scouting_report(player_data: dict, player_detail) -> ScoutingRep
             jersey_number="00",
             height=player_data.get("height"),
             weight=None,
-            date_of_birth=date.fromisoformat(player_data["birth_date"])
-            if player_data.get("birth_date")
-            else None,
+            date_of_birth=date.fromisoformat(player_data["birth_date"]) if player_data.get("birth_date") else None,
             age=player_data.get("age"),
             current_team=player_data["current_team"],
             league=League.CEBL,
@@ -142,9 +140,7 @@ def create_usports_scouting_report(player_data: dict) -> ScoutingReport:
         generated_at=datetime.now(),
         player_profile=PlayerProfile(
             name=player_data["full_name"],
-            position=Position.GUARD
-            if latest_season.get("position") == "Guard"
-            else Position.FORWARD,
+            position=Position.GUARD if latest_season.get("position") == "Guard" else Position.FORWARD,
             jersey_number=None,
             height=player_data.get("height"),
             weight=None,
@@ -234,12 +230,8 @@ async def main():
     print(f"   ✅ Fetched: {cebl_data['full_name']} - {cebl_data['current_team']}\n")
 
     print("2️⃣  Fetching Aaron Rhooms (U SPORTS)...")
-    usports_data = await fetch_player_data(
-        "usports", "A.Rhooms_Ryerson_TorontoMetropolitan_usports"
-    )
-    print(
-        f"   ✅ Fetched: {usports_data['full_name']} - {usports_data['current_team']}\n"
-    )
+    usports_data = await fetch_player_data("usports", "A.Rhooms_Ryerson_TorontoMetropolitan_usports")
+    print(f"   ✅ Fetched: {usports_data['full_name']} - {usports_data['current_team']}\n")
     print(usports_data["seasons"][0]["team_context"])
 
     # Create scouting reports

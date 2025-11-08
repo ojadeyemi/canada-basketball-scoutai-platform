@@ -14,15 +14,9 @@ router = APIRouter(prefix="/api/search", tags=["Search"])
 @router.get("/player", response_model=list[PlayerSearchResult])
 async def search_player(
     query: str = Query(..., description="Player name or partial name"),
-    leagues: str | None = Query(
-        None, description="Comma-separated leagues (e.g., 'usports,cebl')"
-    ),
-    seasons: str | None = Query(
-        None, description="Comma-separated seasons (e.g., '2024-25,2023-24')"
-    ),
-    limit: int = Query(
-        3, ge=1, le=50, description="Maximum number of results per league"
-    ),
+    leagues: str | None = Query(None, description="Comma-separated leagues (e.g., 'usports,cebl')"),
+    seasons: str | None = Query(None, description="Comma-separated seasons (e.g., '2024-25,2023-24')"),
+    limit: int = Query(3, ge=1, le=50, description="Maximum number of results per league"),
 ):
     """
     Search for players across all leagues using fuzzy matching.
@@ -59,9 +53,7 @@ async def get_player_detail(
     player_detail = get_player_details(league, player_id)
 
     if not player_detail:
-        raise HTTPException(
-            status_code=404, detail=f"Player not found: {player_id} in {league}"
-        )
+        raise HTTPException(status_code=404, detail=f"Player not found: {player_id} in {league}")
 
     return player_detail
 
@@ -72,9 +64,7 @@ async def get_player_shot_chart(
     player_id: str,
 ):
     if league.lower() != "cebl":
-        raise HTTPException(
-            status_code=400, detail="Shot chart data only available for CEBL league"
-        )
+        raise HTTPException(status_code=400, detail="Shot chart data only available for CEBL league")
 
     try:
         player_id_int = int(player_id)
@@ -84,8 +74,6 @@ async def get_player_shot_chart(
     shot_data = get_shot_chart_data(player_id_int)
 
     if not shot_data or not shot_data.shots:
-        raise HTTPException(
-            status_code=404, detail=f"No shot chart data found for player: {player_id}"
-        )
+        raise HTTPException(status_code=404, detail=f"No shot chart data found for player: {player_id}")
 
     return shot_data

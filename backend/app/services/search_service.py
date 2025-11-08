@@ -79,10 +79,7 @@ def search_players(
                                 calculated_age = (
                                     today.year
                                     - birth_dt.year
-                                    - (
-                                        (today.month, today.day)
-                                        < (birth_dt.month, birth_dt.day)
-                                    )
+                                    - ((today.month, today.day) < (birth_dt.month, birth_dt.day))
                                 )
                             except (ValueError, TypeError):
                                 pass
@@ -93,9 +90,7 @@ def search_players(
                             "teams": set(),
                             "seasons": set(),
                             "positions": set(),
-                            "player_id": player.get(
-                                "player_id"
-                            ),  # Store actual DB player_id for CEBL/HoopQueens
+                            "player_id": player.get("player_id"),  # Store actual DB player_id for CEBL/HoopQueens
                             # Store name components for player_id generation (usports/ccaa only)
                             "firstname_initial": player.get("firstname_initial"),
                             "last_name": player.get("last_name"),
@@ -104,14 +99,10 @@ def search_players(
                             "photo_url": player.get("photo_url"),
                             "age": player.get("age") or calculated_age,
                         }
-                        league_scored_players.append((full_name, score)) # type: ignore
+                        league_scored_players.append((full_name, score))  # type: ignore
 
                     # Add team, season, position if available
-                    team = (
-                        player.get("team_name")
-                        or player.get("team")
-                        or player.get("school")
-                    )
+                    team = player.get("team_name") or player.get("team") or player.get("school")
                     if team:
                         league_player_map[full_name]["teams"].add(team)
 
@@ -135,9 +126,7 @@ def search_players(
                 if league in ["usports", "ccaa"]:
                     # Format: firstname.lastname_school1_school2_league
                     # Remove spaces from school names (e.g., "Toronto Metropolitan" -> "TorontoMetropolitan")
-                    schools_cleaned = [
-                        school.replace(" ", "") for school in sorted(data["teams"])
-                    ]
+                    schools_cleaned = [school.replace(" ", "") for school in sorted(data["teams"])]
                     schools_str = "_".join(schools_cleaned)
                     player_id = f"{data['firstname_initial']}.{data['last_name']}_{schools_str}_{league}"
                 else:
@@ -147,11 +136,7 @@ def search_players(
                 # Validate and prepare photo_url (CEBL only)
                 photo_url_raw = data.get("photo_url")
                 photo_url = None
-                if (
-                    photo_url_raw
-                    and isinstance(photo_url_raw, str)
-                    and photo_url_raw.strip()
-                ):
+                if photo_url_raw and isinstance(photo_url_raw, str) and photo_url_raw.strip():
                     if photo_url_raw.startswith(("http://", "https://")):
                         photo_url = photo_url_raw.strip()
 
@@ -168,9 +153,7 @@ def search_players(
                     full_name=data["full_name"],
                     league=data["league"],
                     teams=sorted(list(data["teams"])),
-                    seasons=sorted(
-                        list(data["seasons"]), reverse=True
-                    ),  # Most recent first
+                    seasons=sorted(list(data["seasons"]), reverse=True),  # Most recent first
                     positions=sorted(list(data["positions"])),
                     matches=[data["full_name"]],
                     nationality=data.get("nationality"),
@@ -188,9 +171,7 @@ def search_players(
     return [result for result, _ in all_results]
 
 
-def _get_players_from_league(
-    league: str, seasons: list[str] | None = None
-) -> list[dict[str, Any]]:
+def _get_players_from_league(league: str, seasons: list[str] | None = None) -> list[dict[str, Any]]:
     """
     Get all players from a specific league database.
 

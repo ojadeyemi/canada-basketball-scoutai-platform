@@ -28,20 +28,14 @@ def _get_gcs_client() -> storage.Client:
         )
 
     if not Path(credentials_path).exists():
-        raise FileNotFoundError(
-            f"Service account file not found at: {credentials_path}"
-        )
+        raise FileNotFoundError(f"Service account file not found at: {credentials_path}")
 
     # TODO: Verify service account has Storage Object Admin role
-    credentials = service_account.Credentials.from_service_account_file(
-        credentials_path
-    )
+    credentials = service_account.Credentials.from_service_account_file(credentials_path)
     return storage.Client(credentials=credentials)
 
 
-def upload_pdf_to_gcs(
-    local_pdf_path: Path | str, destination_blob_name: str | None = None
-) -> str:
+def upload_pdf_to_gcs(local_pdf_path: Path | str, destination_blob_name: str | None = None) -> str:
     """
     Upload PDF to Google Cloud Storage.
 
@@ -113,9 +107,7 @@ def generate_signed_url(gcs_path: str, expiration_hours: int = 168) -> str:
         # Returns: "https://storage.googleapis.com/canada-basketball-scouting-reports/..."
     """
     if not gcs_path.startswith("gs://"):
-        raise ValueError(
-            f"Invalid GCS path format: {gcs_path}. Expected format: gs://bucket-name/path"
-        )
+        raise ValueError(f"Invalid GCS path format: {gcs_path}. Expected format: gs://bucket-name/path")
 
     # Parse bucket and blob name from gs:// path
     path_parts = gcs_path.replace("gs://", "").split("/", 1)

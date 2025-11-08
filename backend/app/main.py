@@ -11,7 +11,7 @@ from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 from config.settings import settings
 from graph.graph import build_graph
 
-from .routes import agent, pages, pdf, search
+from .routes import agent, pages, pdf, search, sql  # Added sql
 
 
 async def refresh_agent_periodically(app: FastAPI):
@@ -87,6 +87,7 @@ app.include_router(agent.router)
 app.include_router(search.router)
 app.include_router(pdf.router)
 app.include_router(pages.router)
+app.include_router(sql.router)  # Added sql router
 
 
 @app.get("/health", tags=["Health"])

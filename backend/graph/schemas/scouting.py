@@ -189,9 +189,7 @@ class ScoutingReport(BaseModel):
     the FastAPI /api/stats/player endpoint.
     """
 
-    report_id: str = Field(
-        default_factory=lambda: f"SR-{datetime.now().strftime('%Y%m%d%H%M%S')}"
-    )
+    report_id: str = Field(default_factory=lambda: f"SR-{datetime.now().strftime('%Y%m%d%H%M%S')}")
     generated_at: datetime = Field(default_factory=datetime.now)
 
     # Core Player Information
@@ -245,9 +243,7 @@ class ScoutingReportPlan(BaseModel):
     )
 
     # Full scouting report (typed as ScoutingReport)
-    scouting_report: ScoutingReport | None = Field(
-        default=None, description="Complete ScoutingReport object"
-    )
+    scouting_report: ScoutingReport | None = Field(default=None, description="Complete ScoutingReport object")
 
     # Job tracking (for PDF generation)
     job_id: str = Field(..., description="UUID for tracking PDF generation job")
@@ -256,12 +252,8 @@ class ScoutingReportPlan(BaseModel):
     )
 
     # Optional fields (populated when PDF job completes)
-    local_path: str | None = Field(
-        default=None, description="Local PDF file path (when PDF ready)"
-    )
-    error_message: str | None = Field(
-        default=None, description="Error details if PDF generation failed"
-    )
+    local_path: str | None = Field(default=None, description="Local PDF file path (when PDF ready)")
+    error_message: str | None = Field(default=None, description="Error details if PDF generation failed")
 
     # User message
     message: str = Field(

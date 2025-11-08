@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:16-alpine
@@ -7,14 +5,14 @@ services:
     environment:
       POSTGRES_USER: scoutai
       POSTGRES_PASSWORD: scoutai_local
-      POSTGRES_DB: scoutai
+      POSTGRES_DB: canada_basketball_ai
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U scoutai"]
-      interval: 10s
+      test: ["CMD-SHELL", "pg_isready -U scoutai -d canada_basketball_ai"]
+      interval: 30s
       timeout: 5s
       retries: 5
     networks:
@@ -27,13 +25,15 @@ services:
     container_name: scoutai-backend
     ports:
       - "8000:8000"
+    env_file:
+      - .env.local
     environment:
-      - DATABASE_URL=postgresql://scoutai:scoutai_local@postgres:5432/scoutai
-      - FRONTEND_URL=http://localhost:80
+      - DATABASE_URL=postgresql://scoutai:scoutai_local@postgres:5432/canada_basketball_ai
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:3000}
       - GOOGLE_APPLICATION_CREDENTIALS=/app/service-account.json
-      - GCS_BUCKET_NAME=${GCS_BUCKET_NAME}
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ENVIRONMENT=development
+      - LOG_LEVEL=INFO
+      - PYTHONPATH=./
     depends_on:
       postgres:
         condition: service_healthy
@@ -41,7 +41,7 @@ services:
       - scoutai-network
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
-      interval: 30s
+      interval: 60s
       timeout: 10s
       retries: 3
       start_period: 40s
@@ -52,14 +52,17 @@ services:
       dockerfile: Dockerfile
     container_name: scoutai-frontend
     ports:
-      - "80:80"
+      - "3000:4180"
+    env_file:
+      - .env.local
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     networks:
       - scoutai-network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
-      interval: 30s
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:4180/health"]
+      interval: 60s
       timeout: 3s
       retries: 3
       start_period: 5s

@@ -12,7 +12,7 @@ export const APP_CONFIG = {
     NAME: "OJ Adeyemi",
     EMAIL: "ojieadeyemi@gmail.com",
     WEBSITE: "https://ojadeyemi.github.io/",
-    LINKEDIN: "https://www.linkedin.com/in/oj-adeyemi/",
+    LINKEDIN: "https://www.linkedin.com/in/ojadeyemi/",
     GITHUB: "https://github.com/ojadeyemi",
   },
 } as const;
