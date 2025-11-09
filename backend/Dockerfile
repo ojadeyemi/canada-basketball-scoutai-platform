@@ -17,9 +17,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install playwright==1.55.0 && \
     playwright install --with-deps chromium
 
-# Copy service account credentials
-COPY service-account.json .
-
 # Copy application code
 COPY . .
 

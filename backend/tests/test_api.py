@@ -18,7 +18,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import requests
 
-API_BASE_URL = "http://localhost:8000"
+API_BASE_URL = "http://localhost:8080"
 
 
 def print_section(title: str):

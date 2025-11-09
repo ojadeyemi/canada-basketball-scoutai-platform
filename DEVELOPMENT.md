@@ -27,7 +27,7 @@ docker-compose -f docker-compose.local.yml up --build
 **Access:**
 
 - Frontend: [http://localhost:3000](http://localhost:3000)
-- Backend API: [http://localhost:8000/docs](http://localhost:8000/docs)
+- Backend API: [http://localhost:8080/docs](http://localhost:8080/docs)
 
 ### Option 2: Local Development
 
@@ -46,7 +46,7 @@ pnpm install && pnpm dev
 **Access:**
 
 - Frontend: [http://localhost:5173](http://localhost:5173)
-- Backend: [http://localhost:8000](http://localhost:8000)
+- Backend: [http://localhost:8080](http://localhost:8080)
 
 ---
 
@@ -91,8 +91,8 @@ User Query → LangGraph AI Agent → Multi-League SQLite DBs → Real-Time Resp
 **Custom Data Engineering:**
 
 - Built a custom [CEBL SDK](https://github.com/ojadeyemi/cebl-sdk) (Python library) for official API access
-- Built a [usports](https://github.com/ojadeyemi/usports) (Python library) for U SPORTS data   
-- Built [Hoopqueens official data infrastructure](https://github.com/ojadeyemi/hoopqueens) to automate data collection by  extracting raw box score data and stores it in a database 
+- Built a [usports](https://github.com/ojadeyemi/usports) (Python library) for U SPORTS data
+- Built [Hoopqueens official data infrastructure](https://github.com/ojadeyemi/hoopqueens) to automate data collection by extracting raw box score data and stores it in a database
 
 ---
 

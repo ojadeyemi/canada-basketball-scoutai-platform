@@ -43,7 +43,7 @@ The recommended way to build and run the project is using Docker Compose.
 ### Access
 
 *   **Frontend:** [http://localhost](http://localhost)
-*   **Backend API:** [http://localhost:8000/docs](http://localhost:8000/docs)
+*   **Backend API:** [http://localhost:8080/docs](http://localhost:8080/docs)
 
 ## Development Conventions
 

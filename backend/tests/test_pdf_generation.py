@@ -31,7 +31,7 @@ from graph.schemas.scouting import (
 )
 from graph.tools.pdf_generator.pdf_generator import PDFGenerator
 
-API_BASE_URL = "http://localhost:8000"
+API_BASE_URL = "http://localhost:8080"
 
 
 async def fetch_player_data(league: str, player_id: str) -> dict:

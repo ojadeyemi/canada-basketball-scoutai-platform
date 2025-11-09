@@ -24,7 +24,7 @@ services:
       dockerfile: Dockerfile
     container_name: scoutai-backend
     ports:
-      - "8000:8000"
+      - "8080:8080"
     env_file:
       - .env.local
     environment:
@@ -40,7 +40,7 @@ services:
     networks:
       - scoutai-network
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"]
       interval: 60s
       timeout: 10s
       retries: 3

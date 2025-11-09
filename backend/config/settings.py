@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")
 
     # API Configuration
-    api_base_url: str = Field(default="http://localhost:8000", alias="API_BASE_URL")
+    api_base_url: str = Field(default="http://localhost:8080", alias="API_BASE_URL")
     api_key: str = Field(default="dev-key-change-in-production", alias="API_KEY")
     frontend_url: str = Field(default="http://localhost:5173", alias="FRONTEND_URL")
 

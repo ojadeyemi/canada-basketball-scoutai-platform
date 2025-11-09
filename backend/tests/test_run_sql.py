@@ -11,7 +11,7 @@ Make sure the backend is running first:
 
 import requests
 
-API_BASE_URL = "http://localhost:8000"
+API_BASE_URL = "http://localhost:8080"
 
 
 def test_run_sql():

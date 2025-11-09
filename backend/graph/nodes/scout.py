@@ -81,7 +81,7 @@ async def scout(state: AgentState) -> dict:
     league_str = state.get("league")
     player_name = state.get("player_name", "")
     messages = state.get("messages", [])
-    api_base = os.getenv("API_BASE_URL", "http://localhost:8000")
+    api_base = os.getenv("API_BASE_URL", "http://localhost:8080")
 
     if not player_id or not league_str:
         return {

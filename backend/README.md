@@ -24,17 +24,17 @@ poetry run playwright install chromium
 poetry run uvicorn app.main:app --reload
 ```
 
-**API Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
+**API Docs:** [http://localhost:8080/docs](http://localhost:8080/docs)
 
 ### Docker
 
 ```bash
 cp .env.example .env  # Add API keys
 docker build -t scoutai-backend .
-docker run -p 8000:8000 --env-file .env scoutai-backend
+docker run -p 8080:8080 --env-file .env scoutai-backend
 ```
 
-**Health Check:** `curl http://localhost:8000/health`
+**Health Check:** `curl http://localhost:8080/health`
 
 ---
 
@@ -66,16 +66,16 @@ For Docker, use `/app/service-account.json` for `GOOGLE_APPLICATION_CREDENTIALS`
 
 ## API Endpoints
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/health` | GET | Health check |
-| `/api/search/player` | GET | Fuzzy player search |
-| `/api/search/player/{league}/{id}` | GET | Player details |
-| `/api/agent/chat` | POST | AI chat (NDJSON streaming) |
-| `/api/pdf/generate` | POST | Generate scouting report |
-| `/api/pdf/status/{job_id}` | GET | PDF job status |
+| Endpoint                           | Method | Description                |
+| ---------------------------------- | ------ | -------------------------- |
+| `/health`                          | GET    | Health check               |
+| `/api/search/player`               | GET    | Fuzzy player search        |
+| `/api/search/player/{league}/{id}` | GET    | Player details             |
+| `/api/agent/chat`                  | POST   | AI chat (NDJSON streaming) |
+| `/api/pdf/generate`                | POST   | Generate scouting report   |
+| `/api/pdf/status/{job_id}`         | GET    | PDF job status             |
 
-**Interactive Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
+**Interactive Docs:** [http://localhost:8080/docs](http://localhost:8080/docs)
 
 ---
 
@@ -88,6 +88,7 @@ For Docker, use `/app/service-account.json` for `GOOGLE_APPLICATION_CREDENTIALS`
 **3. Fuzzy Search** – rapidfuzz for typo-tolerant queries (e.g., "Xavier Mun" → "Xavier Moon")
 
 **4. SQLite Databases** – 4 league DBs in `db/` folder:
+
 - `usports.db` – University (2019-2024)
 - `ccaa.db` – College (OCAA + PacWest)
 - `cebl.db` – Professional (2019-2024)
@@ -134,6 +135,7 @@ psql $DATABASE_URL < db/init.sql
 ## Deployment
 
 ### Google Cloud Run
+
 ```bash
 docker build -t gcr.io/project-id/backend .
 docker push gcr.io/project-id/backend
@@ -144,27 +146,27 @@ gcloud run deploy backend --image gcr.io/project-id/backend --memory 1Gi --timeo
 
 ## Tech Stack
 
-| Tech | Version | Purpose |
-|------|---------|---------|
-| **Python** | 3.13+ | Runtime |
-| **FastAPI** | 0.120+ | Web framework |
-| **LangGraph** | 1.0+ | Multi-agent orchestration |
-| **SQLite** | - | 4 league databases |
-| **PostgreSQL** | - | Session state |
-| **Playwright** | 1.55+ | PDF rendering |
-| **Google Cloud Storage** | - | PDF storage |
-| **Gemini / OpenAI** | - | LLMs |
+| Tech                     | Version | Purpose                   |
+| ------------------------ | ------- | ------------------------- |
+| **Python**               | 3.13+   | Runtime                   |
+| **FastAPI**              | 0.120+  | Web framework             |
+| **LangGraph**            | 1.0+    | Multi-agent orchestration |
+| **SQLite**               | -       | 4 league databases        |
+| **PostgreSQL**           | -       | Session state             |
+| **Playwright**           | 1.55+   | PDF rendering             |
+| **Google Cloud Storage** | -       | PDF storage               |
+| **Gemini / OpenAI**      | -       | LLMs                      |
 
 ---
 
 ## Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| Docker build fails | Ensure `service-account.json` exists, 4GB+ Docker memory |
-| Playwright errors | `poetry run playwright install --with-deps chromium` |
-| DB connection timeout | Check `DATABASE_URL` has `sslmode=require` |
-| CORS errors | Add domain to `allow_origins` in `app/main.py` |
+| Issue                 | Solution                                                 |
+| --------------------- | -------------------------------------------------------- |
+| Docker build fails    | Ensure `service-account.json` exists, 4GB+ Docker memory |
+| Playwright errors     | `poetry run playwright install --with-deps chromium`     |
+| DB connection timeout | Check `DATABASE_URL` has `sslmode=require`               |
+| CORS errors           | Add domain to `allow_origins` in `app/main.py`           |
 
 ---
 

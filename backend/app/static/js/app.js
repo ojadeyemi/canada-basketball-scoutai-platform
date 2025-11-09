@@ -31,7 +31,7 @@ const ChatService = {
         messagePayload = message;
       }
 
-      const response = await fetch("http://127.0.0.1:8000/api/agent/chat", {
+      const response = await fetch("http://127.0.0.1:8080/api/agent/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -298,7 +298,11 @@ const UI = {
 
         const chartJson = document.createElement("div");
         chartJson.classList.add("json-display");
-        chartJson.textContent = JSON.stringify(queryResult.chart_config, null, 2);
+        chartJson.textContent = JSON.stringify(
+          queryResult.chart_config,
+          null,
+          2
+        );
         contentDiv.appendChild(chartJson);
       }
 
@@ -323,7 +327,10 @@ const UI = {
   },
 
   displayUsportsLookupNode(output) {
-    const nodeDiv = this.createNodeContainer("usports_lookup", "U Sports Lookup");
+    const nodeDiv = this.createNodeContainer(
+      "usports_lookup",
+      "U Sports Lookup"
+    );
     const contentDiv = document.createElement("div");
     contentDiv.classList.add("node-content");
 
@@ -367,7 +374,10 @@ const UI = {
   },
 
   displayConfirmScoutingNode(output) {
-    const nodeDiv = this.createNodeContainer("confirm_scouting", "Confirm Scouting Report");
+    const nodeDiv = this.createNodeContainer(
+      "confirm_scouting",
+      "Confirm Scouting Report"
+    );
     const contentDiv = document.createElement("div");
     contentDiv.classList.add("node-content");
 
@@ -375,7 +385,8 @@ const UI = {
       const messageDiv = document.createElement("div");
       messageDiv.style.fontStyle = "italic";
       messageDiv.style.color = "#d69e2e";
-      messageDiv.textContent = output.message || "Waiting for user confirmation...";
+      messageDiv.textContent =
+        output.message || "Waiting for user confirmation...";
       contentDiv.appendChild(messageDiv);
     }
 
@@ -422,7 +433,10 @@ const UI = {
       // Add response type badge
       if (response.response_type) {
         const badge = document.createElement("div");
-        badge.classList.add("response-type-badge", `badge-${response.response_type}`);
+        badge.classList.add(
+          "response-type-badge",
+          `badge-${response.response_type}`
+        );
         badge.textContent = response.response_type.replace(/_/g, " ");
         contentDiv.appendChild(badge);
       }
@@ -453,13 +467,20 @@ const UI = {
 
           const chartJson = document.createElement("div");
           chartJson.classList.add("json-display");
-          chartJson.textContent = JSON.stringify(response.chart_config, null, 2);
+          chartJson.textContent = JSON.stringify(
+            response.chart_config,
+            null,
+            2
+          );
           contentDiv.appendChild(chartJson);
         }
       }
 
       // ===== U SPORTS LOOKUP RESPONSE (response_type: usports_player_detail) =====
-      if (response.response_type === "usports_player_detail" && response.player_detail) {
+      if (
+        response.response_type === "usports_player_detail" &&
+        response.player_detail
+      ) {
         const detailLabel = document.createElement("div");
         detailLabel.classList.add("data-section-label");
         detailLabel.textContent = "Player Details";
@@ -467,7 +488,11 @@ const UI = {
 
         const detailJson = document.createElement("div");
         detailJson.classList.add("json-display");
-        detailJson.textContent = JSON.stringify(response.player_detail, null, 2);
+        detailJson.textContent = JSON.stringify(
+          response.player_detail,
+          null,
+          2
+        );
         contentDiv.appendChild(detailJson);
       }
 
@@ -481,7 +506,11 @@ const UI = {
 
           const reportJson = document.createElement("div");
           reportJson.classList.add("json-display");
-          reportJson.textContent = JSON.stringify(response.scouting_report, null, 2);
+          reportJson.textContent = JSON.stringify(
+            response.scouting_report,
+            null,
+            2
+          );
           contentDiv.appendChild(reportJson);
         }
 
@@ -566,7 +595,8 @@ const UI = {
       const tr = document.createElement("tr");
       keys.forEach((key) => {
         const td = document.createElement("td");
-        td.textContent = row[key] !== null && row[key] !== undefined ? row[key] : "—";
+        td.textContent =
+          row[key] !== null && row[key] !== undefined ? row[key] : "—";
         tr.appendChild(td);
       });
       tbody.appendChild(tr);
@@ -592,7 +622,10 @@ const UI = {
   showPlayerSelectionUI(interruptData) {
     const { search_results, message } = interruptData;
 
-    const messageDiv = this.createNodeContainer("interrupt", "Player Selection");
+    const messageDiv = this.createNodeContainer(
+      "interrupt",
+      "Player Selection"
+    );
     const contentDiv = document.createElement("div");
     contentDiv.classList.add("node-content");
 
@@ -610,8 +643,14 @@ const UI = {
       button.classList.add("player-select-btn");
       button.textContent = `${player.full_name} - ${player.league}`;
       button.addEventListener("click", async () => {
-        buttonContainer.querySelectorAll("button").forEach((b) => (b.disabled = true));
-        await ChatService.sendMessage(index, true, "player_selection_for_scouting");
+        buttonContainer
+          .querySelectorAll("button")
+          .forEach((b) => (b.disabled = true));
+        await ChatService.sendMessage(
+          index,
+          true,
+          "player_selection_for_scouting"
+        );
       });
       buttonContainer.appendChild(button);
     });
@@ -625,12 +664,16 @@ const UI = {
   showScoutingConfirmationUI(interruptData) {
     const { player_name, league, message } = interruptData;
 
-    const messageDiv = this.createNodeContainer("interrupt", "Scouting Confirmation");
+    const messageDiv = this.createNodeContainer(
+      "interrupt",
+      "Scouting Confirmation"
+    );
     const contentDiv = document.createElement("div");
     contentDiv.classList.add("node-content");
 
     const messageP = document.createElement("p");
-    messageP.textContent = message || `Generate scouting report for ${player_name} (${league})?`;
+    messageP.textContent =
+      message || `Generate scouting report for ${player_name} (${league})?`;
     messageP.style.marginBottom = "12px";
     messageP.style.fontStyle = "italic";
     contentDiv.appendChild(messageP);
@@ -668,7 +711,7 @@ const UI = {
     this.showInterruptDialog(interruptData);
   },
 
-    scrollToBottom() {
+  scrollToBottom() {
     this.elements.chatBox.scrollTop = this.elements.chatBox.scrollHeight;
   },
 };

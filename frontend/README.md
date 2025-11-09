@@ -41,7 +41,7 @@ docker run -p 80:80 scoutai-frontend
 Create `.env`:
 
 ```bash
-VITE_API_BASE_URL=http://localhost:8000  # Local backend
+VITE_API_BASE_URL=http://localhost:8080  # Local backend
 # VITE_API_BASE_URL=https://api.example.com  # Production backend
 ```
 
@@ -83,28 +83,30 @@ src/
 
 ## Key Tech
 
-| Tech | Purpose |
-|------|---------|
-| **React 18** | UI framework |
-| **TypeScript 5.9** | Type safety |
-| **Vite 5.4** | Fast dev server + build |
-| **pnpm** | Package manager |
-| **TanStack Query** | API state management |
-| **Recharts 2.15** | Chart library |
-| **Tailwind CSS 3.4** | Styling |
-| **shadcn/ui** | Component library |
-| **React Router 6** | Client-side routing |
+| Tech                 | Purpose                 |
+| -------------------- | ----------------------- |
+| **React 18**         | UI framework            |
+| **TypeScript 5.9**   | Type safety             |
+| **Vite 5.4**         | Fast dev server + build |
+| **pnpm**             | Package manager         |
+| **TanStack Query**   | API state management    |
+| **Recharts 2.15**    | Chart library           |
+| **Tailwind CSS 3.4** | Styling                 |
+| **shadcn/ui**        | Component library       |
+| **React Router 6**   | Client-side routing     |
 
 ---
 
 ## Deployment
 
 ### Vercel (Recommended)
+
 ```bash
 npm i -g vercel && vercel --prod
 ```
 
 ### Docker + Google Cloud Run
+
 ```bash
 docker build -t gcr.io/project-id/frontend .
 docker push gcr.io/project-id/frontend
@@ -115,12 +117,12 @@ gcloud run deploy frontend --image gcr.io/project-id/frontend --allow-unauthenti
 
 ## Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| Dev server won't start | Run `pnpm install`, check Node.js 18+ |
-| API requests fail | Check `VITE_API_BASE_URL` in `.env`, backend CORS |
-| Charts not rendering | Clear cache, check browser console |
-| Build fails | `rm -rf node_modules && pnpm install` |
+| Issue                  | Solution                                          |
+| ---------------------- | ------------------------------------------------- |
+| Dev server won't start | Run `pnpm install`, check Node.js 18+             |
+| API requests fail      | Check `VITE_API_BASE_URL` in `.env`, backend CORS |
+| Charts not rendering   | Clear cache, check browser console                |
+| Build fails            | `rm -rf node_modules && pnpm install`             |
 
 ---
 
