@@ -1,6 +1,5 @@
 import type { AgentNodeOutput, LeagueDBName } from "@/types/agent";
-
-const API_BASE_URL = "/api";
+import { API_BASE_URL } from "@/config/api";
 
 interface StreamEvent {
   node: string;

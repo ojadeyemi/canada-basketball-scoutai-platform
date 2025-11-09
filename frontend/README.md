@@ -41,8 +41,8 @@ docker run -p 80:80 scoutai-frontend
 Create `.env`:
 
 ```bash
-VITE_API_BASE_URL=http://localhost:8080  # Local backend
-# VITE_API_BASE_URL=https://api.example.com  # Production backend
+VITE_BACKEND_URL=http://localhost:8080  # Local backend
+# VITE_BACKEND_URL=https://api.example.com  # Production backend
 ```
 
 ---
@@ -120,7 +120,7 @@ gcloud run deploy frontend --image gcr.io/project-id/frontend --allow-unauthenti
 | Issue                  | Solution                                          |
 | ---------------------- | ------------------------------------------------- |
 | Dev server won't start | Run `pnpm install`, check Node.js 18+             |
-| API requests fail      | Check `VITE_API_BASE_URL` in `.env`, backend CORS |
+| API requests fail      | Check `VITE_BACKEND_URL` in `.env`, backend CORS  |
 | Charts not rendering   | Clear cache, check browser console                |
 | Build fails            | `rm -rf node_modules && pnpm install`             |
 

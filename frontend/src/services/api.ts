@@ -4,8 +4,7 @@ import type {
   PlayerDetail,
   ShotChartData,
 } from "../types/player";
-
-const API_BASE_URL = "/api";
+import { API_BASE_URL } from "../config/api";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
