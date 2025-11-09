@@ -1,9 +1,23 @@
 import type { AgentNodeOutput, LeagueDBName } from "@/types/agent";
 import { API_BASE_URL } from "@/config/api";
+import { toast } from "sonner";
 
 interface StreamEvent {
   node: string;
   output: AgentNodeOutput;
+}
+
+async function getErrorFromResponse(response: Response): Promise<string> {
+  try {
+    const data = await response.json();
+    return (
+      data.detail ||
+      data.message ||
+      `HTTP ${response.status}: ${response.statusText}`
+    );
+  } catch {
+    return `HTTP ${response.status}: ${response.statusText}`;
+  }
 }
 
 export async function* streamChat(
@@ -24,11 +38,16 @@ export async function* streamChat(
   });
 
   if (!response.ok) {
-    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    const errorMsg = await getErrorFromResponse(response);
+    toast.error(errorMsg);
+    throw new Error(errorMsg);
   }
 
   const reader = response.body?.getReader();
-  if (!reader) throw new Error("No response body");
+  if (!reader) {
+    toast.error("No response body");
+    throw new Error("No response body");
+  }
 
   const decoder = new TextDecoder();
   let buffer = "";
@@ -69,8 +88,9 @@ export async function runRawSQL(
   });
 
   if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.detail || "Failed to run SQL query");
+    const errorMsg = await getErrorFromResponse(response);
+    toast.error(errorMsg);
+    throw new Error(errorMsg);
   }
 
   return response.json();

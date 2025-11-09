@@ -62,18 +62,19 @@ app = FastAPI(
 )
 
 # Enable CORS - supports both local development and production
-allowed_origins = (
-    ["*"]
-    if settings.environment == "development"
-    else [
-        settings.frontend_url,
-        "https://canada-basketball.com",  # Add production domains here
-    ]
-)
+if settings.environment == "development":
+    allowed_origins = ["*"]
+    allowed_origin_regex = None
+else:
+    allowed_origins = ["https://scout.northscore.ca"]
+    if settings.frontend_url:
+        allowed_origins.append(settings.frontend_url)
+    allowed_origin_regex = r"https://canada-ai-scout-platform-web-\d+-[a-z0-9-]+\.run\.app"
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
+    allow_origin_regex=allowed_origin_regex,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

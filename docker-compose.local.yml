@@ -51,7 +51,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        VITE_BACKEND_URL: http://backend:8080/api
+        VITE_BACKEND_URL: http://localhost:8080/api
     container_name: scoutai-frontend
     ports:
       - "3000:4180"

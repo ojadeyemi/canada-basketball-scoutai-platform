@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Sparkles } from "lucide-react";
+import { toast } from "sonner";
 import { streamChat } from "@/services/agentService";
 import type {
   PlayerSelectionInterrupt,
@@ -133,6 +134,11 @@ export default function AIAgentPage() {
       }
     } catch (error) {
       console.error("Stream error:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Connection error. Please try again.",
+      );
       setRouterOutput(null);
       setMessages((prev) => [
         ...prev,

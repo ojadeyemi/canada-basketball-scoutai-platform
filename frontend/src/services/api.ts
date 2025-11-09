@@ -13,6 +13,22 @@ const api = axios.create({
   },
 });
 
+export function getErrorMessage(error: unknown): string {
+  if (axios.isAxiosError(error)) {
+    if (!error.response) return "Network error. Check your connection.";
+    if (error.response.status >= 500) return "Server error. Please try again.";
+    if (error.response.status === 404) return "Resource not found.";
+    return (
+      error.response.data?.detail ||
+      error.response.data?.message ||
+      "Request failed."
+    );
+  }
+  return error instanceof Error
+    ? error.message
+    : "An unexpected error occurred.";
+}
+
 api.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {

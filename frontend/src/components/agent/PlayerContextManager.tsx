@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { UserPlus, X } from "lucide-react";
+import { toast } from "sonner";
 import {
   PromptInputButton,
   PromptInputHoverCard,
@@ -13,7 +14,7 @@ import {
   PromptInputCommandItem,
 } from "@/components/ai-elements/prompt-input";
 import { Button } from "@/components/ui/button";
-import { searchPlayers } from "@/services/api";
+import { searchPlayers, getErrorMessage } from "@/services/api";
 import type { PlayerSearchResult } from "@/types/player";
 import { useDebounce } from "@/hooks/useDebounce";
 
@@ -54,6 +55,7 @@ export default function PlayerContextManager({
       setSearchResults(results);
     } catch (error) {
       console.error("Player search error:", error);
+      toast.error(getErrorMessage(error));
       setSearchResults([]);
     } finally {
       setIsSearching(false);
