@@ -1,6 +1,6 @@
 import { Sparkles } from "lucide-react";
 import type { GenerateResponseOutput } from "@/types/agent";
-import QueryResultDisplay from "./QueryResultDisplay";
+import QueryResultDisplay from "./QueryResult/QueryResultDisplay";
 import ScoutingReportDisplay from "./ScoutingReportDisplay";
 
 interface AIMessageProps {

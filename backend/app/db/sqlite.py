@@ -70,3 +70,40 @@ def execute_query(league: str, query: str, params: tuple = ()) -> list[dict[str,
 def get_all_leagues() -> list[str]:
     """Get list of all available league names."""
     return [league for league, path in LEAGUE_DBS.items() if path.exists()]
+
+
+def get_database_schema(league: str) -> dict[str, Any]:
+    """
+    Get database schema with table and column metadata for autocomplete.
+
+    Args:
+        league: League name
+
+    Returns:
+        Schema dict with tables and their columns including type info
+    """
+    conn = get_db_connection(league)
+    try:
+        # Get all tables
+        tables_cursor = conn.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name")
+        tables = [row[0] for row in tables_cursor.fetchall()]
+
+        schema = {"tables": []}
+
+        for table_name in tables:
+            # Get column info for each table
+            columns_cursor = conn.execute(f"PRAGMA table_info({table_name})")
+            columns = [
+                {
+                    "name": row[1],
+                    "type": row[2],
+                    "nullable": not bool(row[3]),
+                }
+                for row in columns_cursor.fetchall()
+            ]
+
+            schema["tables"].append({"name": table_name, "columns": columns})
+
+        return schema
+    finally:
+        conn.close()

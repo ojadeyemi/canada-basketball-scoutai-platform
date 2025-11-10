@@ -67,7 +67,7 @@ After executing the query, decide on chart_config:
 - **y_columns**: List of numeric stat columns - EXACT column names from your SELECT
 - **title**: Clear, descriptive chart title
 - **subtitle**: Optional context (e.g., "2025 Regular Season")
-- **color_scheme**: Use ["#3b82f6", "#10b981", "#f59e0b"]
+- **color_scheme**: Use ["#ca213c", "#10b981", "#f59e0b"]
 - **value_format**: "number", "percentage", or "decimal"
 - Set chart_config to **null** if table-only is better (e.g., biographical data)
 

@@ -11,7 +11,8 @@ import { BrainIcon, ChevronDownIcon } from "lucide-react";
 import type { ComponentProps } from "react";
 import { createContext, memo, useContext, useEffect, useState } from "react";
 import { Response } from "./response";
-import { Shimmer } from "./shimmer";
+
+import { AnimatedShinyText } from "../ui/animated-shiny-text";
 
 type ReasoningContextValue = {
   isStreaming: boolean;
@@ -115,7 +116,13 @@ export type ReasoningTriggerProps = ComponentProps<typeof CollapsibleTrigger>;
 
 const getThinkingMessage = (isStreaming: boolean, duration?: number) => {
   if (isStreaming || duration === 0) {
-    return <Shimmer duration={1}>Thinking...</Shimmer>;
+    return (
+      <span className="inline-block">
+        <AnimatedShinyText className={"text-black"}>
+          Thinking...
+        </AnimatedShinyText>
+      </span>
+    );
   }
   if (duration === undefined) {
     return <p>Thought for a few seconds</p>;

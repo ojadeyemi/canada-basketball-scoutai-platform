@@ -37,9 +37,9 @@ export default function AIAgentPage() {
     useState<ActiveInterrupt | null>(null);
 
   const suggestedPrompts = [
-    "Who are the top scorers in CEBL?",
+    "Who are the top Canadian scorers in CEBL?",
     "Find me guards in U SPORTS women's league with good assist-to-turnover ratios",
-    "Generate a scouting report for Diefo Maffia in U SPORTS men's league",
+    "Generate a scouting report for Aaron Rhooms in USPORTS men's league",
   ];
 
   const processStream = async (

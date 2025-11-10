@@ -1,6 +1,5 @@
 """Main FastAPI application entry point."""
 
-import asyncio
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -11,46 +10,33 @@ from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 from config.settings import settings
 from graph.graph import build_graph
 
-from .routes import agent, pages, pdf, search, sql  # Added sql
-
-
-async def refresh_agent_periodically(app: FastAPI):
-    """Periodically refreshes the AI agent and credentials."""
-    while True:
-        await asyncio.sleep(60 * 60 * 4)  # Refresh every 4 hours
-        try:
-            app.state.scouting_graph = await build_graph(app.state.checkpointer)
-            print("✅ AI scouting agent refreshed successfully.")
-        except Exception as e:
-            print(f"🚨 Failed to refresh AI agent: {e}")
+from .routes import agent, pages, pdf, search, sql
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Manages application lifespan, initializes and cleans up resources."""
-    # Initialize Postgres checkpointer
-    from .db.postgres import get_database_url
+    try:
+        # Initialize Postgres checkpointer
+        from .db.postgres import get_database_url
 
-    database_url = get_database_url()
+        database_url = get_database_url()
+        print("🔄 Connecting to database...")
 
-    async with AsyncPostgresSaver.from_conn_string(database_url) as checkpointer:
-        await checkpointer.setup()  # Create checkpointer tables if they don't exist
-        app.state.checkpointer = checkpointer
-        app.state.scouting_graph = await build_graph(checkpointer)
+        async with AsyncPostgresSaver.from_conn_string(database_url) as checkpointer:
+            print("🔄 Setting up checkpointer...")
+            await checkpointer.setup()  # Create checkpointer tables if they don't exist
+            app.state.checkpointer = checkpointer
 
-        print("✅ AI scouting agent initialized successfully.")
+            print("🔄 Building AI scouting graph...")
+            app.state.scouting_graph = await build_graph(checkpointer)
 
-        # Start background refresh task
-        task = asyncio.create_task(refresh_agent_periodically(app))
+            print("✅ AI scouting agent initialized successfully.")
 
-        try:
             yield
-        finally:
-            task.cancel()
-            try:
-                await task
-            except asyncio.CancelledError:
-                print("🔄 AI agent refresh task cancelled.")
+    except Exception as e:
+        print(f"🚨 Failed to initialize AI scouting agent: {e}")
+        raise
 
 
 # Create FastAPI app with custom lifespan handler

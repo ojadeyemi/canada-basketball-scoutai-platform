@@ -35,7 +35,6 @@ export interface LeagueSpecificStats {
   second_chance_points?: number;
   fast_break_points?: number;
   points_in_paint?: number;
-  // New CEBL fields
   double_double_rate?: number; // % of games with double-double
   triple_double_rate?: number; // % of games with triple-double
   target_score_rate?: number; // % of games with target score (Elam Ending wins)
@@ -47,7 +46,6 @@ export interface LeagueSpecificStats {
   // HoopQueens
   plus_minus?: number;
   ppg_variance?: number; // Consistency metric (std deviation)
-  // New HoopQueens fields
   consistency_score?: number; // Coefficient of variation (lower = more consistent)
   foul_drawing_efficiency?: number; // Fouls drawn per FGA
   plus_minus_min?: number; // Worst single-game +/-
@@ -56,7 +54,6 @@ export interface LeagueSpecificStats {
   // U SPORTS/CCAA
   conference?: string;
   disqualifications?: number;
-  // New U SPORTS/CCAA fields
   dq_rate?: number; // Disqualifications per 100 games
   playoff_ppg_delta?: number; // PPG difference (playoff - regular)
   playoff_rpg_delta?: number; // RPG difference
@@ -160,7 +157,6 @@ export interface PlayerDetail {
   seasons: PlayerSeasonStats[];
   career_stats: PlayerSeasonStats[];
   additional_info?: PlayerAdditionalInfo;
-  // New top-level biographical fields
   nationality?: string; // ISO country code
   birth_date?: string; // ISO format (YYYY-MM-DD)
   age?: number;

@@ -108,7 +108,6 @@ export default function AboutPage() {
                   rel="noopener noreferrer"
                   className="group p-6 rounded-xl border-2 border-border hover:border-red-600 transition-all hover:shadow-lg bg-secondary/50"
                 >
-                  {/* TODO: Replace # with actual U SPORTS league URL */}
                   <div className="flex items-center gap-3 mb-2">
                     <img
                       src={LEAGUE_LOGOS.usports}
@@ -130,7 +129,6 @@ export default function AboutPage() {
                   rel="noopener noreferrer"
                   className="group p-6 rounded-xl border-2 border-border hover:border-red-600 transition-all hover:shadow-lg bg-secondary/50"
                 >
-                  {/* TODO: Replace # with actual CCAA league URL */}
                   <div className="flex items-center gap-3 mb-2">
                     <img
                       src={LEAGUE_LOGOS.ccaa}
@@ -152,7 +150,6 @@ export default function AboutPage() {
                   rel="noopener noreferrer"
                   className="group p-6 rounded-xl border-2 border-border hover:border-red-600 transition-all hover:shadow-lg bg-secondary/50"
                 >
-                  {/* TODO: Replace # with actual CEBL league URL */}
                   <div className="flex items-center gap-3 mb-2">
                     <img
                       src={LEAGUE_LOGOS.cebl}
@@ -174,7 +171,6 @@ export default function AboutPage() {
                   rel="noopener noreferrer"
                   className="group p-6 rounded-xl border-2 border-border hover:border-red-600 transition-all hover:shadow-lg bg-secondary/50"
                 >
-                  {/* TODO: Replace # with actual HoopQueens league URL */}
                   <div className="flex items-center gap-3 mb-2">
                     <img
                       src={LEAGUE_LOGOS.hoopqueens}

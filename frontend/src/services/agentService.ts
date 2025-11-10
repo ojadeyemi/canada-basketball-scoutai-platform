@@ -1,4 +1,8 @@
-import type { AgentNodeOutput, LeagueDBName } from "@/types/agent";
+import type {
+  AgentNodeOutput,
+  LeagueDBName,
+  DatabaseSchema,
+} from "@/types/agent";
 import { API_BASE_URL } from "@/config/api";
 import { toast } from "sonner";
 
@@ -85,6 +89,23 @@ export async function runRawSQL(
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ sql_query: sql, db_name: dbName }),
+  });
+
+  if (!response.ok) {
+    const errorMsg = await getErrorFromResponse(response);
+    toast.error(errorMsg);
+    throw new Error(errorMsg);
+  }
+
+  return response.json();
+}
+
+export async function getDatabaseSchema(
+  dbName: LeagueDBName,
+): Promise<DatabaseSchema> {
+  const response = await fetch(`${API_BASE_URL}/agent/schema/${dbName}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
   });
 
   if (!response.ok) {

@@ -59,7 +59,7 @@ export default function AgentThinking({
     // Add league if available
     if (routerOutput.league || routerOutput.entities?.league) {
       const league = routerOutput.league || routerOutput.entities.league;
-      parts.push(`\n\nLeague: ${league}`);
+      parts.push(`League: ${league}`);
     }
 
     // Add season if available
@@ -72,7 +72,7 @@ export default function AgentThinking({
       parts.push(routerOutput.entities.query_context);
     }
 
-    const fullText = parts.join(" • ");
+    const fullText = parts.join("\n\n");
     const tokenizedText = chunkIntoTokens(fullText);
     setTokens(tokenizedText);
     setContent("");

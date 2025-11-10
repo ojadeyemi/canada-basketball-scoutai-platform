@@ -47,7 +47,11 @@ export default function PlayerCard({ player, onClick }: PlayerCardProps) {
       className="group flex items-center gap-2.5 px-4 py-1.5 hover:bg-accent/50 cursor-pointer transition-colors border-b border-border last:border-b-0"
     >
       {/* Player Avatar */}
-      <PlayerAvatar fullName={player.full_name} size="sm" />
+      <PlayerAvatar
+        fullName={player.full_name}
+        leagueLogoUrl={leagueConfig.logo}
+        size="sm"
+      />
 
       {/* Player Info */}
       <div className="flex-1 min-w-0">

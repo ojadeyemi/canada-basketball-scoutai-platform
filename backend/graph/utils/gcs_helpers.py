@@ -30,7 +30,7 @@ def _get_gcs_client() -> storage.Client:
     if not Path(credentials_path).exists():
         raise FileNotFoundError(f"Service account file not found at: {credentials_path}")
 
-    # TODO: Verify service account has Storage Object Admin role
+
     credentials = service_account.Credentials.from_service_account_file(credentials_path)
     return storage.Client(credentials=credentials)
 
@@ -63,7 +63,6 @@ def upload_pdf_to_gcs(local_pdf_path: Path | str, destination_blob_name: str | N
     if not local_path.exists():
         raise FileNotFoundError(f"Local PDF not found: {local_path}")
 
-    # TODO: Verify bucket name is correct (check .env or Railway config)
     bucket_name = os.getenv("GCS_BUCKET_NAME", "canada-basketball-scouting-reports")
 
     # Use local filename if destination not specified
@@ -122,7 +121,6 @@ def generate_signed_url(gcs_path: str, expiration_hours: int = 168) -> str:
         blob = bucket.blob(blob_name)
 
         # Generate signed URL with specified expiration
-        # TODO: Verify service account has signBlob permission (roles/iam.serviceAccountTokenCreator)
         signed_url = blob.generate_signed_url(
             version="v4",
             expiration=timedelta(hours=expiration_hours),

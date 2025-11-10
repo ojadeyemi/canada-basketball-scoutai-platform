@@ -115,26 +115,25 @@ export const getCountryFlag = (countryCode: string | undefined): string => {
   if (!countryCode) return "";
 
   const flags: Record<string, string> = {
-    //TODO: finish adding more flags
     CANADA: "🇨🇦",
     "UNITED STATES": "🇺🇸",
-    GBR: "🇬🇧",
+    "GREAT BRITAIN": "🇬🇧",
     FRANCE: "🇫🇷",
     AUSTRALIA: "🇦🇺",
     NIGERIA: "🇳🇬",
     SENEGAL: "🇸🇳",
     GHANA: "🇬🇭",
-    CMR: "🇨🇲",
-    JAM: "🇯🇲",
-    TTO: "🇹🇹",
-    BRA: "🇧🇷",
-    ARG: "🇦🇷",
-    ESP: "🇪🇸",
-    ITA: "🇮🇹",
-    GER: "🇩🇪",
-    CHN: "🇨🇳",
-    JPN: "🇯🇵",
-    KOR: "🇰🇷",
+    CAMEROON: "🇨🇲",
+    JAMAICA: "🇯🇲",
+    "TRINIDAD AND TOBAGO": "🇹🇹",
+    BRAZIL: "🇧🇷",
+    ARGENTINA: "🇦🇷",
+    SPAIN: "🇪🇸",
+    ITALY: "🇮🇹",
+    GERMANY: "🇩🇪",
+    CHINA: "🇨🇳",
+    JAPAN: "🇯🇵",
+    "SOUTH KOREA": "🇰🇷",
   };
 
   return flags[countryCode.toUpperCase()] || countryCode;
