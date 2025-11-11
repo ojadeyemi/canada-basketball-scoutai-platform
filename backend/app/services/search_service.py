@@ -13,7 +13,7 @@ def search_players(
     query: str,
     leagues: list[str] | None = None,
     seasons: list[str] | None = None,
-    limit: int = 3,
+    limit: int = 5,
     min_score: int = 90,
 ) -> list[PlayerSearchResult]:
     """

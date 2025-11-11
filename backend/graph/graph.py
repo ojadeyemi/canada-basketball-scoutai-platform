@@ -78,7 +78,7 @@ async def confirm_scouting_report(state: AgentState) -> dict:
             query=player_name,
             leagues=leagues_list,
             limit=20,
-            min_score=80,
+            min_score=90,
         )
         search_results = [result.model_dump() for result in search_results_objects]
 
