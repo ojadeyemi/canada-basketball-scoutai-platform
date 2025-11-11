@@ -34,7 +34,7 @@ SQL QUERY REQUIREMENTS
 
 **Player Name Matching:**
 - CEBL: Use `full_name LIKE '%name%'` (e.g., "Aaron Best")
-- U SPORTS/CCAA: Use `last_name LIKE '%lastname%'` (names stored as "K. Leveridge")
+- U SPORTS/CCAA: Use `last_name LIKE '%lastname%'` (names stored as "Leveridge")
 - HoopQueens: Use `first_name LIKE '%first%' AND last_name LIKE '%last%'`
 
 **Season Format:**
@@ -47,7 +47,7 @@ SQL QUERY REQUIREMENTS
 - Calculate PPG: `CAST(points AS REAL) / games_played AS ppg`
 - Calculate RPG: `CAST(rebounds AS REAL) / games_played AS rpg`
 - Calculate APG: `CAST(assists AS REAL) / games_played AS apg`
-- Always use CAST(column AS REAL) for division to get decimals
+- Always use CAST(column AS REAL) for division to get decimals rounded to 2 decimal places
 - Always make sure decimals are rounded to 2 decimal places
 - Always alias calculated columns
 
@@ -55,6 +55,7 @@ SQL QUERY REQUIREMENTS
 - Always LIMIT results (default to 50 max unless user specifies)
 - Use ORDER BY for rankings and comparisons
 - Filter by season when relevant
+- Make sure filter value you want to use exist in the database
 - Only SELECT necessary columns (no SELECT *)
 
 ═══════════════════════════════════════════════════════════════════════════

@@ -15,7 +15,7 @@ INTENTS (use sparingly - default to text_response for most cases):
 - text_response: ALL other cases (greetings, clarifications, questions, ambiguous requests)
 
 ENTITY EXTRACTION (always populate when available):
-- player_name: Extract player name from current message OR conversation history. If player name is a letter plus a word use only word (eg. "J. Smith" -> "Smith")
+- player_name: Extract player name from current message OR conversation history. If player name is a letter plus a word use only word (eg. "J. Smith" -> "Smith" or "K Carrion" -> "Carrion")
 - league: CEBL | U SPORTS | CCAA | HoopQueens (infer from context or previous messages) ask for clarification if unknown since you must alwyas provide one
 - season: Year (default "2025")
 - query_context: What the user is asking for or what info is missing
