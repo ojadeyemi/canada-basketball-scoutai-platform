@@ -43,6 +43,9 @@ class Settings(BaseSettings):
     google_application_credentials: Optional[str] = Field(default=None, alias="GOOGLE_APPLICATION_CREDENTIALS")
     gcs_bucket_name: str = Field(default="canada-basketball-scouting-reports", alias="GCS_BUCKET_NAME")
 
+    # Authentication
+    agent_password: str = Field(default="demo2025", alias="AGENT_PASSWORD")
+
     def get_postgres_conn_string(self) -> str:
         if self.node_env == "local":
             return "postgresql://localhost:5432/canada_basketball"

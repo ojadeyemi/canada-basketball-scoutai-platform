@@ -10,7 +10,7 @@ from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 from config.settings import settings
 from graph.graph import build_graph
 
-from .routes import agent, pages, pdf, search, sql
+from .routes import agent, auth, pages, pdf, search, sql
 
 
 @asynccontextmanager
@@ -42,8 +42,16 @@ async def lifespan(app: FastAPI):
 # Create FastAPI app with custom lifespan handler
 app = FastAPI(
     title="Canada Basketball AI Scouting System",
-    description="AI-powered scouting platform for Canadian basketball talent identification",
+    description=(
+        "AI-powered scouting platform for Canadian basketball talent identification. "
+        "This API is currently in research preview and is being tested by Canada Basketball coaches and scouts."
+    ),
     version="1.0.0",
+    contact={
+        "name": "OJ Adeyemi",
+        "url": "https://ojadeyemi.github.io/",
+        "email": "ojieadeyemi@gmail.com",
+    },
     lifespan=lifespan,
 )
 
@@ -70,11 +78,12 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 # Include routers
+app.include_router(auth.router)
 app.include_router(agent.router)
 app.include_router(search.router)
 app.include_router(pdf.router)
 app.include_router(pages.router)
-app.include_router(sql.router)  # Added sql router
+app.include_router(sql.router)
 
 
 @app.get("/health", tags=["Health"])

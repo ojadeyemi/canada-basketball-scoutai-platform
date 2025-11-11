@@ -3,6 +3,7 @@ import {
   Linkedin,
   Mail,
   Github as GithubIcon,
+  BookOpen,
 } from "lucide-react";
 import {
   Card,
@@ -323,6 +324,22 @@ export default function AboutPage() {
                     </li>
                   </ul>
                 </div>
+              </div>
+
+              <div className="mt-8 pt-6 border-t">
+                <h3 className="text-xl font-semibold text-foreground mb-4">
+                  Developer Resources
+                </h3>
+                <a
+                  href={`${import.meta.env.VITE_BACKEND_URL?.replace('/api', '') || ''}/redoc`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-3 p-4 rounded-xl bg-secondary hover:bg-secondary/80 transition-colors group border-2 border-transparent hover:border-red-600"
+                >
+                  <BookOpen className="w-6 h-6 text-red-600" />
+                  <span className="font-medium">API Documentation (Redoc)</span>
+                  <ExternalLink className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                </a>
               </div>
             </CardContent>
           </Card>

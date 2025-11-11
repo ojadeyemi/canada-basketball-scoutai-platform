@@ -8,7 +8,7 @@ from fastapi.responses import FileResponse
 router = APIRouter(tags=["Pages"])
 
 
-@router.get("/ui")
+@router.get("/ui", include_in_schema=False)
 async def serve_debug_ui():
     """
     Serve the debug UI for interacting with the AI scouting agent.

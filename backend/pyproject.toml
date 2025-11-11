@@ -1,7 +1,7 @@
 [project]
-name = "canada-basketball-scoutai-platform-api"
-version = "0.0.1beta"
-description = "An AI-powered platform for Canadian basketball talent discovery"
+name = "canada-basketball-scouting-platform-api"
+version = "0.0.1-beta"
+description = "Scouting platform API for identifying Canadian basketball talent, powered by AI"
 authors = [{ name = "OJ Adeyemi", email = "ojieadeyemi@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.13,<4.0.0"
@@ -25,7 +25,7 @@ dependencies = [
 
 [tool.poetry]
 package-mode = false
-name = "canada-basketball-scoutai-platform-api"
+name = "canada-basketball-scouting-platform-api"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.14.3"

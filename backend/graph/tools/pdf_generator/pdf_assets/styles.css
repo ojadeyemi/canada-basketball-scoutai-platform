@@ -855,7 +855,7 @@ canvas {
   gap: 8px;
   padding: 5px;
   background: var(--gray-100);
-  margin-top: 8px;
+  margin-top: 4px;
 }
 
 .footer-logo {
@@ -865,7 +865,7 @@ canvas {
 }
 
 .footer-text {
-  font-size: 7px;
+  font-size: 8px;
   color: var(--gray-600);
   margin: 0;
 }

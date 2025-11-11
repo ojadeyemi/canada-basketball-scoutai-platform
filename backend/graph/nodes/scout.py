@@ -224,13 +224,14 @@ async def scout(state: AgentState) -> dict:
             ).strip()
             or "Unknown_Player"
         )
-        pdf_title = f"Scouting_Report_{safe_player_name.replace(' ', '_')}"
-        pdf_path = await pdf_generator.generate_pdf(data=pdf_data, pdf_title=pdf_title)
+        date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
+        pdf_title = f"Scouting_Report_{safe_player_name.replace(' ', '_')}_{date_str}"
+        pdf_path = await pdf_generator.generate_pdf(data=pdf_data, pdf_title=pdf_title, width="816px")
 
         try:
             gcs_path = upload_pdf_to_gcs(
                 local_pdf_path=pdf_path,
-                destination_blob_name=f"scouting-reports/{safe_player_name.replace(' ', '-').lower()}.pdf",
+                destination_blob_name=f"scouting-reports/{safe_player_name.replace(' ', '-').lower()}_{date_str}.pdf",
             )
             pdf_url = generate_signed_url(gcs_path, expiration_hours=168)
 

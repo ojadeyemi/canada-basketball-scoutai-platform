@@ -30,7 +30,6 @@ def _get_gcs_client() -> storage.Client:
     if not Path(credentials_path).exists():
         raise FileNotFoundError(f"Service account file not found at: {credentials_path}")
 
-
     credentials = service_account.Credentials.from_service_account_file(credentials_path)
     return storage.Client(credentials=credentials)
 

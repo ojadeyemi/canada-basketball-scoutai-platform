@@ -14,6 +14,7 @@ const queryClient = new QueryClient({
   },
 });
 
+//TODO figure out why api isnt working in prod due to nginx logic
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>

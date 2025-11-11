@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import {
   Collapsible,
   CollapsibleContent,
@@ -8,6 +9,7 @@ import {
 } from "@/components/ui/collapsible";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetDescription,
   SheetHeader,
@@ -102,13 +104,23 @@ function RawQueryResultTable({ data }: { data: Record<string, any>[] }) {
   });
 
   return (
-    <div className="rounded-lg border overflow-hidden">
+    <div className="rounded-md border border-border/40 overflow-auto bg-card max-h-[600px]">
       <Table>
-        <TableHeader>
+        <TableHeader className="bg-muted/50 sticky top-0 z-10">
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
+            <TableRow
+              key={headerGroup.id}
+              className="hover:bg-transparent border-b border-border/40"
+            >
+              {headerGroup.headers.map((header, headerIndex) => (
+                <TableHead
+                  key={header.id}
+                  className={cn(
+                    "h-10 px-3 text-xs font-medium bg-muted/50",
+                    headerIndex !== headerGroup.headers.length - 1 &&
+                      "border-r border-border/20",
+                  )}
+                >
                   {header.isPlaceholder
                     ? null
                     : flexRender(
@@ -121,10 +133,23 @@ function RawQueryResultTable({ data }: { data: Record<string, any>[] }) {
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
+          {table.getRowModel().rows.map((row, index) => (
+            <TableRow
+              key={row.id}
+              className={cn(
+                "border-b border-border/20 transition-colors hover:bg-muted/30",
+                index % 2 === 0 ? "bg-background" : "bg-muted/10",
+              )}
+            >
+              {row.getVisibleCells().map((cell, cellIndex) => (
+                <TableCell
+                  key={cell.id}
+                  className={cn(
+                    "px-3 py-2.5 text-sm",
+                    cellIndex !== row.getVisibleCells().length - 1 &&
+                      "border-r border-border/20",
+                  )}
+                >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>
               ))}
@@ -409,18 +434,25 @@ export function SQLEditor({ sqlQuery, dbName, chartTitle }: SQLEditorProps) {
             </SheetTrigger>
             <SheetContent
               side="right"
-              className="w-full sm:max-w-3xl overflow-y-auto pt-20"
+              className="w-full sm:max-w-3xl overflow-y-auto pt-20 flex flex-col"
             >
-              <SheetHeader>
-                <SheetTitle>
-                  {chartTitle || `Query Results - ${dbName}`}
+              <SheetHeader className="pb-4 border-b">
+                <SheetTitle className="text-lg">
+                  {chartTitle || `Query Results`}
                 </SheetTitle>
-                <SheetDescription>
-                  Showing {rawQueryResults.length} rows from {dbName}
+                <SheetDescription className="text-xs">
+                  {rawQueryResults.length} rows • {dbName}
                 </SheetDescription>
               </SheetHeader>
-              <div className="mt-6">
+              <div className="flex-1 py-6 px-4 overflow-auto">
                 <RawQueryResultTable data={rawQueryResults} />
+              </div>
+              <div className="border-t p-4 mt-auto bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                <SheetClose asChild>
+                  <Button variant="outline" className="w-full">
+                    Close
+                  </Button>
+                </SheetClose>
               </div>
             </SheetContent>
           </Sheet>

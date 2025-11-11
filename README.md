@@ -1,10 +1,10 @@
-# canada-basketball-scoutai-platform
+# Canada Basketball Scouting Platform
 
-![Canada Basketball ScoutAI](./assets/oldscreenshot.png)
+![Canada Basketball Scouting Platform](./assets/oldscreenshot.png)
 
-**AI-powered scouting for Canadian basketball.** Ask questions in plain English, get instant insights across 25,000+ players from [U SPORTS](https://en.usports.ca/landing/index), [CCAA](https://www.ccaa.ca/landing/index), [CEBL](https://cebl.ca), and [HoopQueens](https://www.thehoopqueens.com/the-league).
+**Scouting platform for identifying Canadian basketball talent.** Ask questions in plain English, get instant insights across 25,000+ players from [U SPORTS](https://en.usports.ca/landing/index), [CCAA](https://www.ccaa.ca/landing/index), [CEBL](https://cebl.ca), and [HoopQueens](https://www.thehoopqueens.com/the-league).
 
-**Powered by [Cohere](https://cohere.com) and [Google Gemini](https://deepmind.google/technologies/gemini/)** – Enterprise-grade AI models optimized for accuracy and speed. Default uses Cohere's Command-A-03-2025, with Gemini 2.5 Flash/Pro recommended for enhanced performance on stats queries and scouting reports.
+**Powered by [Cohere](https://cohere.com) and [Google Gemini](https://deepmind.google/technologies/gemini/)** – AI models optimized for accuracy and speed. Default uses Cohere's Command-A-03-2025, with Gemini 2.5 Flash/Pro recommended for enhanced performance on stats queries and scouting reports.
 
 _Built for the [Canada Basketball](https://www.basketball.ca/) Data Challenge submission._
 
@@ -12,7 +12,7 @@ _Built for the [Canada Basketball](https://www.basketball.ca/) Data Challenge su
 
 ## Overview
 
-Traditional scouting requires hours of manual research. ScoutAI lets you ask **"Who are the top 5 CEBL scorers in 2024 with PER above 20?"** and get answers instantly—complete with charts, stats, and AI-generated scouting reports.
+Traditional scouting requires hours of manual research. This platform lets you ask **"Who are the top 5 CEBL scorers in 2024 with PER above 20?"** and get answers instantly—complete with charts, stats, and AI-generated scouting reports.
 
 ### Key Features
 

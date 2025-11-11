@@ -23,6 +23,11 @@ from config.constants import (
     OUTPUT,
 )
 
+# TODO:
+# 1. Fix scouting report URL generation for production environment.
+# 2. Increase the vertical size/height of the generated scouting report PDF.
+# 3. Add a timestamp or unique identifier to the PDF filename to prevent overwrites.
+
 
 async def event_generator(chat_input: ChatInput, request: Request):
     """

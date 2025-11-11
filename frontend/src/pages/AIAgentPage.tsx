@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { streamChat } from "@/services/agentService";
+import { isAuthenticated, setAuthenticated } from "@/services/authService";
 import type {
   PlayerSelectionInterrupt,
   ScoutingConfirmationInterrupt,
@@ -14,6 +15,7 @@ import PlayerSelectionModal from "@/components/agent/PlayerSelectionModal";
 import ScoutingConfirmationModal from "@/components/agent/ScoutingConfirmationModal";
 import AgentPromptInput from "@/components/agent/AgentPromptInput";
 import AgentConversation from "@/components/agent/AgentConversation";
+import { LoginModal } from "@/components/auth/LoginModal";
 
 interface Message {
   type: "user" | "ai";
@@ -28,6 +30,7 @@ interface ActiveInterrupt {
 }
 
 export default function AIAgentPage() {
+  const [authenticated, setAuthenticatedState] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [sessionId] = useState(() => uuidv4());
   const [isStreaming, setIsStreaming] = useState(false);
@@ -35,6 +38,15 @@ export default function AIAgentPage() {
   const [routerOutput, setRouterOutput] = useState<RouterOutput | null>(null);
   const [activeInterrupt, setActiveInterrupt] =
     useState<ActiveInterrupt | null>(null);
+
+  useEffect(() => {
+    setAuthenticatedState(isAuthenticated());
+  }, []);
+
+  const handleLoginSuccess = () => {
+    setAuthenticated(true);
+    setAuthenticatedState(true);
+  };
 
   const suggestedPrompts = [
     "Who are the top Canadian scorers in CEBL?",
@@ -204,6 +216,10 @@ export default function AIAgentPage() {
       },
     ]);
   };
+
+  if (!authenticated) {
+    return <LoginModal onSuccess={handleLoginSuccess} />;
+  }
 
   return (
     <div className="flex flex-col h-[calc(100vh-10rem)] max-w-7xl mx-auto w-full">
