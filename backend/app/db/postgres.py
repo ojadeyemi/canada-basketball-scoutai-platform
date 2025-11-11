@@ -1,16 +1,11 @@
 """PostgreSQL connection and utilities."""
 
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
+from config.settings import settings
 
 
 def get_database_url() -> str:
     """Get PostgreSQL connection string from environment."""
-    database_url = os.getenv("DATABASE_URL")
-    if not database_url:
-        raise ValueError("DATABASE_URL environment variable not set")
+    database_url = settings.get_postgres_conn_string()
 
     # AsyncPostgresSaver requires postgresql:// not postgresql+psycopg://
     if database_url.startswith("postgresql+psycopg://"):

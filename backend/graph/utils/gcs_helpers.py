@@ -1,11 +1,12 @@
 """Google Cloud Storage helpers for PDF upload and signed URL generation."""
 
-import os
 from datetime import timedelta
 from pathlib import Path
 
 from google.cloud import storage
 from google.oauth2 import service_account
+
+from config.settings import settings
 
 
 def _get_gcs_client() -> storage.Client:
@@ -19,7 +20,7 @@ def _get_gcs_client() -> storage.Client:
         FileNotFoundError: If service account JSON not found
         ValueError: If GOOGLE_APPLICATION_CREDENTIALS not set
     """
-    credentials_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+    credentials_path = settings.google_application_credentials
 
     if not credentials_path:
         raise ValueError(
@@ -62,7 +63,7 @@ def upload_pdf_to_gcs(local_pdf_path: Path | str, destination_blob_name: str | N
     if not local_path.exists():
         raise FileNotFoundError(f"Local PDF not found: {local_path}")
 
-    bucket_name = os.getenv("GCS_BUCKET_NAME", "canada-basketball-scouting-reports")
+    bucket_name = settings.gcs_bucket_name
 
     # Use local filename if destination not specified
     if destination_blob_name is None:

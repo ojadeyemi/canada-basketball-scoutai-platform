@@ -13,6 +13,7 @@ from langchain.agents import create_agent
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 
 from config.pdf_constants import PDF_STORAGE_DIR
+from config.settings import settings
 from graph.configuration import get_scouting_llm
 from graph.prompts.scout import SCOUT_PROMPT
 from graph.schemas.scouting import (
@@ -82,7 +83,7 @@ async def scout(state: AgentState) -> dict:
     league_str = state.get("league")
     player_name = state.get("player_name", "")
     messages = state.get("messages", [])
-    api_base = os.getenv("API_BASE_URL", "http://localhost:8080")
+    api_base = settings.api_base_url
 
     if not player_id or not league_str:
         return {
