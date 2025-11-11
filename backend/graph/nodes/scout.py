@@ -9,6 +9,9 @@ from pathlib import Path
 from typing import Sequence
 
 import httpx
+from langchain.agents import create_agent
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
+
 from config.pdf_constants import PDF_STORAGE_DIR
 from graph.configuration import get_scouting_llm
 from graph.prompts.scout import SCOUT_PROMPT
@@ -21,8 +24,6 @@ from graph.schemas.scouting import (
 from graph.state import AgentState
 from graph.tools.pdf_generator.pdf_generator import PDFGenerator
 from graph.utils.gcs_helpers import generate_signed_url, upload_pdf_to_gcs
-from langchain.agents import create_agent
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 
 
 def _summarize_conversation(messages: Sequence[BaseMessage]) -> str:
@@ -229,23 +230,33 @@ async def scout(state: AgentState) -> dict:
         pdf_path = await pdf_generator.generate_pdf(data=pdf_data, pdf_title=pdf_title, width="816px")
 
         try:
+            print(f"[PDF] Attempting GCS upload for {safe_player_name}")
             gcs_path = upload_pdf_to_gcs(
                 local_pdf_path=pdf_path,
                 destination_blob_name=f"scouting-reports/{safe_player_name.replace(' ', '-').lower()}_{date_str}.pdf",
             )
+            print(f"[PDF] GCS upload successful: {gcs_path}")
             pdf_url = generate_signed_url(gcs_path, expiration_hours=168)
+            print(f"[PDF] Signed URL generated: {pdf_url[:100]}...")
 
             if Path(pdf_path).exists():
                 Path(pdf_path).unlink()
 
-        except Exception:
+        except Exception as gcs_error:
+            print(f"[PDF] GCS upload failed: {type(gcs_error).__name__}: {str(gcs_error)}")
+            print("[PDF] Falling back to local storage")
+            print(f"[PDF] GOOGLE_APPLICATION_CREDENTIALS: {os.getenv('GOOGLE_APPLICATION_CREDENTIALS')}")
+            print(f"[PDF] GCS_BUCKET_NAME: {os.getenv('GCS_BUCKET_NAME', 'canada-basketball-scouting-reports')}")
+
             local_filename = f"{safe_player_name.replace(' ', '-').lower()}.pdf"
             local_pdf_path = PDF_STORAGE_DIR / local_filename
 
             import shutil
 
             shutil.copy(pdf_path, local_pdf_path)
-            pdf_url = f"/api/pdf/{PDF_STORAGE_DIR.name}/{local_filename}"
+            # Use absolute URL with API_BASE_URL to ensure it works in production
+            pdf_url = f"{api_base}/api/pdf/{PDF_STORAGE_DIR.name}/{local_filename}"
+            print(f"[PDF] Local fallback URL: {pdf_url}")
 
             if Path(pdf_path).exists():
                 Path(pdf_path).unlink()
