@@ -63,7 +63,6 @@ else:
     allowed_origins = ["https://scout.northscore.ca"]
     if settings.frontend_url:
         allowed_origins.append(settings.frontend_url)
-    allowed_origin_regex = r"https://canada-ai-scout-platform-web-\d+-[a-z0-9-]+\.run\.app"
 
 app.add_middleware(
     CORSMiddleware,

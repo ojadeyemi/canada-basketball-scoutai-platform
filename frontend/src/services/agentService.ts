@@ -11,6 +11,11 @@ interface StreamEvent {
   output: AgentNodeOutput;
 }
 
+export interface SQLErrorDetail {
+  message: string;
+  raw_error: string;
+}
+
 async function getErrorFromResponse(response: Response): Promise<string> {
   try {
     const data = await response.json();
@@ -24,11 +29,33 @@ async function getErrorFromResponse(response: Response): Promise<string> {
   }
 }
 
+async function getSQLErrorFromResponse(
+  response: Response
+): Promise<SQLErrorDetail> {
+  try {
+    const data = await response.json();
+    if (typeof data.detail === "object" && data.detail.message) {
+      return {
+        message: data.detail.message,
+        raw_error: data.detail.raw_error || data.detail.message,
+      };
+    }
+    const errorMsg =
+      data.detail ||
+      data.message ||
+      `HTTP ${response.status}: ${response.statusText}`;
+    return { message: errorMsg, raw_error: errorMsg };
+  } catch {
+    const fallback = `HTTP ${response.status}: ${response.statusText}`;
+    return { message: fallback, raw_error: fallback };
+  }
+}
+
 export async function* streamChat(
   userInput: string | number | boolean,
   sessionId: string,
   isResume = false,
-  interruptType?: "player_selection_for_scouting" | "scouting_confirmation",
+  interruptType?: "player_selection_for_scouting" | "scouting_confirmation"
 ): AsyncGenerator<StreamEvent> {
   const response = await fetch(`${API_BASE_URL}/agent/chat`, {
     method: "POST",
@@ -81,9 +108,20 @@ export async function* streamChat(
   }
 }
 
+export class SQLError extends Error {
+  constructor(
+    message: string,
+    public rawError: string
+  ) {
+    super(message);
+    this.name = "SQLError";
+  }
+}
+
 export async function runRawSQL(
   sql: string,
-  dbName: LeagueDBName,
+  dbName: LeagueDBName
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<Record<string, any>[]> {
   const response = await fetch(`${API_BASE_URL}/agent/run-sql`, {
     method: "POST",
@@ -92,16 +130,16 @@ export async function runRawSQL(
   });
 
   if (!response.ok) {
-    const errorMsg = await getErrorFromResponse(response);
-    toast.error(errorMsg);
-    throw new Error(errorMsg);
+    const errorDetail = await getSQLErrorFromResponse(response);
+    toast.error(errorDetail.message);
+    throw new SQLError(errorDetail.message, errorDetail.raw_error);
   }
 
   return response.json();
 }
 
 export async function getDatabaseSchema(
-  dbName: LeagueDBName,
+  dbName: LeagueDBName
 ): Promise<DatabaseSchema> {
   const response = await fetch(`${API_BASE_URL}/agent/schema/${dbName}`, {
     method: "GET",

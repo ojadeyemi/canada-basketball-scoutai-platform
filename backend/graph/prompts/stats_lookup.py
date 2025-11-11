@@ -37,6 +37,11 @@ SQL QUERY REQUIREMENTS
 - U SPORTS/CCAA: Use `last_name LIKE '%lastname%'` (names stored as "K. Leveridge")
 - HoopQueens: Use `first_name LIKE '%first%' AND last_name LIKE '%last%'`
 
+**Season Format:**
+- CEBL/HoopQueens: Use single year (e.g., `season = 2025`)
+- U SPORTS/CCAA: Use two-year format (e.g., `season = '2024-25'` for 2025, `season = '2023-24'` for 2024)
+- Always check the database to confirm the season column format before querying
+
 **Stat Calculations:**
 - Stats are usually RAW TOTALS, not averages
 - Calculate PPG: `CAST(points AS REAL) / games_played AS ppg`

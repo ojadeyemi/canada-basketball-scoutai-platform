@@ -1,11 +1,11 @@
 """Main LangGraph workflow for Canada Basketball AI Agent."""
 
-import httpx
 from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 from langgraph.graph import END, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 from langgraph.types import interrupt
 
+from app.services.search_service import search_players
 from config.constants import (
     INTENT_SCOUTING_REPORT,
     INTENT_STATS_QUERY,
@@ -65,19 +65,22 @@ async def confirm_scouting_report(state: AgentState) -> dict:
     """
     player_name = state.get("player_name")
     league = state.get("league")
-    api_base = settings.api_base_url
+
+    if not player_name:
+        return {
+            "error": "No player name provided",
+            "scouting_report_confirmed": False,
+        }
 
     try:
-        async with httpx.AsyncClient() as client:
-            params = {
-                "query": player_name,
-                "leagues": league.lower().replace(" ", "") if league else "cebl",
-                "limit": 20,
-            }
-
-            response = await client.get(f"{api_base}/api/search/player", params=params)
-            response.raise_for_status()
-            search_results = response.json()
+        leagues_list = [league.lower().replace(" ", "")] if league else None
+        search_results_objects = search_players(
+            query=player_name,
+            leagues=leagues_list,
+            limit=20,
+            min_score=90,
+        )
+        search_results = [result.model_dump() for result in search_results_objects]
 
     except Exception as e:
         return {

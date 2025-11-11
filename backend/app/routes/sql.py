@@ -79,9 +79,13 @@ async def run_sql_query(data: SQLQueryInput):
 
         return query_data
     except Exception as e:
-        # Parse and format SQL errors for better UX
-        error_message = parse_sql_error(str(e))
-        raise HTTPException(status_code=400, detail=error_message)
+        # Return both clean and raw error messages for better UX
+        raw_error = str(e)
+        clean_error = parse_sql_error(raw_error)
+        raise HTTPException(
+            status_code=400,
+            detail={"message": clean_error, "raw_error": raw_error},
+        )
 
 
 @router.get("/schema/{db_name}")

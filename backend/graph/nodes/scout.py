@@ -8,10 +8,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Sequence
 
-import httpx
 from langchain.agents import create_agent
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 
+from app.services.player_service import get_player_details
 from config.pdf_constants import PDF_STORAGE_DIR
 from config.settings import settings
 from graph.configuration import get_scouting_llm
@@ -108,26 +108,14 @@ async def scout(state: AgentState) -> dict:
         league = league_map.get(str(league_str).lower(), League.CEBL)
 
     try:
-        async with httpx.AsyncClient(timeout=30.0) as client:
-            league_path = league.value.lower().replace(" ", "")
-            response = await client.get(f"{api_base}/api/search/player/{league_path}/{player_id}")
-            response.raise_for_status()
-            player_detail_dict = response.json()
+        league_path = league.value.lower().replace(" ", "")
+        player_detail = await get_player_details(league_path, str(player_id))
 
-    except httpx.TimeoutException:
-        return {
-            "error": "Request timeout while fetching player data",
-            "scouting_report": None,
-            "pdf_url": None,
-            "messages": [AIMessage(content="**Scouting Error**: Request timeout.")],
-        }
-    except httpx.HTTPStatusError as e:
-        return {
-            "error": f"HTTP error {e.response.status_code}: {e.response.text}",
-            "scouting_report": None,
-            "pdf_url": None,
-            "messages": [AIMessage(content=f"**Scouting Error**: HTTP {e.response.status_code}")],
-        }
+        if not player_detail:
+            raise ValueError(f"Player not found: {player_id} in {league_path}")
+
+        player_detail_dict = player_detail.model_dump(mode="json")
+
     except Exception as e:
         return {
             "error": f"Failed to fetch player data: {str(e)}",

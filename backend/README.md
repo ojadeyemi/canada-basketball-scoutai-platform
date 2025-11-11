@@ -75,7 +75,9 @@ For Docker, use `/app/service-account.json` for `GOOGLE_APPLICATION_CREDENTIALS`
 | `/api/pdf/generate`                | POST   | Generate scouting report   |
 | `/api/pdf/status/{job_id}`         | GET    | PDF job status             |
 
-**Interactive Docs:** [http://localhost:8080/docs](http://localhost:8080/docs)
+**Interactive Docs:**
+- Local: [http://localhost:8080/docs](http://localhost:8080/docs)
+- Production: [https://api.scout.northscore.ca/redoc](https://api.scout.northscore.ca/redoc)
 
 ---
 

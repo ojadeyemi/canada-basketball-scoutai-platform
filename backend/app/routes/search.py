@@ -50,7 +50,7 @@ async def get_player_detail(
     - league: League name (usports, ccaa, cebl, hoopqueens)
     - player_id: Player identifier from search results
     """
-    player_detail = get_player_details(league, player_id)
+    player_detail = await get_player_details(league, player_id)
 
     if not player_detail:
         raise HTTPException(status_code=404, detail=f"Player not found: {player_id} in {league}")

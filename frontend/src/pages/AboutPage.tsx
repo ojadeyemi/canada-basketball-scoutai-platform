@@ -312,7 +312,7 @@ export default function AboutPage() {
                   <ul className="space-y-2 text-muted-foreground text-base">
                     <li className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-red-600" />
-                      OpenAI + Gemini + Cohere
+                      Cohere + Gemini
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-red-600" />
@@ -330,16 +330,28 @@ export default function AboutPage() {
                 <h3 className="text-xl font-semibold text-foreground mb-4">
                   Developer Resources
                 </h3>
-                <a
-                  href={`${import.meta.env.VITE_BACKEND_URL?.replace('/api', '') || ''}/redoc`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-3 p-4 rounded-xl bg-secondary hover:bg-secondary/80 transition-colors group border-2 border-transparent hover:border-red-600"
-                >
-                  <BookOpen className="w-6 h-6 text-red-600" />
-                  <span className="font-medium">API Documentation (Redoc)</span>
-                  <ExternalLink className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
-                </a>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <a
+                    href="https://api.scout.northscore.ca/redoc"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-3 p-4 rounded-xl bg-secondary hover:bg-secondary/80 transition-colors group border-2 border-transparent hover:border-red-600"
+                  >
+                    <BookOpen className="w-6 h-6 text-red-600" />
+                    <span className="font-medium">API Documentation</span>
+                    <ExternalLink className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </a>
+                  <a
+                    href="https://github.com/ojadeyemi/canada-basketball-scoutai-platform"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-3 p-4 rounded-xl bg-secondary hover:bg-secondary/80 transition-colors group border-2 border-transparent hover:border-gray-800"
+                  >
+                    <GithubIcon className="w-6 h-6 text-gray-800" />
+                    <span className="font-medium">Source Code</span>
+                    <ExternalLink className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </a>
+                </div>
               </div>
             </CardContent>
           </Card>

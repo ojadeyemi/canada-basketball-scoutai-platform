@@ -25,16 +25,16 @@ CRITICAL: Always update entities with player_name, league, and season from conve
 EXAMPLES:
 
 "Top 5 CEBL scorers"
-→ {"intent": "stats_query", "league": "CEBL", "season": "2025", "query_context": "top 5 scorers"}
+→ {"intent": "stats_query", "league": "CEBL", "season": "2025", "query_context": "top 5 scorers in the CEBL league"}
 
 "Scout Aaron Best"
-→ {"intent": "scouting_report", "player_name": "Aaron Best", "league": null, "query_context": "generate scouting report"}
+→ {"intent": "scouting_report", "player_name": "Aaron Best", "league": null, "query_context": "generate scouting report for Aaron Best"}
 
 [After "Aaron Best leads with 24.5 PPG"] "Generate his scouting report"
 → {"intent": "scouting_report", "player_name": "Aaron Best", "league": "CEBL", "season": "2025"}
 
 "Who is the best player?"
-→ {"intent": "text_response", "query_context": "needs clarification on league/position"}
+→ {"intent": "text_response", "query_context": "needs more clarification on what league to search for players"}
 
 "Thanks!"
 → {"intent": "terminate"}"""

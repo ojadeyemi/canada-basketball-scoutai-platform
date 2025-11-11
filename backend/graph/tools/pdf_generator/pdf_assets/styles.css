@@ -260,11 +260,12 @@ body {
 }
 
 .archetype-description {
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.5;
   color: var(--gray-700);
   max-width: 100%;
   margin: 0 auto;
+  font-weight: 600;
 }
 
 /* Section Titles */
@@ -651,13 +652,13 @@ canvas {
 }
 
 .trajectory-summary {
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.6;
   color: var(--gray-800);
   padding: 8px;
   background: transparent;
   border-left: 3px solid var(--canada-red);
-  font-weight: 500;
+  font-weight: 600;
   height: 100%;
   display: flex;
   align-items: center;
@@ -757,7 +758,7 @@ canvas {
 }
 
 .recommendation-summary {
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.7;
   margin-bottom: 10px;
   text-align: center;
@@ -771,7 +772,7 @@ canvas {
 /* Recommendation Grid - Use Cases + Grades Side-by-Side */
 .recommendation-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.5fr 1fr;
   gap: 12px;
   margin-top: 8px;
 }
@@ -798,7 +799,7 @@ canvas {
 }
 
 .use-cases li {
-  font-size: 10px;
+  font-size: 11px;
   padding: 5px 8px;
   background: transparent;
   margin-bottom: 5px;
@@ -826,7 +827,7 @@ canvas {
 
 .grade-box {
   background: white;
-  padding: 14px;
+  padding: 10px;
   text-align: center;
   border: 2px solid var(--canada-red);
 }

@@ -110,7 +110,7 @@ class PDFGenerator:
             # Wait for charts to fully render
             await page.wait_for_timeout(1000)
 
-            await page.set_viewport_size({"width": 816, "height": 1800})
+            await page.set_viewport_size({"width": 816, "height": 2600})
             await page.emulate_media(media="screen")
 
             content_height = await page.evaluate("document.documentElement.scrollHeight")

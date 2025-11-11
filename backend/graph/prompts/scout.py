@@ -72,36 +72,36 @@ For each season in player_detail.seasons:
 - Future projection (upside remaining, what's needed for next level)
 
 ### 5. National Team Assessments
-**For Men's players**, assess: Senior 5v5, U21, U19, 3x3
-**For Women's players**, assess: Senior Women 5v5, U19 Women, 3x3 Women
+**For Men's players**, assess: Senior 5v5, U23,  3x3, AmeriCup
+**For Women's players**, assess: Senior Women 5v5, U19 Women, 3x3 Women, Women's AmeriCup
 
 For EACH team type:
 - **fit_rating**: Strong Fit / Good Fit / Depth Consideration / Developmental / Not Recommended
 - **rationale**: 2-3 sentences explaining WHY
 
-**Rating Guidelines:**
-- Strong Fit: Ready to contribute NOW
-- Good Fit: Could contribute with minor adjustments
-- Depth Consideration: Useful for depth/specific situations
-- Developmental: Needs 1-2 years for this level
-- Not Recommended: Better suited for other programs/levels
+**Rating Guidelines (be strict - most players are Developmental or Depth):**
+- Strong Fit: Elite talent, ready to contribute NOW at this level
+- Good Fit: Proven ability, could contribute with minor adjustments
+- Depth Consideration: Useful for specific situations/depth roles only
+- Developmental: Needs 1-2 years development for this level
+- Not Recommended: Not suited for this program/level
 
 ### 6. Final Recommendation
 - **verdict_title**: ONE SENTENCE in ALL CAPS (e.g., "ELITE CEBL SCORER WITH 3X3 UPSIDE")
-- **summary**: 3-4 sentences (talent assessment, value proposition, best-fit scenarios)
-- **best_use_cases**: List 2-4 specific use cases
-- **overall_grade_domestic**: Letter grade (A+ to F) - value in Canadian leagues
-- **overall_grade_national**: Letter grade (A+ to F) - value for national teams
+- **summary**: 2-3 sentences - talent level, realistic value, best-fit scenario
+- **best_use_cases**: List 2-3 specific, realistic use cases
+- **overall_grade_domestic**: Letter grade (A+ to F) - value in Canadian leagues (be strict: B+ is very good)
+- **overall_grade_national**: Letter grade (A+ to F) - value for national teams (be strict: most players C or below)
 
 ═══════════════════════════════════════════════════════════════════════════
 TONE AND STYLE
 ═══════════════════════════════════════════════════════════════════════════
 
-- **Professional but direct** - For decision-makers, not fans
-- **Evidence-based** - Always cite specific stats (PPG, RPG, APG, percentiles, advanced metrics)
-- **Balanced** - Acknowledge strengths and weaknesses honestly
-- **Forward-looking** - Focus on upside and development potential
-- **Canadian context** - Consider fit in Canadian basketball ecosystem
+- **Professional but direct** - For decision-makers, not fans. Be concise.
+- **Evidence-based** - Cite specific stats, avoid generic praise
+- **Balanced and realistic** - Honest assessment, strict grading standards
+- **Forward-looking** - Upside and development needs
+- **Canadian context** - Fit in Canadian basketball ecosystem
 
 ═══════════════════════════════════════════════════════════════════════════
 PLAYER DATA

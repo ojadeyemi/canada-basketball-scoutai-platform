@@ -37,7 +37,11 @@ import {
 } from "lucide-react";
 import Editor, { type Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
-import { runRawSQL, getDatabaseSchema } from "@/services/agentService";
+import {
+  runRawSQL,
+  getDatabaseSchema,
+  SQLError,
+} from "@/services/agentService";
 import type { DatabaseSchema, LeagueDBName } from "@/types/agent";
 import {
   useReactTable,
@@ -61,7 +65,7 @@ function RawQueryResultTable({ data }: { data: Record<string, any>[] }) {
     return <p className="text-sm text-muted-foreground">No results found.</p>;
   }
 
-  const formatCellValue = (value: any): string => {
+  const formatCellValue = (value: number | string | unknown): string => {
     if (value === null || value === undefined) return "—";
     if (typeof value === "number") {
       return Number.isInteger(value) ? value.toString() : value.toFixed(2);
@@ -70,29 +74,31 @@ function RawQueryResultTable({ data }: { data: Record<string, any>[] }) {
   };
 
   const columnKeys = Object.keys(data[0]);
-  const columns: ColumnDef<Record<string, any>>[] = columnKeys.map((key) => ({
-    accessorKey: key,
-    header: ({ column }) => {
-      const sortDirection = column.getIsSorted();
-      return (
-        <button
-          className="flex items-center gap-1 hover:text-foreground transition-colors font-semibold"
-          onClick={() => column.toggleSorting(sortDirection === "asc")}
-          aria-label={`Sort by ${key} ${sortDirection === "asc" ? "descending" : "ascending"}`}
-        >
-          {key}
-          {sortDirection === "asc" ? (
-            <ArrowUp className="w-4 h-4" />
-          ) : sortDirection === "desc" ? (
-            <ArrowDown className="w-4 h-4" />
-          ) : (
-            <ArrowUpDown className="w-4 h-4 opacity-50" />
-          )}
-        </button>
-      );
-    },
-    cell: ({ getValue }) => formatCellValue(getValue()),
-  }));
+  const columns: ColumnDef<Record<string, undefined>>[] = columnKeys.map(
+    (key) => ({
+      accessorKey: key,
+      header: ({ column }) => {
+        const sortDirection = column.getIsSorted();
+        return (
+          <button
+            className="flex items-center gap-1 hover:text-foreground transition-colors font-semibold"
+            onClick={() => column.toggleSorting(sortDirection === "asc")}
+            aria-label={`Sort by ${key} ${sortDirection === "asc" ? "descending" : "ascending"}`}
+          >
+            {key}
+            {sortDirection === "asc" ? (
+              <ArrowUp className="w-4 h-4" />
+            ) : sortDirection === "desc" ? (
+              <ArrowDown className="w-4 h-4" />
+            ) : (
+              <ArrowUpDown className="w-4 h-4 opacity-50" />
+            )}
+          </button>
+        );
+      },
+      cell: ({ getValue }) => formatCellValue(getValue()),
+    })
+  );
 
   const table = useReactTable({
     data,
@@ -118,14 +124,14 @@ function RawQueryResultTable({ data }: { data: Record<string, any>[] }) {
                   className={cn(
                     "h-10 px-3 text-xs font-medium bg-muted/50",
                     headerIndex !== headerGroup.headers.length - 1 &&
-                      "border-r border-border/20",
+                      "border-r border-border/20"
                   )}
                 >
                   {header.isPlaceholder
                     ? null
                     : flexRender(
                         header.column.columnDef.header,
-                        header.getContext(),
+                        header.getContext()
                       )}
                 </TableHead>
               ))}
@@ -138,7 +144,7 @@ function RawQueryResultTable({ data }: { data: Record<string, any>[] }) {
               key={row.id}
               className={cn(
                 "border-b border-border/20 transition-colors hover:bg-muted/30",
-                index % 2 === 0 ? "bg-background" : "bg-muted/10",
+                index % 2 === 0 ? "bg-background" : "bg-muted/10"
               )}
             >
               {row.getVisibleCells().map((cell, cellIndex) => (
@@ -147,7 +153,7 @@ function RawQueryResultTable({ data }: { data: Record<string, any>[] }) {
                   className={cn(
                     "px-3 py-2.5 text-sm",
                     cellIndex !== row.getVisibleCells().length - 1 &&
-                      "border-r border-border/20",
+                      "border-r border-border/20"
                   )}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -164,10 +170,14 @@ function RawQueryResultTable({ data }: { data: Record<string, any>[] }) {
 export function SQLEditor({ sqlQuery, dbName, chartTitle }: SQLEditorProps) {
   const [isQueryOpen, setIsQueryOpen] = useState(false);
   const [rawQueryResults, setRawQueryResults] = useState<
-    Record<string, any>[] | null
+    Record<string, undefined>[] | null
   >(null);
   const [isRawQueryLoading, setIsRawQueryLoading] = useState(false);
-  const [rawQueryError, setRawQueryError] = useState<string | null>(null);
+  const [rawQueryError, setRawQueryError] = useState<{
+    message: string;
+    rawError: string;
+  } | null>(null);
+  const [showFullError, setShowFullError] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const [editedSQL, setEditedSQL] = useState(sqlQuery);
@@ -196,14 +206,25 @@ export function SQLEditor({ sqlQuery, dbName, chartTitle }: SQLEditorProps) {
     setIsRawQueryLoading(true);
     setRawQueryError(null);
     setRawQueryResults(null);
+    setShowFullError(false);
     try {
       const results = await runRawSQL(editedSQL, dbName as LeagueDBName);
       setRawQueryResults(results);
     } catch (error) {
       console.error("Failed to run raw SQL query:", error);
-      setRawQueryError(
-        error instanceof Error ? error.message : "An unknown error occurred.",
-      );
+      if (error instanceof SQLError) {
+        setRawQueryError({
+          message: error.message,
+          rawError: error.rawError,
+        });
+      } else {
+        const errorMsg =
+          error instanceof Error ? error.message : "An unknown error occurred.";
+        setRawQueryError({
+          message: errorMsg,
+          rawError: errorMsg,
+        });
+      }
     } finally {
       setIsRawQueryLoading(false);
     }
@@ -215,7 +236,7 @@ export function SQLEditor({ sqlQuery, dbName, chartTitle }: SQLEditorProps) {
 
   const handleEditorDidMount = (
     editorInstance: editor.IStandaloneCodeEditor,
-    monaco: Monaco,
+    monaco: Monaco
   ) => {
     editorRef.current = editorInstance;
     monacoRef.current = monaco;
@@ -410,13 +431,25 @@ export function SQLEditor({ sqlQuery, dbName, chartTitle }: SQLEditorProps) {
         </div>
 
         {rawQueryError && (
-          <div className="bg-red-500/10 border border-red-500/20 p-3 rounded-md">
-            <div className="flex items-start gap-2">
+          <div className="bg-red-500/10 border border-red-500/20 p-3 rounded-md space-y-2">
+            <div className="flex items-start justify-between gap-2">
               <span className="text-red-500 font-semibold text-sm">
                 ❌ SQL Error
               </span>
+              {rawQueryError.message !== rawQueryError.rawError && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowFullError(!showFullError)}
+                  className="h-6 text-xs text-red-400 hover:text-red-300"
+                >
+                  {showFullError ? "Hide details" : "Show full error"}
+                </Button>
+              )}
             </div>
-            <p className="text-red-500 text-xs mt-1">{rawQueryError}</p>
+            <p className="text-red-500 text-xs">
+              {showFullError ? rawQueryError.rawError : rawQueryError.message}
+            </p>
           </div>
         )}
 

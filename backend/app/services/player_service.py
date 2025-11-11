@@ -3,7 +3,7 @@
 from typing import Any
 
 from ..db.sqlite import execute_query
-from ..schemas.player import PlayerDetail, PlayerSeasonStats, ShotChartData, ShotAttempt
+from ..schemas.player import PlayerDetail, PlayerSeasonStats, ShotAttempt, ShotChartData
 from .stats_calculator import (
     calculate_advanced_stats,
     calculate_league_comparison,
@@ -150,7 +150,7 @@ def _get_league_averages(league: str, season: str) -> dict[str, float | None] | 
     }
 
 
-def get_player_details(league: str, player_id: str) -> PlayerDetail | None:
+async def get_player_details(league: str, player_id: str) -> PlayerDetail | None:
     """
     Get detailed player information including stats across all seasons.
 
@@ -161,14 +161,16 @@ def get_player_details(league: str, player_id: str) -> PlayerDetail | None:
     Returns:
         PlayerDetail object or None if not found
     """
+    import asyncio
+
     league = league.lower()
 
     if league in ["usports", "ccaa"]:
-        return _get_usports_ccaa_details(league, player_id)
+        return await asyncio.to_thread(_get_usports_ccaa_details, league, player_id)
     elif league == "cebl":
-        return _get_cebl_details(player_id)
+        return await asyncio.to_thread(_get_cebl_details, player_id)
     elif league == "hoopqueens":
-        return _get_hoopqueens_details(player_id)
+        return await asyncio.to_thread(_get_hoopqueens_details, player_id)
 
     return None
 
@@ -341,13 +343,13 @@ def _get_usports_ccaa_details(league: str, player_id: str) -> PlayerDetail | Non
             total_free_throws_attempted=row.get("free_throws_attempted"),
             # Scoring (per game)
             points_per_game=round(row["total_points"] / gp, 1) if row.get("total_points") else None,
-            field_goal_percentage=row.get("field_goal_percentage") / 100
+            field_goal_percentage=row.get("field_goal_percentage", 0) / 100
             if row.get("field_goal_percentage") is not None
             else None,
-            three_point_percentage=row.get("three_pointers_percentage") / 100
+            three_point_percentage=row.get("three_pointers_percentage", 0) / 100
             if row.get("three_pointers_percentage") is not None
             else None,
-            free_throw_percentage=row.get("free_throws_percentage") / 100
+            free_throw_percentage=row.get("free_throws_percentage", 0) / 100
             if row.get("free_throws_percentage") is not None
             else None,
             # Rebounds (totals)
@@ -557,7 +559,7 @@ def _get_cebl_details(player_id: str) -> PlayerDetail | None:
             # Core counting stats
             games_played=row.get("games_played"),
             games_started=None,  # Not available in CEBL data
-            total_minutes=int(row.get("minutes")) if row.get("minutes") else None,
+            total_minutes=int(row.get("minutes", 0)) if row.get("minutes") else None,
             minutes_per_game=round(row["minutes"] / gp, 1) if row.get("minutes") else None,
             # Scoring (totals)
             total_points=int(float(row["points"])) if row.get("points") else None,
@@ -575,13 +577,13 @@ def _get_cebl_details(player_id: str) -> PlayerDetail | None:
             else None,
             # Scoring (per game)
             points_per_game=round(row["points"] / gp, 1) if row.get("points") else None,
-            field_goal_percentage=row.get("field_goal_percentage") / 100
+            field_goal_percentage=row.get("field_goal_percentage", 0) / 100
             if row.get("field_goal_percentage") is not None
             else None,
-            three_point_percentage=row.get("three_point_percentage") / 100
+            three_point_percentage=row.get("three_point_percentage", 0) / 100
             if row.get("three_point_percentage") is not None
             else None,
-            free_throw_percentage=row.get("free_throw_percentage") / 100
+            free_throw_percentage=row.get("free_throw_percentage", 0) / 100
             if row.get("free_throw_percentage") is not None
             else None,
             # Rebounds (totals)
@@ -797,7 +799,7 @@ def _get_hoopqueens_details(player_id: str) -> PlayerDetail | None:
             # Core counting stats
             games_played=row.get("games_played"),
             games_started=None,  # Not tracked in HoopQueens
-            total_minutes=int(row.get("total_minutes")) if row.get("total_minutes") else None,
+            total_minutes=int(row.get("total_minutes", 0)) if row.get("total_minutes") else None,
             minutes_per_game=round(row["total_minutes"] / gp, 1) if row.get("total_minutes") else None,
             # Scoring (totals)
             total_points=row.get("total_points"),
@@ -845,7 +847,7 @@ def _get_hoopqueens_details(player_id: str) -> PlayerDetail | None:
         seasons.append(season_stats)
 
     # Calculate career stats
-    career_stats = _calculate_career_stats_from_seasons(seasons) if seasons else None
+    career_stats = _calculate_career_stats_from_seasons(seasons) if seasons else []
 
     return PlayerDetail(
         player_id=player_id,
