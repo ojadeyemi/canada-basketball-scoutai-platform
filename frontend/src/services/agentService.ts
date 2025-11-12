@@ -30,7 +30,7 @@ async function getErrorFromResponse(response: Response): Promise<string> {
 }
 
 async function getSQLErrorFromResponse(
-  response: Response
+  response: Response,
 ): Promise<SQLErrorDetail> {
   try {
     const data = await response.json();
@@ -55,7 +55,7 @@ export async function* streamChat(
   userInput: string | number | boolean,
   sessionId: string,
   isResume = false,
-  interruptType?: "player_selection_for_scouting" | "scouting_confirmation"
+  interruptType?: "player_selection_for_scouting" | "scouting_confirmation",
 ): AsyncGenerator<StreamEvent> {
   const response = await fetch(`${API_BASE_URL}/agent/chat`, {
     method: "POST",
@@ -111,7 +111,7 @@ export async function* streamChat(
 export class SQLError extends Error {
   constructor(
     message: string,
-    public rawError: string
+    public rawError: string,
   ) {
     super(message);
     this.name = "SQLError";
@@ -120,7 +120,7 @@ export class SQLError extends Error {
 
 export async function runRawSQL(
   sql: string,
-  dbName: LeagueDBName
+  dbName: LeagueDBName,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<Record<string, any>[]> {
   const response = await fetch(`${API_BASE_URL}/agent/run-sql`, {
@@ -139,7 +139,7 @@ export async function runRawSQL(
 }
 
 export async function getDatabaseSchema(
-  dbName: LeagueDBName
+  dbName: LeagueDBName,
 ): Promise<DatabaseSchema> {
   const response = await fetch(`${API_BASE_URL}/agent/schema/${dbName}`, {
     method: "GET",

@@ -12,11 +12,32 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { APP_CONFIG } from "@/constants";
 import { useOnboarding } from "@/hooks/useOnboarding";
+import { useBackendStatus } from "@/hooks/useBackendStatus";
 
 export default function HomePage() {
   useOnboarding();
+  const backendStatus = useBackendStatus();
+
   return (
     <div className="relative min-h-[calc(100vh-16rem)] w-full overflow-hidden flex items-center justify-center">
+      {/* Backend Status Indicator */}
+      {backendStatus !== "hidden" && (
+        <div className="fixed top-24 right-4 z-50">
+          <Badge
+            variant={backendStatus === "ready" ? "default" : "secondary"}
+            className={cn(
+              "text-xs px-3 py-1 shadow-md",
+              backendStatus === "ready" &&
+                "bg-green-600 hover:bg-green-600 text-white",
+              backendStatus === "loading" &&
+                "bg-gray-200 text-gray-700 animate-pulse",
+            )}
+          >
+            {backendStatus === "loading" ? "Waking up..." : "Backend Ready ✓"}
+          </Badge>
+        </div>
+      )}
+
       {/* Background Grid Pattern */}
       <InteractiveGridPattern
         className={cn(

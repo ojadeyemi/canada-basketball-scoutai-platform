@@ -78,3 +78,13 @@ export const getShotChartData = async (
   );
   return data;
 };
+
+// Backend Warmup
+export const warmupBackend = async (): Promise<boolean> => {
+  try {
+    await api.get("/health", { timeout: 30000 });
+    return true;
+  } catch {
+    return false;
+  }
+};

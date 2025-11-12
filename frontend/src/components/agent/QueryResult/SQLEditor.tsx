@@ -97,7 +97,7 @@ function RawQueryResultTable({ data }: { data: Record<string, any>[] }) {
         );
       },
       cell: ({ getValue }) => formatCellValue(getValue()),
-    })
+    }),
   );
 
   const table = useReactTable({
@@ -124,14 +124,14 @@ function RawQueryResultTable({ data }: { data: Record<string, any>[] }) {
                   className={cn(
                     "h-10 px-3 text-xs font-medium bg-muted/50",
                     headerIndex !== headerGroup.headers.length - 1 &&
-                      "border-r border-border/20"
+                      "border-r border-border/20",
                   )}
                 >
                   {header.isPlaceholder
                     ? null
                     : flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                 </TableHead>
               ))}
@@ -144,7 +144,7 @@ function RawQueryResultTable({ data }: { data: Record<string, any>[] }) {
               key={row.id}
               className={cn(
                 "border-b border-border/20 transition-colors hover:bg-muted/30",
-                index % 2 === 0 ? "bg-background" : "bg-muted/10"
+                index % 2 === 0 ? "bg-background" : "bg-muted/10",
               )}
             >
               {row.getVisibleCells().map((cell, cellIndex) => (
@@ -153,7 +153,7 @@ function RawQueryResultTable({ data }: { data: Record<string, any>[] }) {
                   className={cn(
                     "px-3 py-2.5 text-sm",
                     cellIndex !== row.getVisibleCells().length - 1 &&
-                      "border-r border-border/20"
+                      "border-r border-border/20",
                   )}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -236,7 +236,7 @@ export function SQLEditor({ sqlQuery, dbName, chartTitle }: SQLEditorProps) {
 
   const handleEditorDidMount = (
     editorInstance: editor.IStandaloneCodeEditor,
-    monaco: Monaco
+    monaco: Monaco,
   ) => {
     editorRef.current = editorInstance;
     monacoRef.current = monaco;

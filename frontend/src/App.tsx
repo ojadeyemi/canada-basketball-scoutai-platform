@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import CardNav from "./components/CardNav";
 import type { CardNavItem } from "./components/CardNav";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -7,6 +7,7 @@ import Footer from "./components/Footer";
 import logo from "./assets/logo.svg";
 import { Toaster } from "@/components/ui/sonner";
 import { APP_CONFIG } from "./constants";
+import { warmupBackend } from "./services/api";
 
 const HomePage = lazy(() => import("./pages/HomePage"));
 const PlayerSearchPage = lazy(() => import("./pages/PlayerSearchPage"));
@@ -14,6 +15,9 @@ const AIAgentPage = lazy(() => import("./pages/AIAgentPage"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
 const FAQPage = lazy(() => import("./pages/FAQPage"));
 function App() {
+  useEffect(() => {
+    warmupBackend();
+  }, []);
   const navItems: CardNavItem[] = [
     {
       label: "Tools",
