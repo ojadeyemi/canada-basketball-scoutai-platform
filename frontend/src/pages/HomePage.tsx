@@ -30,7 +30,7 @@ export default function HomePage() {
               backendStatus === "ready" &&
                 "bg-green-600 hover:bg-green-600 text-white",
               backendStatus === "loading" &&
-                "bg-gray-200 text-gray-700 animate-pulse",
+                "bg-gray-200 text-gray-700 animate-pulse"
             )}
           >
             {backendStatus === "loading" ? "Waking up..." : "Backend Ready ✓"}
@@ -42,7 +42,7 @@ export default function HomePage() {
       <InteractiveGridPattern
         className={cn(
           "[mask-image:radial-gradient(500px_circle_at_center,white,transparent)]",
-          "opacity-30",
+          "opacity-30"
         )}
         width={20}
         height={20}
