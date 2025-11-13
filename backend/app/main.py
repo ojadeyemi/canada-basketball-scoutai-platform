@@ -90,3 +90,9 @@ app.include_router(sql.router)
 async def health():
     """Health check endpoint."""
     return {"status": "UP", "service": "canada-basketball-api"}
+
+
+@app.get("/api/health", tags=["Health"])
+async def api_health():
+    """Health check endpoint."""
+    return {"status": "UP", "service": "canada-basketball-api"}
