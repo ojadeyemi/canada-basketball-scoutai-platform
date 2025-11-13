@@ -68,6 +68,7 @@ export function TableBrowser({ data, tableName, league, isLoading }: TableBrowse
   const [visualizationOpen, setVisualizationOpen] = useState(false);
   const [shotChartOpen, setShotChartOpen] = useState(false);
   const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(null);
+  const [selectedPlayerName, setSelectedPlayerName] = useState<string | null>(null);
 
   // Detect if this is CEBL play_by_play data (has x, y, player_id)
   const isShotChartData =
@@ -180,22 +181,10 @@ export function TableBrowser({ data, tableName, league, isLoading }: TableBrowse
         {/* Actions */}
         <div className="flex flex-wrap gap-2">
           {isShotChartData && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                // Get first player_id from filtered data
-                const firstRow = table.getFilteredRowModel().rows[0]?.original;
-                if (firstRow?.player_id) {
-                  setSelectedPlayerId(firstRow.player_id);
-                  setShotChartOpen(true);
-                }
-              }}
-              disabled={table.getFilteredRowModel().rows.length === 0}
-            >
-              <MapPin className="w-4 h-4 mr-2" />
-              Shot Chart
-            </Button>
+            <Badge variant="secondary" className="px-3 py-1">
+              <MapPin className="w-3 h-3 mr-1" />
+              Click any row to view shot chart
+            </Badge>
           )}
           <Button
             variant="outline"
@@ -283,9 +272,21 @@ export function TableBrowser({ data, tableName, league, isLoading }: TableBrowse
                 table.getRowModel().rows.map((row, index) => (
                   <TableRow
                     key={row.id}
+                    onClick={() => {
+                      if (isShotChartData && row.original.player_id) {
+                        setSelectedPlayerId(row.original.player_id);
+                        setSelectedPlayerName(
+                          row.original.player_name ||
+                          row.original.scoreboard_name ||
+                          `Player ${row.original.player_id}`
+                        );
+                        setShotChartOpen(true);
+                      }
+                    }}
                     className={cn(
                       "border-b transition-colors hover:bg-muted/50",
-                      index % 2 === 0 ? "bg-background" : "bg-muted/10"
+                      index % 2 === 0 ? "bg-background" : "bg-muted/10",
+                      isShotChartData && "cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-950/20"
                     )}
                   >
                     {row.getVisibleCells().map((cell) => (
@@ -373,11 +374,16 @@ export function TableBrowser({ data, tableName, league, isLoading }: TableBrowse
       {/* Shot Chart Modal */}
       {isShotChartData && selectedPlayerId && (
         <Dialog open={shotChartOpen} onOpenChange={setShotChartOpen}>
-          <DialogContent className="max-w-4xl">
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Shot Chart - Player {selectedPlayerId}</DialogTitle>
+              <DialogTitle className="flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-primary" />
+                Shot Chart: {selectedPlayerName}
+              </DialogTitle>
             </DialogHeader>
-            <ShotChart playerId={selectedPlayerId} />
+            <div className="mt-4">
+              <ShotChart playerId={selectedPlayerId} />
+            </div>
           </DialogContent>
         </Dialog>
       )}

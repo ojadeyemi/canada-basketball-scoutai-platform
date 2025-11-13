@@ -109,6 +109,17 @@ export async function getTableData(
 }
 
 /**
+ * Sanitize filename to prevent file system issues.
+ */
+function sanitizeFilename(filename: string): string {
+  // Replace any non-alphanumeric characters (except _ and -) with underscore
+  // Also add timestamp to ensure uniqueness
+  const sanitized = filename.replace(/[^a-z0-9_-]/gi, '_');
+  const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+  return `${sanitized}_${timestamp}`;
+}
+
+/**
  * Export table data as CSV.
  */
 export function exportToCSV(data: Record<string, any>[], filename: string): void {
@@ -138,12 +149,13 @@ export function exportToCSV(data: Record<string, any>[], filename: string): void
 
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
   const link = document.createElement("a");
+  const safeFilename = sanitizeFilename(filename);
   link.href = URL.createObjectURL(blob);
-  link.download = `${filename}.csv`;
+  link.download = `${safeFilename}.csv`;
   link.click();
   URL.revokeObjectURL(link.href);
 
-  toast.success(`Exported ${data.length} rows to ${filename}.csv`);
+  toast.success(`Exported ${data.length} rows to ${safeFilename}.csv`);
 }
 
 /**
@@ -158,10 +170,11 @@ export function exportToJSON(data: Record<string, any>[], filename: string): voi
   const jsonContent = JSON.stringify(data, null, 2);
   const blob = new Blob([jsonContent], { type: "application/json;charset=utf-8;" });
   const link = document.createElement("a");
+  const safeFilename = sanitizeFilename(filename);
   link.href = URL.createObjectURL(blob);
-  link.download = `${filename}.json`;
+  link.download = `${safeFilename}.json`;
   link.click();
   URL.revokeObjectURL(link.href);
 
-  toast.success(`Exported ${data.length} rows to ${filename}.json`);
+  toast.success(`Exported ${data.length} rows to ${safeFilename}.json`);
 }

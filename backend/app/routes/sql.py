@@ -196,6 +196,40 @@ class TableDataResponse(BaseModel):
     filters_applied: dict
 
 
+def _validate_table_name(cursor, table_name: str) -> str:
+    """
+    Validate and sanitize table name to prevent SQL injection.
+    Returns the validated table name or raises HTTPException.
+    """
+    # Get list of valid tables
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+    valid_tables = [row[0] for row in cursor.fetchall()]
+
+    if table_name not in valid_tables:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Table '{table_name}' not found. Valid tables: {', '.join(valid_tables)}"
+        )
+
+    return table_name
+
+
+def _convert_season_value(season: str, league: str) -> int | str:
+    """
+    Convert season to appropriate type based on league.
+    CEBL uses integers, others use strings like '2024-25'.
+    """
+    if league == "cebl":
+        try:
+            return int(season)
+        except ValueError:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid season format for CEBL. Expected integer (e.g., 2024), got: {season}"
+            )
+    return season
+
+
 @router.get("/{league}/{table_name}", response_model=TableDataResponse)
 async def get_table_data(
     league: str,
@@ -219,40 +253,40 @@ async def get_table_data(
         conn = get_sqlite_connection(league)
         cursor = conn.cursor()
 
-        # Verify table exists
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (table_name,))
-        if not cursor.fetchone():
-            raise HTTPException(status_code=404, detail=f"Table '{table_name}' not found in {league} database")
+        # Validate table name (SQL injection protection)
+        validated_table = _validate_table_name(cursor, table_name)
 
-        # Get total row count
-        cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
+        # Get total row count (safe to use validated table name)
+        cursor.execute(f"SELECT COUNT(*) FROM {validated_table}")
         total_rows = cursor.fetchone()[0]
 
         # Get columns
-        cursor.execute(f"PRAGMA table_info({table_name})")
+        cursor.execute(f"PRAGMA table_info({validated_table})")
         columns = [row[1] for row in cursor.fetchall()]
 
         # Build query
-        query = f"SELECT * FROM {table_name}"
+        query = f"SELECT * FROM {validated_table}"
         params = []
         filters_applied = {}
 
         # Check if season filter is required for large tables
         if total_rows > 50000 and "season" in columns and not season:
             # Default to latest season for play_by_play
-            if table_name == "play_by_play":
+            if validated_table == "play_by_play":
                 season = "2025" if league == "cebl" else None
 
             if not season:
                 raise HTTPException(
                     status_code=400,
-                    detail=f"Season filter is required for '{table_name}' (table has {total_rows:,} rows). Please provide ?season=XXXX"
+                    detail=f"Season filter is required for '{validated_table}' (table has {total_rows:,} rows). Please provide ?season=XXXX"
                 )
 
         # Apply season filter if provided
         if season and "season" in columns:
+            # Convert season to appropriate type for the league
+            season_value = _convert_season_value(season, league)
             query += " WHERE season = ?"
-            params.append(season)
+            params.append(season_value)
             filters_applied["season"] = season
 
         # Apply limit if provided
@@ -269,7 +303,7 @@ async def get_table_data(
 
         return TableDataResponse(
             league=league,
-            table_name=table_name,
+            table_name=validated_table,
             data=rows,
             columns=columns,
             row_count=len(rows),
