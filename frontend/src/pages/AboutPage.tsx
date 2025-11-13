@@ -24,7 +24,7 @@ export default function AboutPage() {
       <InteractiveGridPattern
         className={cn(
           "[mask-image:radial-gradient(500px_circle_at_center,white,transparent)]",
-          "opacity-30",
+          "opacity-30"
         )}
         width={20}
         height={20}
@@ -34,7 +34,7 @@ export default function AboutPage() {
       <div className="max-w-6xl mx-auto w-full relative z-10">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 to-gray-800 bg-clip-text text-transparent mb-4">
-            About Canada Basketball AI Scouting Platform
+            About Canada Basketball Scouting Platform
           </h1>
           <p className="text-muted-foreground text-xl max-w-3xl mx-auto">
             An AI-powered platform for Canadian basketball talent discovery
@@ -80,12 +80,12 @@ export default function AboutPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-muted-foreground leading-relaxed text-lg">
-                Canada Basketball AI Scouting consolidates player statistics
-                from four major Canadian basketball leagues (U SPORTS, CCAA,
-                CEBL, and HoopQueens) into a single searchable platform. It
-                features an AI agent powered by LangGraph that can answer
-                natural language queries, generate detailed scouting reports,
-                and provide statistical insights to help scouts, coaches, and
+                Canada Basketball Scouting consolidates player statistics from
+                four major Canadian basketball leagues (U SPORTS, CCAA, CEBL,
+                and HoopQueens) into a single searchable platform. It features
+                an AI agent powered by LangGraph that can answer natural
+                language queries, generate detailed scouting reports, and
+                provide statistical insights to help scouts, coaches, and
                 analysts discover talent.
               </p>
             </CardContent>

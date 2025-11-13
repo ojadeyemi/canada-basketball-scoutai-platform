@@ -20,12 +20,12 @@ export default function FAQPage() {
     {
       question: "What leagues does this platform cover?",
       answer:
-        "Canada Basketball AI Scouting Platform covers four major Canadian basketball leagues: U SPORTS (university), CCAA (college), CEBL (professional men's league), and HoopQueens (professional women's summer league).",
+        "Canada Basketball Scouting Platform covers four major Canadian basketball leagues: U SPORTS (university), CCAA (college), CEBL (professional men's league), and HoopQueens (professional women's summer league).",
     },
     {
       question: "How does the AI Scouting Agent work?",
       answer:
-        "The AI Scouting Agent uses LangGraph and large language models to understand natural language queries about players and statistics. It can query our databases, generate insights, create visualizations, and produce comprehensive scouting reports in PDF format.",
+        "The AI Scouting Agent is powered by Cohere and Google Gemini AI models, using LangGraph to understand natural language queries about players and statistics. It can query our databases, generate insights, create visualizations, and produce comprehensive scouting reports in PDF format.",
     },
     {
       question: "Can I search for players across all leagues at once?",
@@ -52,21 +52,6 @@ export default function FAQPage() {
       answer:
         "Yes! The AI Agent can handle comparison queries like 'Compare the top scorers in CEBL vs U SPORTS' or statistical comparisons between specific players from different leagues.",
     },
-    {
-      question: "Who built this platform?",
-      answer:
-        "This platform was created by OJ Adeyemi, a Software Engineer and Data Scientist passionate about basketball analytics and AI applications in sports. Check out the About page for more details.",
-    },
-    {
-      question: "Is this tool affiliated with Canada Basketball?",
-      answer:
-        "No, this is an independent project created to help scouts, coaches, and analysts discover Canadian basketball talent. Canada Basketball is the official governing body mentioned for informational purposes only.",
-    },
-    {
-      question: "Can I export or download player statistics?",
-      answer:
-        "Currently, you can generate and download PDF scouting reports through the AI Agent. Additional export features for raw data may be added in future updates.",
-    },
   ];
 
   return (
@@ -74,7 +59,7 @@ export default function FAQPage() {
       {/* Background Grid Pattern */}
       <InteractiveGridPattern
         className={cn(
-          "[mask-image:radial-gradient(500px_circle_at_center,white,transparent)]",
+          "[mask-image:radial-gradient(500px_circle_at_center,white,transparent)]"
         )}
         width={20}
         height={20}
@@ -90,7 +75,7 @@ export default function FAQPage() {
             </h1>
           </div>
           <p className="text-muted-foreground text-xl max-w-3xl mx-auto">
-            Everything you need to know about Canada Basketball AI Scouting
+            Everything you need to know about Canada Basketball Scouting
             Platform
           </p>
         </div>

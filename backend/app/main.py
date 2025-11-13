@@ -41,7 +41,7 @@ async def lifespan(app: FastAPI):
 
 # Create FastAPI app with custom lifespan handler
 app = FastAPI(
-    title="Canada Basketball AI Scouting System",
+    title="Canada Basketball Scouting System",
     description=(
         "AI-powered scouting platform for Canadian basketball talent identification. "
         "This API is currently in research preview and is being tested by Canada Basketball coaches and scouts."
@@ -86,6 +86,7 @@ app.include_router(sql.router)
 
 
 @app.get("/health", tags=["Health"])
+@app.get("/api/health", tags=["Health"])
 async def health():
     """Health check endpoint."""
     return {"status": "UP", "service": "canada-basketball-api"}

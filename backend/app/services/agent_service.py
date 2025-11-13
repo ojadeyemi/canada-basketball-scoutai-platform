@@ -53,7 +53,6 @@ async def event_generator(chat_input: ChatInput, request: Request):
     # and pass the value to the next interrupt() invocation in that node.
     # See graph/graph.py:confirm_scouting_report for interrupt usage.
     if chat_input.is_resume:
-        print(f"[RESUME] Type: {chat_input.interrupt_type}, Value: {chat_input.user_input}")
         user_input_state = Command(resume=chat_input.user_input)
     else:
         user_input_state = {"messages": [HumanMessage(content=str(chat_input.user_input))]}

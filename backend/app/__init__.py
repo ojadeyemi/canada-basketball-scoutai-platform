@@ -1,1 +1,1 @@
-"""Canada Basketball AI Scouting System - FastAPI Application"""
+"""Canada Basketball Scouting System - FastAPI Application"""

@@ -52,7 +52,7 @@ export default function HomePage() {
       <div className="max-w-7xl mx-auto w-full relative z-10">
         <div className="text-center mb-16">
           <h1 className="text-6xl font-bold bg-gradient-to-r from-red-600 to-gray-800 bg-clip-text text-transparent mb-2">
-            Canada Basketball AI Scouting Platfrom
+            Canada Basketball Scouting Platfrom
           </h1>
           <Badge
             variant="outline"
@@ -122,11 +122,11 @@ export default function HomePage() {
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-red-600" />
-                      AI-generated scouting reports
+                      Interactive charts & visualizations
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-red-600" />
-                      Statistical comparisons
+                      AI-generated PDF scouting reports
                     </li>
                   </ul>
                 </div>
