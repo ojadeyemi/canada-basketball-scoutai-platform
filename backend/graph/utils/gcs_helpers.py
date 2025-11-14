@@ -11,28 +11,27 @@ from config.settings import settings
 
 def _get_gcs_client() -> storage.Client:
     """
-    Get authenticated GCS client using service account.
+    Get authenticated GCS client using service account or default credentials.
+
+    Tries multiple authentication methods in order:
+    1. Service account JSON file (if GOOGLE_APPLICATION_CREDENTIALS is set)
+    2. Default credentials (Cloud Run workload identity, ADC, gcloud auth, etc.)
 
     Returns:
         storage.Client instance
 
     Raises:
-        FileNotFoundError: If service account JSON not found
-        ValueError: If GOOGLE_APPLICATION_CREDENTIALS not set
+        Exception: If no valid authentication method is available
     """
     credentials_path = settings.google_application_credentials
 
-    if not credentials_path:
-        raise ValueError(
-            "GOOGLE_APPLICATION_CREDENTIALS environment variable not set. "
-            "Set it to the path of your service-account.json file."
-        )
+    # Try service account JSON file if path is provided
+    if credentials_path and Path(credentials_path).exists():
+        credentials = service_account.Credentials.from_service_account_file(credentials_path)
+        return storage.Client(credentials=credentials)
 
-    if not Path(credentials_path).exists():
-        raise FileNotFoundError(f"Service account file not found at: {credentials_path}")
-
-    credentials = service_account.Credentials.from_service_account_file(credentials_path)
-    return storage.Client(credentials=credentials)
+    # Fall back to default credentials (Cloud Run, ADC, etc.)
+    return storage.Client()
 
 
 def upload_pdf_to_gcs(local_pdf_path: Path | str, destination_blob_name: str | None = None) -> str:
