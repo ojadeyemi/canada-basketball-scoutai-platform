@@ -10,7 +10,7 @@ export function useTables(league: LeagueName | null) {
     queryKey: ["tables", league],
     queryFn: () => getTables(league!),
     enabled: !!league,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 24 * 60 * 60 * 1000, // 24 hours
   });
 }
 
@@ -23,12 +23,12 @@ export function useTableData(
   params?: {
     season?: string;
     limit?: number;
-  }
+  },
 ) {
   return useQuery({
     queryKey: ["tableData", league, tableName, params],
     queryFn: () => getTableData(league!, tableName!, params),
     enabled: !!league && !!tableName,
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    staleTime: 24 * 60 * 60 * 1000, // 24 hours
   });
 }

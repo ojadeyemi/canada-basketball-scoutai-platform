@@ -39,7 +39,7 @@ api.interceptors.response.use(
       message: error.message,
     });
     return Promise.reject(error);
-  },
+  }
 );
 
 // Player Search
@@ -47,14 +47,14 @@ export const searchPlayers = async (params: {
   query: string;
   leagues?: string[];
   seasons?: string[];
-  limit?: number; // Per-league limit (e.g., 3 per league across 4 leagues = max 12 results)
+  limit?: number; // Per-league limit (e.g., 5 per league across 4 leagues = max 20 results)
 }): Promise<PlayerSearchResult[]> => {
   const { data } = await api.get("/search/player", {
     params: {
       query: params.query,
       leagues: params.leagues?.join(","),
       seasons: params.seasons?.join(","),
-      limit: params.limit || 3, // Default: 3 results per league
+      limit: params.limit || 5, // Default: 5 results per league
     },
   });
   return data;
@@ -63,7 +63,7 @@ export const searchPlayers = async (params: {
 // Get Player Details
 export const getPlayerDetail = async (
   league: string,
-  playerId: string,
+  playerId: string
 ): Promise<PlayerDetail> => {
   const { data } = await api.get(`/search/player/${league}/${playerId}`);
   return data;
@@ -71,16 +71,16 @@ export const getPlayerDetail = async (
 
 export const getShotChartData = async (
   league: string,
-  playerId: string,
+  playerId: string
 ): Promise<ShotChartData> => {
   const { data } = await api.get(
-    `/search/player/${league}/${playerId}/shot-chart`,
+    `/search/player/${league}/${playerId}/shot-chart`
   );
   return data;
 };
 
 export const getShotChartDataByName = async (
-  playerName: string,
+  playerName: string
 ): Promise<ShotChartData> => {
   const { data } = await api.get(`/search/player/cebl/shot-chart-by-name`, {
     params: { player_name: playerName },

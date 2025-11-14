@@ -7,6 +7,7 @@ export interface TableMetadata {
   row_count: number;
   requires_season: boolean;
   latest_season: string | number | null;
+  available_seasons: (string | number)[];
   columns: string[];
 }
 

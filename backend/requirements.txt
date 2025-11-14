@@ -10,12 +10,11 @@ langchain==1.0.3
 langchain-community==0.4.1
 langchain-google-genai==3.0.0
 langchain-cohere==0.5.0
-langchain-openai==1.0.1
-langgraph==1.0.2
-langgraph-checkpoint-postgres==3.0.0
+langgraph==1.0.3
+langgraph-checkpoint-postgres==3.0.1
 
 # PDF Generation
-playwright==1.55.0
+playwright==1.56.0
 
 # Google Cloud
 google-cloud-storage==3.4.1

@@ -1,32 +1,14 @@
 import { API_BASE_URL } from "@/config/api";
 import { toast } from "sonner";
+import type {
+  TableListResponse,
+  TableDataResponse,
+} from "@/types/dataExplorer";
 
 /**
  * Data service for fetching table data from league databases.
  * Handles all /api/data endpoints for the Data Explorer.
  */
-
-export interface TableMetadata {
-  name: string;
-  row_count: number;
-  requires_season: boolean;
-  latest_season: string | number | null;
-  columns: string[];
-}
-
-export interface TableListResponse {
-  league: string;
-  tables: TableMetadata[];
-}
-
-export interface TableDataResponse {
-  league: string;
-  table_name: string;
-  data: Record<string, any>[];
-  columns: string[];
-  row_count: number;
-  filters_applied: Record<string, any>;
-}
 
 async function getErrorFromResponse(response: Response): Promise<string> {
   try {
@@ -59,7 +41,8 @@ export async function getTables(league: string): Promise<TableListResponse> {
 
     return response.json();
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to fetch tables";
+    const message =
+      error instanceof Error ? error.message : "Failed to fetch tables";
     toast.error(message);
     throw error;
   }
@@ -74,7 +57,7 @@ export async function getTableData(
   params?: {
     season?: string;
     limit?: number;
-  }
+  },
 ): Promise<TableDataResponse> {
   try {
     const queryParams = new URLSearchParams();
@@ -102,7 +85,8 @@ export async function getTableData(
 
     return response.json();
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to fetch table data";
+    const message =
+      error instanceof Error ? error.message : "Failed to fetch table data";
     toast.error(message);
     throw error;
   }
@@ -114,15 +98,18 @@ export async function getTableData(
 function sanitizeFilename(filename: string): string {
   // Replace any non-alphanumeric characters (except _ and -) with underscore
   // Also add timestamp to ensure uniqueness
-  const sanitized = filename.replace(/[^a-z0-9_-]/gi, '_');
-  const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+  const sanitized = filename.replace(/[^a-z0-9_-]/gi, "_");
+  const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, "-");
   return `${sanitized}_${timestamp}`;
 }
 
 /**
  * Export table data as CSV.
  */
-export function exportToCSV(data: Record<string, any>[], filename: string): void {
+export function exportToCSV(
+  data: Record<string, unknown>[],
+  filename: string,
+): void {
   if (data.length === 0) {
     toast.error("No data to export");
     return;
@@ -143,7 +130,7 @@ export function exportToCSV(data: Record<string, any>[], filename: string): void
           }
           return stringValue;
         })
-        .join(",")
+        .join(","),
     ),
   ].join("\n");
 
@@ -161,14 +148,19 @@ export function exportToCSV(data: Record<string, any>[], filename: string): void
 /**
  * Export table data as JSON.
  */
-export function exportToJSON(data: Record<string, any>[], filename: string): void {
+export function exportToJSON(
+  data: Record<string, unknown>[],
+  filename: string,
+): void {
   if (data.length === 0) {
     toast.error("No data to export");
     return;
   }
 
   const jsonContent = JSON.stringify(data, null, 2);
-  const blob = new Blob([jsonContent], { type: "application/json;charset=utf-8;" });
+  const blob = new Blob([jsonContent], {
+    type: "application/json;charset=utf-8;",
+  });
   const link = document.createElement("a");
   const safeFilename = sanitizeFilename(filename);
   link.href = URL.createObjectURL(blob);

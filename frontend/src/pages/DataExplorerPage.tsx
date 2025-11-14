@@ -1,5 +1,11 @@
 import { useState, useMemo } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
@@ -10,7 +16,14 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Database, Table as TableIcon, Code, FileText, AlertCircle, Loader2 } from "lucide-react";
+import {
+  Database,
+  Table as TableIcon,
+  Code,
+  FileText,
+  AlertCircle,
+  Loader2,
+} from "lucide-react";
 import { LEAGUES, type LeagueName } from "@/types/dataExplorer";
 import { useTables, useTableData } from "@/hooks/useDataExplorer";
 import { TableBrowser } from "@/components/DataExplorer/TableBrowser";
@@ -19,12 +32,15 @@ import { SQLEditor } from "@/components/agent/QueryResult/SQLEditor";
 import type { LeagueDBName } from "@/types/agent";
 
 export default function DataExplorerPage() {
-  const [selectedLeague, setSelectedLeague] = useState<LeagueName | null>("cebl");
+  const [selectedLeague, setSelectedLeague] = useState<LeagueName | null>(
+    "cebl",
+  );
   const [selectedTable, setSelectedTable] = useState<string | null>(null);
   const [selectedSeason, setSelectedSeason] = useState<string | null>(null);
 
   // Fetch tables for selected league
-  const { data: tablesData, isLoading: tablesLoading } = useTables(selectedLeague);
+  const { data: tablesData, isLoading: tablesLoading } =
+    useTables(selectedLeague);
 
   // Get selected table metadata
   const selectedTableMeta = useMemo(() => {
@@ -39,12 +55,14 @@ export default function DataExplorerPage() {
     }
   }, [tablesData, selectedTable]);
 
-  // Auto-set season for tables that require it
+  // Auto-select latest season when table changes
   useMemo(() => {
-    if (selectedTableMeta?.requires_season && !selectedSeason) {
-      setSelectedSeason(selectedTableMeta.latest_season?.toString() || null);
+    if (selectedTableMeta?.latest_season) {
+      setSelectedSeason(selectedTableMeta.latest_season.toString());
+    } else {
+      setSelectedSeason(null);
     }
-  }, [selectedTableMeta, selectedSeason]);
+  }, [selectedTableMeta]);
 
   // Fetch table data
   const { data: tableData, isLoading: dataLoading } = useTableData(
@@ -52,15 +70,8 @@ export default function DataExplorerPage() {
     selectedTable,
     {
       season: selectedSeason || undefined,
-    }
+    },
   );
-
-  // Get unique seasons from table metadata for season filter
-  const availableSeasons = useMemo(() => {
-    if (!selectedTableMeta?.columns.includes("season") || !tableData?.data) return [];
-    const seasons = Array.from(new Set(tableData.data.map((row) => row.season).filter(Boolean)));
-    return seasons.sort((a, b) => (b > a ? 1 : -1));
-  }, [selectedTableMeta, tableData]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
@@ -83,12 +94,12 @@ export default function DataExplorerPage() {
         </div>
 
         {/* League Selector Card */}
-        <Card className="mb-6 border-2 shadow-sm">
+        <Card className="mb-6 shadow-sm">
           <CardHeader className="pb-4">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
               <div>
-                <CardTitle className="text-lg">Select League</CardTitle>
-                <CardDescription>Choose a league to explore its data</CardDescription>
+                <CardTitle className="text-lg">League</CardTitle>
+                <CardDescription>Select a league to explore</CardDescription>
               </div>
               <Select
                 value={selectedLeague || ""}
@@ -99,13 +110,15 @@ export default function DataExplorerPage() {
                 }}
               >
                 <SelectTrigger className="w-full sm:w-64">
-                  <SelectValue placeholder="Select a league" />
+                  <SelectValue placeholder="Select league" />
                 </SelectTrigger>
                 <SelectContent>
                   {LEAGUES.map((league) => (
                     <SelectItem key={league.id} value={league.id}>
                       <div className="flex items-center gap-2">
-                        <Badge variant="outline">{league.shortName}</Badge>
+                        <Badge variant="outline" className="text-xs">
+                          {league.shortName}
+                        </Badge>
                         <span>{league.name}</span>
                       </div>
                     </SelectItem>
@@ -123,8 +136,8 @@ export default function DataExplorerPage() {
               <Database className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
               <h3 className="text-lg font-semibold mb-2">Select a League</h3>
               <p className="text-muted-foreground max-w-md mx-auto">
-                Choose a league from the dropdown above to start exploring player stats, team data,
-                and game information
+                Choose a league from the dropdown above to start exploring
+                player stats, team data, and game information
               </p>
             </CardContent>
           </Card>
@@ -151,17 +164,9 @@ export default function DataExplorerPage() {
             {/* Browse Tables Tab */}
             <TabsContent value="browse" className="space-y-4">
               <Card>
-                <CardHeader>
-                  <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-                    <div className="flex-1">
-                      <CardTitle className="text-lg">Table Selection</CardTitle>
-                      <CardDescription>
-                        Select a table to view and analyze its data
-                      </CardDescription>
-                    </div>
-
+                <CardHeader className="pb-3">
+                  <div className="flex flex-col lg:flex-row gap-3 items-start lg:items-center justify-between">
                     <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-                      {/* Table Selector */}
                       <Select
                         value={selectedTable || ""}
                         onValueChange={(value) => {
@@ -171,13 +176,15 @@ export default function DataExplorerPage() {
                         disabled={tablesLoading}
                       >
                         <SelectTrigger className="w-full sm:w-64">
-                          <SelectValue placeholder="Select a table" />
+                          <SelectValue placeholder="Select table" />
                         </SelectTrigger>
                         <SelectContent>
                           {tablesData?.tables.map((table) => (
                             <SelectItem key={table.name} value={table.name}>
                               <div className="flex items-center justify-between gap-4">
-                                <span className="font-mono text-sm">{table.name}</span>
+                                <span className="font-mono text-sm">
+                                  {table.name}
+                                </span>
                                 <Badge variant="secondary" className="text-xs">
                                   {table.row_count.toLocaleString()}
                                 </Badge>
@@ -187,39 +194,45 @@ export default function DataExplorerPage() {
                         </SelectContent>
                       </Select>
 
-                      {/* Season Selector (if needed) */}
-                      {selectedTableMeta?.requires_season && availableSeasons.length > 0 && (
-                        <Select
-                          value={selectedSeason || ""}
-                          onValueChange={setSelectedSeason}
-                        >
-                          <SelectTrigger className="w-full sm:w-40">
-                            <SelectValue placeholder="Season" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {availableSeasons.map((season) => (
-                              <SelectItem key={season} value={season.toString()}>
-                                Season {season}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      )}
+                      {selectedTableMeta?.available_seasons &&
+                        selectedTableMeta.available_seasons.length > 0 && (
+                          <Select
+                            value={selectedSeason || ""}
+                            onValueChange={setSelectedSeason}
+                          >
+                            <SelectTrigger className="w-full sm:w-40">
+                              <SelectValue placeholder="Season" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {selectedTableMeta.available_seasons.map(
+                                (season) => (
+                                  <SelectItem
+                                    key={season}
+                                    value={season.toString()}
+                                  >
+                                    {season}
+                                  </SelectItem>
+                                ),
+                              )}
+                            </SelectContent>
+                          </Select>
+                        )}
                     </div>
                   </div>
                 </CardHeader>
               </Card>
 
               {/* Season Required Warning */}
-              {selectedTableMeta?.requires_season && !selectedSeason && (
-                <Alert>
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>
-                    This table contains {selectedTableMeta.row_count.toLocaleString()} rows.
-                    Please select a season to filter the data.
-                  </AlertDescription>
-                </Alert>
-              )}
+              {selectedTableMeta?.available_seasons &&
+                selectedTableMeta.available_seasons.length > 0 &&
+                !selectedSeason && (
+                  <Alert>
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>
+                      Please select a season to view data.
+                    </AlertDescription>
+                  </Alert>
+                )}
 
               {/* Table Data Display */}
               {tablesLoading ? (
@@ -235,7 +248,6 @@ export default function DataExplorerPage() {
                     <TableBrowser
                       data={tableData.data}
                       tableName={selectedTable}
-                      league={selectedLeague}
                       isLoading={dataLoading}
                     />
                   </CardContent>
@@ -244,7 +256,9 @@ export default function DataExplorerPage() {
                 <Card className="border-dashed">
                   <CardContent className="py-16 text-center">
                     <TableIcon className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
-                    <h3 className="text-lg font-semibold mb-2">No Table Selected</h3>
+                    <h3 className="text-lg font-semibold mb-2">
+                      No Table Selected
+                    </h3>
                     <p className="text-muted-foreground">
                       Select a table from the dropdown above to view its data
                     </p>
@@ -259,8 +273,8 @@ export default function DataExplorerPage() {
                 <CardHeader>
                   <CardTitle>Custom SQL Query</CardTitle>
                   <CardDescription>
-                    Write and execute custom SQL queries against the {selectedLeague.toUpperCase()}{" "}
-                    database
+                    Write and execute custom SQL queries against the{" "}
+                    {selectedLeague.toUpperCase()} database
                   </CardDescription>
                 </CardHeader>
                 <CardContent>

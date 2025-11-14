@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import { ChartRenderer } from "./ChartRenderer";
 import { SQLEditor } from "./SQLEditor";
+import { ExportButton } from "@/components/DataExplorer/ExportButton";
 
 interface QueryResultDisplayProps {
   queryResult: QueryResult;
@@ -31,6 +32,12 @@ export default function QueryResultDisplay({
         )}
       </CardHeader>
       <CardContent className="space-y-3 overflow-x-hidden pt-0">
+        <div className="flex justify-end">
+          <ExportButton
+            data={data}
+            filename={chart_config?.title || "query_results"}
+          />
+        </div>
         <div className="overflow-x-auto">
           <ChartRenderer data={data} chartConfig={chart_config} />
         </div>

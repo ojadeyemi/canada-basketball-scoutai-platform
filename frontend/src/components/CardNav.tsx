@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useLayoutEffect, useRef, useState, useEffect } from "react";
 import { gsap } from "gsap";
 import { ArrowUpRight } from "lucide-react";
@@ -65,6 +66,7 @@ const CardNav: React.FC<CardNavProps> = ({
         contentEl.style.position = "static";
         contentEl.style.height = "auto";
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         contentEl.offsetHeight;
 
         const topBar = 60;

@@ -119,3 +119,10 @@ ERROR_RATE_LIMIT = "Rate limit exceeded."
 ERROR_INVALID_REQUEST = "Invalid request to LLM provider."
 ERROR_AUTHENTICATION = "Authentication failed."
 ERROR_GENERIC = "An error occurred."
+
+
+# ============================================================================
+# DATABASE DEFAULTS
+# ============================================================================
+
+DEFAULT_SEASON = "2024-25"

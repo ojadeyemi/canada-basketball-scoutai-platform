@@ -25,6 +25,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   ChevronDown,
   Database,
   Play,
@@ -34,6 +40,9 @@ import {
   ArrowUp,
   ArrowDown,
   RotateCcw,
+  Download,
+  FileJson,
+  FileText,
 } from "lucide-react";
 import Editor, { type Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
@@ -51,6 +60,7 @@ import {
   type SortingState,
   type ColumnDef,
 } from "@tanstack/react-table";
+import { exportToCSV, exportToJSON } from "@/services/dataService";
 
 interface SQLEditorProps {
   sqlQuery: string;
@@ -470,12 +480,52 @@ export function SQLEditor({ sqlQuery, dbName, chartTitle }: SQLEditorProps) {
               className="w-full sm:max-w-3xl overflow-y-auto pt-20 flex flex-col"
             >
               <SheetHeader className="pb-4 border-b">
-                <SheetTitle className="text-lg">
-                  {chartTitle || `Query Results`}
-                </SheetTitle>
-                <SheetDescription className="text-xs">
-                  {rawQueryResults.length} rows • {dbName}
-                </SheetDescription>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <SheetTitle className="text-lg">
+                      {chartTitle || `Query Results`}
+                    </SheetTitle>
+                    <SheetDescription className="text-xs">
+                      {rawQueryResults.length} rows • {dbName}
+                    </SheetDescription>
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={rawQueryResults.length === 0}
+                      >
+                        <Download className="w-4 h-4 mr-2" />
+                        Export
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem
+                        onClick={() =>
+                          exportToCSV(
+                            rawQueryResults,
+                            `${chartTitle || "query_results"}_${new Date().toISOString().split("T")[0]}`,
+                          )
+                        }
+                      >
+                        <FileText className="w-4 h-4 mr-2" />
+                        Export as CSV
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          exportToJSON(
+                            rawQueryResults,
+                            `${chartTitle || "query_results"}_${new Date().toISOString().split("T")[0]}`,
+                          )
+                        }
+                      >
+                        <FileJson className="w-4 h-4 mr-2" />
+                        Export as JSON
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               </SheetHeader>
               <div className="flex-1 py-6 px-4 overflow-auto">
                 <RawQueryResultTable data={rawQueryResults} />

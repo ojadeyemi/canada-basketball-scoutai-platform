@@ -24,7 +24,7 @@ export default function AboutPage() {
       <InteractiveGridPattern
         className={cn(
           "[mask-image:radial-gradient(500px_circle_at_center,white,transparent)]",
-          "opacity-30"
+          "opacity-30",
         )}
         width={20}
         height={20}

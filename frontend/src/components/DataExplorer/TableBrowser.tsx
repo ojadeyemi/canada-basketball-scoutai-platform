@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -45,44 +44,48 @@ import {
   ChevronsRight,
   Columns3,
   BarChart3,
-  MapPin,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ExportButton } from "./ExportButton";
 import { VisualizationModal } from "./VisualizationModal";
-import ShotChart from "@/components/PlayerSearch/charts/ShotChart";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface TableBrowserProps {
   data: Record<string, any>[];
   tableName: string;
-  league: string;
   isLoading?: boolean;
 }
 
-export function TableBrowser({ data, tableName, league, isLoading }: TableBrowserProps) {
+export function TableBrowser({
+  data,
+  tableName,
+  isLoading,
+}: TableBrowserProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [globalFilter, setGlobalFilter] = useState("");
   const [visualizationOpen, setVisualizationOpen] = useState(false);
-  const [shotChartOpen, setShotChartOpen] = useState(false);
-  const [selectedPlayerName, setSelectedPlayerName] = useState<string | null>(null);
 
-  // Detect if this is CEBL play_by_play data (has x, y, player_name)
-  const isShotChartData =
-    league === "cebl" &&
-    tableName === "play_by_play" &&
-    data.length > 0 &&
-    "x" in data[0] &&
-    "y" in data[0] &&
-    "player_name" in data[0];
+  // Get full season list from unfiltered data
+  const availableSeasons = useMemo(() => {
+    if (data.length === 0) return [];
+    const seasonKey = Object.keys(data[0]).find((key) =>
+      key.toLowerCase().includes("season"),
+    );
+    if (!seasonKey) return [];
+
+    const seasons = Array.from(
+      new Set(data.map((row) => row[seasonKey]).filter(Boolean)),
+    );
+    return seasons.sort((a, b) => (b > a ? 1 : -1));
+  }, [data]);
 
   // Format cell value
   const formatValue = (value: any): string => {
     if (value === null || value === undefined) return "—";
     if (typeof value === "number") {
-      return Number.isInteger(value) ? value.toLocaleString() : value.toFixed(2);
+      return Number.isInteger(value)
+        ? value.toLocaleString()
+        : value.toFixed(2);
     }
     if (typeof value === "boolean") return value ? "Yes" : "No";
     return String(value);
@@ -99,10 +102,12 @@ export function TableBrowser({ data, tableName, league, isLoading }: TableBrowse
         const sortDirection = column.getIsSorted();
         return (
           <button
-            className="flex items-center gap-1 hover:text-foreground transition-colors font-semibold select-none"
+            className="flex items-center gap-1 hover:text-foreground transition-colors font-semibold select-none w-full"
             onClick={() => column.toggleSorting(sortDirection === "asc")}
           >
-            <span className="truncate">{key.replace(/_/g, " ").toUpperCase()}</span>
+            <span className="truncate flex-1 text-left">
+              {key.replace(/_/g, " ").toUpperCase()}
+            </span>
             {sortDirection === "asc" ? (
               <ArrowUp className="w-3 h-3" />
             ) : sortDirection === "desc" ? (
@@ -166,8 +171,7 @@ export function TableBrowser({ data, tableName, league, isLoading }: TableBrowse
   return (
     <div className="space-y-4">
       {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-        {/* Search */}
+      <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
         <div className="flex-1 w-full sm:max-w-sm">
           <Input
             placeholder="Search all columns..."
@@ -177,30 +181,26 @@ export function TableBrowser({ data, tableName, league, isLoading }: TableBrowse
           />
         </div>
 
-        {/* Actions */}
-        <div className="flex flex-wrap gap-2">
-          {isShotChartData && (
-            <Badge variant="secondary" className="px-3 py-1">
-              <MapPin className="w-3 h-3 mr-1" />
-              Click any row to view shot chart
-            </Badge>
-          )}
+        <div className="flex flex-wrap gap-2 items-center">
           <Button
             variant="outline"
             size="sm"
             onClick={() => setVisualizationOpen(true)}
           >
-            <BarChart3 className="w-4 h-4 mr-2" />
+            <BarChart3 className="w-4 h-4 mr-1.5" />
             Visualize
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
-                <Columns3 className="w-4 h-4 mr-2" />
+                <Columns3 className="w-4 h-4 mr-1.5" />
                 Columns
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 max-h-96 overflow-y-auto">
+            <DropdownMenuContent
+              align="end"
+              className="w-56 max-h-96 overflow-y-auto"
+            >
               {table
                 .getAllColumns()
                 .filter((column) => column.getCanHide())
@@ -208,35 +208,31 @@ export function TableBrowser({ data, tableName, league, isLoading }: TableBrowse
                   <DropdownMenuCheckboxItem
                     key={column.id}
                     checked={column.getIsVisible()}
-                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
                   >
                     {column.id}
                   </DropdownMenuCheckboxItem>
                 ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          <ExportButton
-            data={table.getFilteredRowModel().rows.map((row) => row.original)}
-            filename={`${league}_${tableName}`}
-          />
         </div>
       </div>
 
-      {/* Stats Badge */}
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Badge variant="secondary">
+      {/* Stats */}
+      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+        <span className="font-medium">
           {table.getFilteredRowModel().rows.length.toLocaleString()} rows
-        </Badge>
+        </span>
         {globalFilter && (
-          <span>
-            • Filtered from {data.length.toLocaleString()} total
-          </span>
+          <span>• Filtered from {data.length.toLocaleString()}</span>
         )}
       </div>
 
       {/* Table */}
-      <div className="rounded-lg border bg-card overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="relative rounded-lg border bg-card overflow-hidden shadow-inner">
+        <div className="overflow-x-auto scroll-smooth scrollbar-thin scrollbar-thumb-muted-foreground/40 scrollbar-track-muted/20 hover:scrollbar-thumb-muted-foreground/60 transition-colors">
           <Table>
             <TableHeader className="bg-muted/50 sticky top-0 z-10">
               {table.getHeaderGroups().map((headerGroup) => (
@@ -244,13 +240,13 @@ export function TableBrowser({ data, tableName, league, isLoading }: TableBrowse
                   {headerGroup.headers.map((header) => (
                     <TableHead
                       key={header.id}
-                      className="font-semibold text-xs uppercase tracking-wide"
+                      className="font-semibold text-xs uppercase tracking-wide max-w-[150px]"
                     >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   ))}
@@ -271,21 +267,20 @@ export function TableBrowser({ data, tableName, league, isLoading }: TableBrowse
                 table.getRowModel().rows.map((row, index) => (
                   <TableRow
                     key={row.id}
-                    onClick={() => {
-                      if (isShotChartData && row.original.player_name) {
-                        setSelectedPlayerName(row.original.player_name);
-                        setShotChartOpen(true);
-                      }
-                    }}
                     className={cn(
-                      "border-b transition-colors hover:bg-muted/50",
+                      "transition-colors hover:bg-muted/50",
                       index % 2 === 0 ? "bg-background" : "bg-muted/10",
-                      isShotChartData && "cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-950/20"
                     )}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="py-2 px-4">
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      <TableCell
+                        key={cell.id}
+                        className="py-2.5 px-4 max-w-[200px] truncate"
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
                       </TableCell>
                     ))}
                   </TableRow>
@@ -294,12 +289,16 @@ export function TableBrowser({ data, tableName, league, isLoading }: TableBrowse
             </TableBody>
           </Table>
         </div>
+
+        {/* Scroll indicator shadows - always visible */}
+        <div className="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-card via-card/80 to-transparent pointer-events-none opacity-100" />
+        <div className="absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-card via-card/80 to-transparent pointer-events-none opacity-100" />
       </div>
 
       {/* Pagination */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <span>Rows per page:</span>
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <span>Per page:</span>
           <Select
             value={table.getState().pagination.pageSize.toString()}
             onValueChange={(value) => table.setPageSize(Number(value))}
@@ -317,8 +316,9 @@ export function TableBrowser({ data, tableName, league, isLoading }: TableBrowse
           </Select>
         </div>
 
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+        <div className="text-xs text-muted-foreground font-medium">
+          Page {table.getState().pagination.pageIndex + 1} of{" "}
+          {table.getPageCount()}
         </div>
 
         <div className="flex items-center gap-1">
@@ -327,6 +327,7 @@ export function TableBrowser({ data, tableName, league, isLoading }: TableBrowse
             size="sm"
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
+            className="h-8 w-8 p-0"
           >
             <ChevronsLeft className="w-4 h-4" />
           </Button>
@@ -335,6 +336,7 @@ export function TableBrowser({ data, tableName, league, isLoading }: TableBrowse
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
+            className="h-8 w-8 p-0"
           >
             <ChevronLeft className="w-4 h-4" />
           </Button>
@@ -343,6 +345,7 @@ export function TableBrowser({ data, tableName, league, isLoading }: TableBrowse
             size="sm"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
+            className="h-8 w-8 p-0"
           >
             <ChevronRight className="w-4 h-4" />
           </Button>
@@ -351,6 +354,7 @@ export function TableBrowser({ data, tableName, league, isLoading }: TableBrowse
             size="sm"
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
+            className="h-8 w-8 p-0"
           >
             <ChevronsRight className="w-4 h-4" />
           </Button>
@@ -363,24 +367,8 @@ export function TableBrowser({ data, tableName, league, isLoading }: TableBrowse
         onOpenChange={setVisualizationOpen}
         data={table.getFilteredRowModel().rows.map((row) => row.original)}
         tableName={tableName}
+        availableSeasons={availableSeasons}
       />
-
-      {/* Shot Chart Modal */}
-      {isShotChartData && selectedPlayerName && (
-        <Dialog open={shotChartOpen} onOpenChange={setShotChartOpen}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-primary" />
-                Shot Chart: {selectedPlayerName}
-              </DialogTitle>
-            </DialogHeader>
-            <div className="mt-4">
-              <ShotChart playerName={selectedPlayerName} />
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
     </div>
   );
 }

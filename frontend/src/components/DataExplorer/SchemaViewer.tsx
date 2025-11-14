@@ -22,7 +22,11 @@ interface SchemaViewerProps {
 export function SchemaViewer({ league }: SchemaViewerProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: schema, isLoading, error } = useQuery({
+  const {
+    data: schema,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["schema", league],
     queryFn: () => getDatabaseSchema(league),
     staleTime: 10 * 60 * 1000, // 10 minutes
@@ -58,8 +62,10 @@ export function SchemaViewer({ league }: SchemaViewerProps) {
   const filteredTables = schema.tables.filter((table) =>
     searchQuery
       ? table.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        table.columns.some((col) => col.name.toLowerCase().includes(searchQuery.toLowerCase()))
-      : true
+        table.columns.some((col) =>
+          col.name.toLowerCase().includes(searchQuery.toLowerCase()),
+        )
+      : true,
   );
 
   return (
@@ -93,7 +99,9 @@ export function SchemaViewer({ league }: SchemaViewerProps) {
         <Card>
           <CardContent className="py-12 text-center">
             <Search className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-            <p className="text-muted-foreground">No tables or columns match your search</p>
+            <p className="text-muted-foreground">
+              No tables or columns match your search
+            </p>
           </CardContent>
         </Card>
       ) : (
@@ -131,7 +139,7 @@ export function SchemaViewer({ league }: SchemaViewerProps) {
                       onClick={() =>
                         copyToClipboard(
                           `SELECT * FROM ${table.name} LIMIT 10`,
-                          "query template"
+                          "query template",
                         )
                       }
                     >
@@ -145,10 +153,16 @@ export function SchemaViewer({ league }: SchemaViewerProps) {
                     <table className="w-full text-sm">
                       <thead className="bg-muted/50">
                         <tr>
-                          <th className="text-left p-2 font-medium">Column Name</th>
+                          <th className="text-left p-2 font-medium">
+                            Column Name
+                          </th>
                           <th className="text-left p-2 font-medium">Type</th>
-                          <th className="text-left p-2 font-medium">Nullable</th>
-                          <th className="text-right p-2 font-medium">Actions</th>
+                          <th className="text-left p-2 font-medium">
+                            Nullable
+                          </th>
+                          <th className="text-right p-2 font-medium">
+                            Actions
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -159,14 +173,21 @@ export function SchemaViewer({ league }: SchemaViewerProps) {
                               idx % 2 === 0 ? "bg-background" : "bg-muted/20"
                             } hover:bg-muted/40 transition-colors`}
                           >
-                            <td className="p-2 font-mono text-xs">{col.name}</td>
+                            <td className="p-2 font-mono text-xs">
+                              {col.name}
+                            </td>
                             <td className="p-2">
-                              <Badge variant="outline" className="font-mono text-xs">
+                              <Badge
+                                variant="outline"
+                                className="font-mono text-xs"
+                              >
                                 {col.type || "UNKNOWN"}
                               </Badge>
                             </td>
                             <td className="p-2">
-                              <Badge variant={col.nullable ? "secondary" : "default"}>
+                              <Badge
+                                variant={col.nullable ? "secondary" : "default"}
+                              >
                                 {col.nullable ? "Yes" : "No"}
                               </Badge>
                             </td>
@@ -174,7 +195,9 @@ export function SchemaViewer({ league }: SchemaViewerProps) {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => copyToClipboard(col.name, "column name")}
+                                onClick={() =>
+                                  copyToClipboard(col.name, "column name")
+                                }
                               >
                                 <Copy className="w-3 h-3" />
                               </Button>

@@ -14,7 +14,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Install Playwright with Chromium browser and system dependencies
-RUN pip install playwright==1.55.0 && \
+RUN pip install playwright==1.56.0 && \
     playwright install --with-deps chromium
 
 # Copy application code
