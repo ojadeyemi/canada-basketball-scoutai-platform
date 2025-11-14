@@ -1145,3 +1145,60 @@ def get_shot_chart_data(player_id: int):
     seasons = sorted(set(row["season"] for row in rows), reverse=True)
 
     return ShotChartData(player_id=player_id_val, full_name=full_name, shots=shots, seasons=seasons)
+
+
+def get_shot_chart_data_by_name(player_name: str):
+    """
+    Get shot chart data for a player by their full name.
+    This is used when player_id is ambiguous (e.g., from play_by_play table where
+    player_id is actually the jersey number for a specific game).
+
+    Args:
+        player_name: Full name of the player as it appears in the players table
+
+    Returns:
+        ShotChartData with all shot attempts for the player across all seasons
+    """
+    query = """
+        SELECT
+            p.player_id,
+            p.full_name,
+            pb.season,
+            pb.period as quarter,
+            pb.x,
+            pb.y,
+            pb.success as made,
+            pb.action_type as shot_type
+        FROM play_by_play pb
+        JOIN players p ON pb.player_name = p.full_name AND pb.season = p.season
+        WHERE p.full_name = ?
+          AND pb.action_type IN ('2pt', '3pt')
+          AND pb.x IS NOT NULL
+          AND pb.y IS NOT NULL
+        ORDER BY pb.season DESC, pb.period ASC
+    """
+
+    rows = execute_query("cebl", query, (player_name,))
+
+    if not rows:
+        # Return empty shot chart data with player name
+        return ShotChartData(player_id=0, full_name=player_name, shots=[], seasons=[])
+
+    player_id_val = rows[0]["player_id"]
+    full_name = rows[0]["full_name"]
+
+    shots = [
+        ShotAttempt(
+            x=float(row["x"]),
+            y=float(row["y"]),
+            made=bool(row["made"]),
+            shot_type=row["shot_type"],
+            quarter=row["quarter"],
+            season=row["season"],
+        )
+        for row in rows
+    ]
+
+    seasons = sorted(set(row["season"] for row in rows), reverse=True)
+
+    return ShotChartData(player_id=player_id_val, full_name=full_name, shots=shots, seasons=seasons)

@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException, Query
 from app.schemas import LeagueType
 
 from ..schemas.player import PlayerDetail, PlayerSearchResult, ShotChartData
-from ..services.player_service import get_player_details, get_shot_chart_data
+from ..services.player_service import get_player_details, get_shot_chart_data, get_shot_chart_data_by_name
 from ..services.search_service import search_players
 
 router = APIRouter(prefix="/api/search", tags=["Search"])
@@ -75,5 +75,25 @@ async def get_player_shot_chart(
 
     if not shot_data or not shot_data.shots:
         raise HTTPException(status_code=404, detail=f"No shot chart data found for player: {player_id}")
+
+    return shot_data
+
+
+@router.get("/player/cebl/shot-chart-by-name", response_model=ShotChartData)
+async def get_shot_chart_by_name(
+    player_name: str = Query(..., description="Player's full name"),
+):
+    """
+    Get shot chart data by player name instead of ID.
+
+    This endpoint is used when player_id is ambiguous (e.g., from play_by_play table
+    where player_id represents the jersey number for a specific game, not a unique identifier).
+
+    - player_name: Player's full name (e.g., "Jordan Baker")
+    """
+    shot_data = get_shot_chart_data_by_name(player_name)
+
+    if not shot_data or not shot_data.shots:
+        raise HTTPException(status_code=404, detail=f"No shot chart data found for player: {player_name}")
 
     return shot_data

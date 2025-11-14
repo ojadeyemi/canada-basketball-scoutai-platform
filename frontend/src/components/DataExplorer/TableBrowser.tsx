@@ -67,17 +67,16 @@ export function TableBrowser({ data, tableName, league, isLoading }: TableBrowse
   const [globalFilter, setGlobalFilter] = useState("");
   const [visualizationOpen, setVisualizationOpen] = useState(false);
   const [shotChartOpen, setShotChartOpen] = useState(false);
-  const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(null);
   const [selectedPlayerName, setSelectedPlayerName] = useState<string | null>(null);
 
-  // Detect if this is CEBL play_by_play data (has x, y, player_id)
+  // Detect if this is CEBL play_by_play data (has x, y, player_name)
   const isShotChartData =
     league === "cebl" &&
     tableName === "play_by_play" &&
     data.length > 0 &&
     "x" in data[0] &&
     "y" in data[0] &&
-    "player_id" in data[0];
+    "player_name" in data[0];
 
   // Format cell value
   const formatValue = (value: any): string => {
@@ -273,13 +272,8 @@ export function TableBrowser({ data, tableName, league, isLoading }: TableBrowse
                   <TableRow
                     key={row.id}
                     onClick={() => {
-                      if (isShotChartData && row.original.player_id) {
-                        setSelectedPlayerId(row.original.player_id);
-                        setSelectedPlayerName(
-                          row.original.player_name ||
-                          row.original.scoreboard_name ||
-                          `Player ${row.original.player_id}`
-                        );
+                      if (isShotChartData && row.original.player_name) {
+                        setSelectedPlayerName(row.original.player_name);
                         setShotChartOpen(true);
                       }
                     }}
@@ -372,7 +366,7 @@ export function TableBrowser({ data, tableName, league, isLoading }: TableBrowse
       />
 
       {/* Shot Chart Modal */}
-      {isShotChartData && selectedPlayerId && (
+      {isShotChartData && selectedPlayerName && (
         <Dialog open={shotChartOpen} onOpenChange={setShotChartOpen}>
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
@@ -382,7 +376,7 @@ export function TableBrowser({ data, tableName, league, isLoading }: TableBrowse
               </DialogTitle>
             </DialogHeader>
             <div className="mt-4">
-              <ShotChart playerId={selectedPlayerId} />
+              <ShotChart playerName={selectedPlayerName} />
             </div>
           </DialogContent>
         </Dialog>

@@ -79,6 +79,15 @@ export const getShotChartData = async (
   return data;
 };
 
+export const getShotChartDataByName = async (
+  playerName: string,
+): Promise<ShotChartData> => {
+  const { data } = await api.get(`/search/player/cebl/shot-chart-by-name`, {
+    params: { player_name: playerName },
+  });
+  return data;
+};
+
 // Backend Warmup
 export const warmupBackend = async (): Promise<boolean> => {
   try {
