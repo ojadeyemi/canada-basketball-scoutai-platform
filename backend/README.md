@@ -47,9 +47,10 @@ Create `.env`:
 DATABASE_URL=postgresql://user:pass@host:5432/canada_basketball
 
 # LLM Providers (pick one or both)
+DEFAULT_MODEL=command-a-03-2025
 GEMINI_API_KEY=your-gemini-key
-OPENAI_API_KEY=sk-your-openai-key
-LLM_PROVIDER=google  # or "openai"
+COHEREAPI_KEY=-your-cohere-key
+
 
 # Optional: PDF Storage
 GOOGLE_APPLICATION_CREDENTIALS=./service-account.json
@@ -157,7 +158,7 @@ gcloud run deploy backend --image gcr.io/project-id/backend --memory 1Gi --timeo
 | **PostgreSQL**           | -       | Session state             |
 | **Playwright**           | 1.55+   | PDF rendering             |
 | **Google Cloud Storage** | -       | PDF storage               |
-| **Gemini / OpenAI**      | -       | LLMs                      |
+| **Gemini / Cohere**      | -       | LLMs                      |
 
 ---
 

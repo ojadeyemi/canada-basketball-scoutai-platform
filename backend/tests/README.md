@@ -62,7 +62,7 @@ Tests PDF generation for scouting reports using real player data.
 
 3. **Environment Variables Set:**
    - Database connections configured
-   - API keys set (OpenAI, Cohere)
+   - API keys set (Cohere, Gemini)
    - PostgreSQL connection for LangGraph
 
 ---

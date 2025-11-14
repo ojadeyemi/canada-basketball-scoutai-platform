@@ -1,0 +1,172 @@
+import { API_BASE_URL } from "@/config/api";
+import { toast } from "sonner";
+import type {
+  TableListResponse,
+  TableDataResponse,
+} from "@/types/dataExplorer";
+
+/**
+ * Data service for fetching table data from league databases.
+ * Handles all /api/data endpoints for the Data Explorer.
+ */
+
+async function getErrorFromResponse(response: Response): Promise<string> {
+  try {
+    const data = await response.json();
+    return (
+      data.detail ||
+      data.message ||
+      `HTTP ${response.status}: ${response.statusText}`
+    );
+  } catch {
+    return `HTTP ${response.status}: ${response.statusText}`;
+  }
+}
+
+/**
+ * Get list of all tables in a league database with metadata.
+ */
+export async function getTables(league: string): Promise<TableListResponse> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/data/${league}/tables`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!response.ok) {
+      const errorMsg = await getErrorFromResponse(response);
+      toast.error(errorMsg);
+      throw new Error(errorMsg);
+    }
+
+    return response.json();
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Failed to fetch tables";
+    toast.error(message);
+    throw error;
+  }
+}
+
+/**
+ * Get data from a specific table with optional filtering.
+ */
+export async function getTableData(
+  league: string,
+  tableName: string,
+  params?: {
+    season?: string;
+    limit?: number;
+  },
+): Promise<TableDataResponse> {
+  try {
+    const queryParams = new URLSearchParams();
+    if (params?.season) {
+      queryParams.append("season", params.season);
+    }
+    if (params?.limit) {
+      queryParams.append("limit", params.limit.toString());
+    }
+
+    const url = `${API_BASE_URL}/data/${league}/${tableName}${
+      queryParams.toString() ? `?${queryParams.toString()}` : ""
+    }`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!response.ok) {
+      const errorMsg = await getErrorFromResponse(response);
+      toast.error(errorMsg);
+      throw new Error(errorMsg);
+    }
+
+    return response.json();
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Failed to fetch table data";
+    toast.error(message);
+    throw error;
+  }
+}
+
+/**
+ * Sanitize filename to prevent file system issues.
+ */
+function sanitizeFilename(filename: string): string {
+  // Replace any non-alphanumeric characters (except _ and -) with underscore
+  // Also add timestamp to ensure uniqueness
+  const sanitized = filename.replace(/[^a-z0-9_-]/gi, "_");
+  const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, "-");
+  return `${sanitized}_${timestamp}`;
+}
+
+/**
+ * Export table data as CSV.
+ */
+export function exportToCSV(
+  data: Record<string, unknown>[],
+  filename: string,
+): void {
+  if (data.length === 0) {
+    toast.error("No data to export");
+    return;
+  }
+
+  const columns = Object.keys(data[0]);
+  const csvContent = [
+    columns.join(","),
+    ...data.map((row) =>
+      columns
+        .map((col) => {
+          const value = row[col];
+          if (value === null || value === undefined) return "";
+          const stringValue = String(value);
+          // Escape values containing commas or quotes
+          if (stringValue.includes(",") || stringValue.includes('"')) {
+            return `"${stringValue.replace(/"/g, '""')}"`;
+          }
+          return stringValue;
+        })
+        .join(","),
+    ),
+  ].join("\n");
+
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  const safeFilename = sanitizeFilename(filename);
+  link.href = URL.createObjectURL(blob);
+  link.download = `${safeFilename}.csv`;
+  link.click();
+  URL.revokeObjectURL(link.href);
+
+  toast.success(`Exported ${data.length} rows to ${safeFilename}.csv`);
+}
+
+/**
+ * Export table data as JSON.
+ */
+export function exportToJSON(
+  data: Record<string, unknown>[],
+  filename: string,
+): void {
+  if (data.length === 0) {
+    toast.error("No data to export");
+    return;
+  }
+
+  const jsonContent = JSON.stringify(data, null, 2);
+  const blob = new Blob([jsonContent], {
+    type: "application/json;charset=utf-8;",
+  });
+  const link = document.createElement("a");
+  const safeFilename = sanitizeFilename(filename);
+  link.href = URL.createObjectURL(blob);
+  link.download = `${safeFilename}.json`;
+  link.click();
+  URL.revokeObjectURL(link.href);
+
+  toast.success(`Exported ${data.length} rows to ${safeFilename}.json`);
+}

@@ -3,7 +3,6 @@
 from langchain_cohere import ChatCohere
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_openai import ChatOpenAI
 
 from config.settings import settings
 
@@ -17,20 +16,16 @@ def get_llm(model: str | None = None, temperature: float = 0.0, **kwargs) -> Bas
     # Provider-specific initialization
     if provider == "google":
         return ChatGoogleGenerativeAI(model=model_name, temperature=temperature, **kwargs)
-    elif provider == "openai":
-        return ChatOpenAI(model=model_name, temperature=temperature, **kwargs)
     elif provider == "cohere":
         return ChatCohere(model=model_name, temperature=temperature, **kwargs)
     else:
-        raise ValueError(f"Unsupported LLM provider: {provider}. Use 'openai', 'google', or 'cohere'.")
+        raise ValueError(f"Unsupported LLM provider: {provider}. Use 'google' or 'cohere'.")
 
 
 def _detect_provider_from_model(model: str) -> str:
     """Auto-detect provider from model name."""
     model_lower = model.lower()
 
-    if model_lower.startswith(("gpt-", "o1-", "o3-")):
-        return "openai"
     if model_lower.startswith("gemini"):
         return "google"
     if model_lower.startswith(("command", "c4ai", "aya")):

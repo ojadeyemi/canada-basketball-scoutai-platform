@@ -59,7 +59,7 @@ export default function FAQPage() {
       {/* Background Grid Pattern */}
       <InteractiveGridPattern
         className={cn(
-          "[mask-image:radial-gradient(500px_circle_at_center,white,transparent)]"
+          "[mask-image:radial-gradient(500px_circle_at_center,white,transparent)]",
         )}
         width={20}
         height={20}

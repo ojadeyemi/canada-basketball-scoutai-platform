@@ -28,7 +28,6 @@ class Settings(BaseSettings):
     rds_db: Optional[str] = Field(default=None, alias="RDS_DB")
 
     # LLM API Keys
-    openai_api_key: Optional[str] = Field(default=None, alias="OPENAI_API_KEY")
     cohere_api_key: Optional[str] = Field(default=None, alias="COHERE_API_KEY")
     gemini_api_key: Optional[str] = Field(default=None, alias="GEMINI_API_KEY")
 

@@ -12,6 +12,7 @@ import { warmupBackend } from "./services/api";
 const HomePage = lazy(() => import("./pages/HomePage"));
 const PlayerSearchPage = lazy(() => import("./pages/PlayerSearchPage"));
 const AIAgentPage = lazy(() => import("./pages/AIAgentPage"));
+const DataExplorerPage = lazy(() => import("./pages/DataExplorerPage"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
 const FAQPage = lazy(() => import("./pages/FAQPage"));
 function App() {
@@ -33,6 +34,11 @@ function App() {
           label: "AI Agent",
           href: "/agent",
           ariaLabel: "Chat with AI scouting agent",
+        },
+        {
+          label: "Data Explorer",
+          href: "/data-explorer",
+          ariaLabel: "Explore league databases",
         },
       ],
     },
@@ -100,6 +106,7 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/player-search" element={<PlayerSearchPage />} />
                 <Route path="/agent" element={<AIAgentPage />} />
+                <Route path="/data-explorer" element={<DataExplorerPage />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/faq" element={<FAQPage />} />
               </Routes>

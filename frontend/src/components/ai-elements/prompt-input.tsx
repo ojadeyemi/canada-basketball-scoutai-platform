@@ -1,3 +1,6 @@
+/* eslint-disable react-refresh/only-export-components */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -526,10 +529,12 @@ export const PromptInput = ({
     [matchesAccept, maxFiles, maxFileSize, onError],
   );
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const add = usingProvider
     ? (files: File[] | FileList) => controller.attachments.add(files)
     : addLocal;
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const remove = usingProvider
     ? (id: string) => controller.attachments.remove(id)
     : (id: string) =>
@@ -541,6 +546,7 @@ export const PromptInput = ({
           return prev.filter((file) => file.id !== id);
         });
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const clear = usingProvider
     ? () => controller.attachments.clear()
     : () =>
@@ -680,6 +686,7 @@ export const PromptInput = ({
 
     // Convert blob URLs to data URLs asynchronously
     Promise.all(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       files.map(async ({ id, ...item }) => {
         if (item.url && item.url.startsWith("blob:")) {
           return {
@@ -712,6 +719,7 @@ export const PromptInput = ({
             controller.textInput.clear();
           }
         }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         // Don't clear on error - user may want to retry
       }

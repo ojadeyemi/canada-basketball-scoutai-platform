@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/table";
 
 interface ChartRendererProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: Record<string, any>[];
   chartConfig?: ChartConfig;
 }
@@ -49,16 +50,21 @@ const CHART_COLORS = [
   "#6366f1",
 ];
 
-const formatValue = (value: any, format?: ChartConfig["value_format"]) => {
-  if (typeof value !== "number") return value;
+const formatValue = (
+  value: unknown,
+  format?: ChartConfig["value_format"],
+): string | number => {
+  if (typeof value !== "number") return String(value ?? "");
+
+  const numValue = value as number;
 
   switch (format) {
     case "percentage":
-      return `${(value * 100).toFixed(1)}%`;
+      return `${(numValue * 100).toFixed(1)}%`;
     case "decimal":
-      return value.toFixed(1);
+      return numValue.toFixed(1);
     default:
-      return Math.round(value);
+      return Math.round(numValue);
   }
 };
 
@@ -66,6 +72,7 @@ function DataTable({
   data,
   chartConfig,
 }: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: Record<string, any>[];
   chartConfig?: ChartConfig;
 }) {
@@ -75,31 +82,33 @@ function DataTable({
   const columns = Object.keys(data[0]);
 
   return (
-    <div className="rounded-lg border overflow-hidden">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            {columns.map((col) => (
-              <TableHead key={col} className="font-semibold">
-                {col
-                  .replace(/_/g, " ")
-                  .replace(/\b\w/g, (l) => l.toUpperCase())}
-              </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data.map((row, idx) => (
-            <TableRow key={idx}>
+    <div className="space-y-3">
+      <div className="rounded-lg border overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow>
               {columns.map((col) => (
-                <TableCell key={col}>
-                  {formatValue(row[col], chartConfig?.value_format)}
-                </TableCell>
+                <TableHead key={col} className="font-semibold">
+                  {col
+                    .replace(/_/g, " ")
+                    .replace(/\b\w/g, (l) => l.toUpperCase())}
+                </TableHead>
               ))}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {data.map((row, idx) => (
+              <TableRow key={idx}>
+                {columns.map((col) => (
+                  <TableCell key={col}>
+                    {formatValue(row[col], chartConfig?.value_format)}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }
@@ -177,6 +186,7 @@ export function ChartRenderer({ data, chartConfig }: ChartRendererProps) {
             <PolarAngleAxis dataKey={x_column || undefined} />
             <PolarRadiusAxis />
             <ChartTooltip content={<ChartTooltipContent />} />
+            <Legend />
             {y_columns.map((col, idx) => (
               <Radar
                 key={col}
@@ -184,7 +194,8 @@ export function ChartRenderer({ data, chartConfig }: ChartRendererProps) {
                 dataKey={col}
                 stroke={colors[idx % colors.length]}
                 fill={colors[idx % colors.length]}
-                fillOpacity={0.6}
+                fillOpacity={0.3}
+                strokeWidth={2}
               />
             ))}
           </RadarChart>

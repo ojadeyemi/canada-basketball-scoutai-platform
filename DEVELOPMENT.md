@@ -68,14 +68,14 @@ User Query → LangGraph AI Agent → Multi-League SQLite DBs → Real-Time Resp
 
 ## Tech Stack
 
-| Layer                | Tech                                                                                    |
-| -------------------- | --------------------------------------------------------------------------------------- |
-| **AI Orchestration** | LangGraph 1.0 (multi-agent workflows)                                                   |
-| **Backend**          | FastAPI 0.120, Python 3.13, Playwright (PDF rendering)                                  |
-| **Frontend**         | React 18, TypeScript 5.9, Vite 5.4, TailwindCSS 3.4                                     |
-| **Data**             | SQLite (4 league DBs), PostgreSQL (sessions), rapidfuzz (fuzzy search)                  |
-| **LLM Provider**     | Cohere (default: command-a-03-2025), Google Gemini (recommended: 2.5-flash/pro), OpenAI |
-| **Deployment**       | Docker, Google Cloud Run, Vercel                                                        |
+| Layer                | Tech                                                                            |
+| -------------------- | ------------------------------------------------------------------------------- |
+| **AI Orchestration** | LangGraph 1.0 (multi-agent workflows)                                           |
+| **Backend**          | FastAPI 0.120, Python 3.13, Playwright (PDF rendering)                          |
+| **Frontend**         | React 18, TypeScript 5.9, Vite 5.4, TailwindCSS 3.4                             |
+| **Data**             | SQLite (4 league DBs), PostgreSQL (sessions), rapidfuzz (fuzzy search)          |
+| **LLM Provider**     | Cohere (default: command-a-03-2025), Google Gemini (recommended: 2.5-flash/pro) |
+| **Deployment**       | Docker, Google Cloud Run, Vercel                                                |
 
 ---
 

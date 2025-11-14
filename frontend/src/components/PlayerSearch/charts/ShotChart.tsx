@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState, useMemo } from "react";
-import { getShotChartData } from "@/services/api";
+import { getShotChartData, getShotChartDataByName } from "@/services/api";
 import type { ShotAttempt, ShotChartData } from "@/types/player";
 
 // Full basketball court dimensions (94ft x 50ft ratio)
@@ -24,10 +24,11 @@ const KEY_HEIGHT = 190;
 const FREE_THROW_CIRCLE_RADIUS = 60;
 
 interface ShotChartProps {
-  playerId: number;
+  playerId?: number;
+  playerName?: string;
 }
 
-export default function ShotChart({ playerId }: ShotChartProps) {
+export default function ShotChart({ playerId, playerName }: ShotChartProps) {
   const [selectedSeason, setSelectedSeason] = useState<number | "all">("all");
   const [selectedQuarters, setSelectedQuarters] = useState<Set<number>>(
     new Set([1, 2, 3, 4]),
@@ -36,8 +37,19 @@ export default function ShotChart({ playerId }: ShotChartProps) {
   const [show3PT, setShow3PT] = useState(true);
 
   const { data, isLoading, error } = useQuery<ShotChartData>({
-    queryKey: ["shotChart", playerId],
-    queryFn: () => getShotChartData("cebl", playerId.toString()),
+    queryKey: playerName
+      ? ["shotChart", "byName", playerName]
+      : ["shotChart", "byId", playerId],
+    queryFn: () => {
+      if (playerName) {
+        return getShotChartDataByName(playerName);
+      }
+      if (playerId) {
+        return getShotChartData("cebl", playerId.toString());
+      }
+      throw new Error("Either playerId or playerName must be provided");
+    },
+    enabled: !!(playerId || playerName),
   });
 
   const filteredShots = useMemo(() => {

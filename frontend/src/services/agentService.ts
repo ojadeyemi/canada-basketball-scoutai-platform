@@ -123,7 +123,7 @@ export async function runRawSQL(
   dbName: LeagueDBName,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<Record<string, any>[]> {
-  const response = await fetch(`${API_BASE_URL}/agent/run-sql`, {
+  const response = await fetch(`${API_BASE_URL}/data/query`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ sql_query: sql, db_name: dbName }),
@@ -141,7 +141,7 @@ export async function runRawSQL(
 export async function getDatabaseSchema(
   dbName: LeagueDBName,
 ): Promise<DatabaseSchema> {
-  const response = await fetch(`${API_BASE_URL}/agent/schema/${dbName}`, {
+  const response = await fetch(`${API_BASE_URL}/data/schema/${dbName}`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   });
