@@ -1,6 +1,7 @@
 """Player profile and stats schemas."""
 
 from typing import Any
+
 from pydantic import BaseModel, Field
 
 
@@ -9,6 +10,7 @@ class PlayerSearchResult(BaseModel):
 
     player_id: str | int
     full_name: str
+    league_category: str | None = None  # e.g., "Men's" or "Women's"
     league: str
     teams: list[str] = Field(default_factory=list)  # All teams/schools player played for
     seasons: list[str] = Field(default_factory=list)  # All seasons player played
@@ -281,6 +283,7 @@ class PlayerDetail(BaseModel):
 
     player_id: str | int
     full_name: str
+    league_category: str | None = None  # e.g., "Men's" or "Women's"
     league: str
     position: str | None = None
     seasons: list[PlayerSeasonStats] = Field(default_factory=list)

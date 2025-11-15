@@ -2,6 +2,8 @@
 
 from typing import Any
 
+from config.constants import MENS_LEAGUE, WOMENS_LEAGUE, LeagueCategory
+
 from ..db.sqlite import execute_query
 from ..schemas.player import PlayerDetail, PlayerSeasonStats, ShotAttempt, ShotChartData
 from .stats_calculator import (
@@ -223,6 +225,7 @@ def _get_usports_ccaa_details(league: str, player_id: str) -> PlayerDetail | Non
             turnovers,
             personal_fouls,
             minutes_played,
+            league,
             disqualifications,
             assist_to_turnover_ratio
         FROM player_stats
@@ -234,6 +237,12 @@ def _get_usports_ccaa_details(league: str, player_id: str) -> PlayerDetail | Non
 
     if not rows:
         return None
+
+    # Determine league category from the first record
+    league_category: LeagueCategory | None = None
+    gender_from_db = rows[0].get("league")
+    if gender_from_db:
+        league_category = MENS_LEAGUE if gender_from_db == "mens" else WOMENS_LEAGUE  # type: ignore
 
     # Convert to PlayerSeasonStats with enhanced metrics
     seasons = []
@@ -390,6 +399,7 @@ def _get_usports_ccaa_details(league: str, player_id: str) -> PlayerDetail | Non
     return PlayerDetail(
         player_id=player_id,
         full_name=f"{firstname_initial}. {last_name}",
+        league_category=league_category,
         league=league,
         position=None,  # Not available in player_stats table
         seasons=seasons,
@@ -624,6 +634,7 @@ def _get_cebl_details(player_id: str) -> PlayerDetail | None:
     return PlayerDetail(
         player_id=player_id,
         full_name=full_name,
+        league_category=MENS_LEAGUE,
         league="cebl",
         position=position,
         seasons=seasons,
@@ -852,6 +863,7 @@ def _get_hoopqueens_details(player_id: str) -> PlayerDetail | None:
     return PlayerDetail(
         player_id=player_id,
         full_name=player_info["full_name"],
+        league_category=WOMENS_LEAGUE,
         league="hoopqueens",
         position=player_info.get("position"),
         seasons=seasons,

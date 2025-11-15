@@ -24,7 +24,7 @@ from graph.schemas.scouting import (
 )
 from graph.state import AgentState
 from graph.tools.pdf_generator.pdf_generator import PDFGenerator
-from graph.utils.gcs_helpers import generate_signed_url, upload_pdf_to_gcs
+from graph.utils.gcs_helpers import GCS_FOLDER_NAME, upload_pdf_to_gcs
 
 
 def _summarize_conversation(messages: Sequence[BaseMessage]) -> str:
@@ -220,12 +220,10 @@ async def scout(state: AgentState) -> dict:
 
         try:
             print(f"[PDF] Attempting GCS upload for {safe_player_name}")
-            gcs_path = upload_pdf_to_gcs(
+            pdf_url = upload_pdf_to_gcs(
                 local_pdf_path=pdf_path,
-                destination_blob_name=f"scouting-reports/{safe_player_name.replace(' ', '-').lower()}_{date_str}.pdf",
+                destination_blob_name=f"{GCS_FOLDER_NAME}/{safe_player_name.replace(' ', '-').lower()}_{date_str}.pdf",
             )
-            print(f"[PDF] GCS upload successful: {gcs_path}")
-            pdf_url = generate_signed_url(gcs_path, expiration_hours=168)
             print(f"[PDF] Signed URL generated: {pdf_url[:100]}...")
 
             if Path(pdf_path).exists():

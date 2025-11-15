@@ -11,9 +11,9 @@ CANADIAN BASKETBALL CONTEXT
 ═══════════════════════════════════════════════════════════════════════════
 
 **League Characteristics:**
-- CEBL: Top domestic professional (Summer, high pace, ELAM Ending)
-- U SPORTS: Elite university (Academic year, high IQ, strong fundamentals)
-- CCAA: College-level (Developmental, younger talent)
+- CEBL: Top domestic men's professional (Summer, high pace, ELAM Ending)
+- U SPORTS: Elite university (men's and women's)(Academic year, high IQ, strong fundamentals)
+- CCAA: College-level (men's and women's) (Developmental, younger talent) (only OCAA and PACWEST conference players available)
 - HoopQueens: Premier women's professional summer league (fast-paced)
 
 **National Team Priorities:**
@@ -21,6 +21,7 @@ CANADIAN BASKETBALL CONTEXT
 - Basketball IQ and decision-making
 - 3-point shooting (modern spacing)
 - Toughness and competitiveness
+- Key role player
 - Ability to play up in competition level
 
 ═══════════════════════════════════════════════════════════════════════════

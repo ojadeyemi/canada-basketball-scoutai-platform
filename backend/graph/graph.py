@@ -112,6 +112,12 @@ async def confirm_scouting_report(state: AgentState) -> dict:
     player_id = str(selected_player["player_id"])
     player_name = selected_player["full_name"]
     league = selected_player["league"]
+    league_category = str(selected_player.get("league_category", ""))
+
+    # Build a more descriptive display string for the league
+    league_display = league.upper()
+    if league_category:
+        league_display = f"{league_category} {league.upper()}"
 
     user_confirmed = interrupt(
         {
@@ -119,7 +125,8 @@ async def confirm_scouting_report(state: AgentState) -> dict:
             "player_name": player_name,
             "player_id": player_id,
             "league": league,
-            "message": f"Generate scouting report for {player_name} ({league})? This will analyze stats and generate a PDF.",
+            "league_category": league_category,
+            "message": f"Generate scouting report for {player_name} ({league_display})? This will analyze stats and generate a PDF.",
         }
     )
 
@@ -128,6 +135,7 @@ async def confirm_scouting_report(state: AgentState) -> dict:
             "player_id": player_id,
             "player_name": player_name,
             "league": league,
+            "league_category": league_category,
             "scouting_report_confirmed": True,
         }
     else:

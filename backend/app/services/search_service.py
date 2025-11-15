@@ -5,6 +5,8 @@ from typing import Any
 
 from rapidfuzz import fuzz
 
+from config.constants import MENS_LEAGUE, WOMENS_LEAGUE, LeagueCategory
+
 from ..db.sqlite import execute_query, get_all_leagues
 from ..schemas.player import PlayerSearchResult
 
@@ -95,6 +97,7 @@ def search_players(
                             "firstname_initial": player.get("firstname_initial"),
                             "last_name": player.get("last_name"),
                             # Store biographical data (CEBL/HoopQueens)
+                            "league_category": player.get("league_category"),  # For USPORTS/CCAA
                             "nationality": player.get("nationality"),
                             "photo_url": player.get("photo_url"),
                             "age": player.get("age") or calculated_age,
@@ -133,6 +136,15 @@ def search_players(
                     # For CEBL and HoopQueens, use existing player_id from database
                     player_id = str(data.get("player_id") or full_name)
 
+                    # Determine league category
+                league_category: LeagueCategory | None = None
+                if league == "cebl":
+                    league_category = MENS_LEAGUE
+                elif league == "hoopqueens":
+                    league_category = WOMENS_LEAGUE
+                elif league in ["usports", "ccaa"] and data.get("league"):
+                    league_category = MENS_LEAGUE if data["league"] == "mens" else WOMENS_LEAGUE
+
                 # Validate and prepare photo_url (CEBL only)
                 photo_url_raw = data.get("photo_url")
                 photo_url = None
@@ -151,6 +163,7 @@ def search_players(
                 result = PlayerSearchResult(
                     player_id=player_id,
                     full_name=data["full_name"],
+                    league_category=league_category,
                     league=data["league"],
                     teams=sorted(list(data["teams"])),
                     seasons=sorted(list(data["seasons"]), reverse=True),  # Most recent first
@@ -213,7 +226,8 @@ def _get_players_from_league(league: str, seasons: list[str] | None = None) -> l
                 last_name,
                 firstname_initial || '. ' || last_name as full_name,
                 school as team_name,
-                season
+                season,
+                league
             FROM player_stats
         """
         params = ()

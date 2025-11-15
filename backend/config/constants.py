@@ -4,6 +4,8 @@
 # INTENT TYPES
 # ============================================================================
 
+from typing import Literal
+
 INTENT_STATS_QUERY = "stats_query"
 INTENT_SCOUTING_REPORT = "scouting_report"
 INTENT_TEXT_RESPONSE = "text_response"
@@ -126,3 +128,8 @@ ERROR_GENERIC = "An error occurred."
 # ============================================================================
 
 DEFAULT_SEASON = "2024-25"
+
+# League Categories
+MENS_LEAGUE = "mens"
+WOMENS_LEAGUE = "womens"
+LeagueCategory = Literal["mens", "womens"]

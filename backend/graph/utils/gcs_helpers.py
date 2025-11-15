@@ -1,12 +1,13 @@
 """Google Cloud Storage helpers for PDF upload and signed URL generation."""
 
-from datetime import timedelta
 from pathlib import Path
 
 from google.cloud import storage
 from google.oauth2 import service_account
 
 from config.settings import settings
+
+GCS_FOLDER_NAME = "scouting-reports"
 
 
 def _get_gcs_client() -> storage.Client:
@@ -44,18 +45,18 @@ def upload_pdf_to_gcs(local_pdf_path: Path | str, destination_blob_name: str | N
                                 If None, uses the local filename
 
     Returns:
-        GCS path (gs://bucket-name/path/to/file.pdf)
+        Public URL of the uploaded file.
 
     Raises:
         FileNotFoundError: If local PDF doesn't exist
         Exception: If upload fails
 
     Example:
-        gcs_path = upload_pdf_to_gcs(
+        public_url = upload_pdf_to_gcs(
             "/tmp/scouting_report.pdf",
             "scouting-reports/aaron-best-2024.pdf"
         )
-        # Returns: "gs://canada-basketball-scouting-reports/scouting-reports/aaron-best-2024.pdf"
+        # Returns: "https://storage.googleapis.com/bucket-name/scouting-reports/aaron-best-2024.pdf"
     """
     local_path = Path(local_pdf_path)
 
@@ -66,7 +67,7 @@ def upload_pdf_to_gcs(local_pdf_path: Path | str, destination_blob_name: str | N
 
     # Use local filename if destination not specified
     if destination_blob_name is None:
-        destination_blob_name = f"scouting-reports/{local_path.name}"
+        destination_blob_name = f"{GCS_FOLDER_NAME}/{local_path.name}"
 
     try:
         client = _get_gcs_client()
@@ -76,89 +77,7 @@ def upload_pdf_to_gcs(local_pdf_path: Path | str, destination_blob_name: str | N
         # Upload with PDF content type
         blob.upload_from_filename(local_path, content_type="application/pdf")
 
-        gcs_path = f"gs://{bucket_name}/{destination_blob_name}"
-        return gcs_path
+        return blob.public_url
 
     except Exception as e:
         raise Exception(f"Failed to upload PDF to GCS: {str(e)}") from e
-
-
-def generate_signed_url(gcs_path: str, expiration_hours: int = 168) -> str:
-    """
-    Generate signed URL for temporary public access to GCS file.
-
-    Args:
-        gcs_path: GCS path (gs://bucket-name/path/to/file.pdf)
-        expiration_hours: URL expiration time in hours (default 168 = 1 week)
-
-    Returns:
-        Signed URL (valid for specified duration)
-
-    Raises:
-        ValueError: If gcs_path format is invalid
-
-    Example:
-        signed_url = generate_signed_url(
-            "gs://canada-basketball-scouting-reports/scouting-reports/aaron-best-2024.pdf",
-            expiration_hours=168
-        )
-        # Returns: "https://storage.googleapis.com/canada-basketball-scouting-reports/..."
-    """
-    if not gcs_path.startswith("gs://"):
-        raise ValueError(f"Invalid GCS path format: {gcs_path}. Expected format: gs://bucket-name/path")
-
-    # Parse bucket and blob name from gs:// path
-    path_parts = gcs_path.replace("gs://", "").split("/", 1)
-    if len(path_parts) != 2:
-        raise ValueError(f"Invalid GCS path: {gcs_path}")
-
-    bucket_name, blob_name = path_parts
-
-    try:
-        client = _get_gcs_client()
-        bucket = client.bucket(bucket_name)
-        blob = bucket.blob(blob_name)
-
-        # Generate signed URL with specified expiration
-        signed_url = blob.generate_signed_url(
-            version="v4",
-            expiration=timedelta(hours=expiration_hours),
-            method="GET",
-        )
-
-        return signed_url
-
-    except Exception as e:
-        raise Exception(f"Failed to generate signed URL: {str(e)}") from e
-
-
-def delete_pdf_from_gcs(gcs_path: str) -> bool:
-    """
-    Delete PDF from GCS (optional cleanup function).
-
-    Args:
-        gcs_path: GCS path (gs://bucket-name/path/to/file.pdf)
-
-    Returns:
-        True if deleted successfully, False otherwise
-
-    Example:
-        success = delete_pdf_from_gcs("gs://canadabasketballai/scouting-reports/old-report.pdf")
-    """
-    if not gcs_path.startswith("gs://"):
-        return False
-
-    path_parts = gcs_path.replace("gs://", "").split("/", 1)
-    if len(path_parts) != 2:
-        return False
-
-    bucket_name, blob_name = path_parts
-
-    try:
-        client = _get_gcs_client()
-        bucket = client.bucket(bucket_name)
-        blob = bucket.blob(blob_name)
-        blob.delete()
-        return True
-    except Exception:
-        return False
