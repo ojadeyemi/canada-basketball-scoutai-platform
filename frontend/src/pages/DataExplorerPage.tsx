@@ -24,6 +24,7 @@ import {
   AlertCircle,
   Loader2,
 } from "lucide-react";
+import { PageInstructionDialog } from "@/components/ui/page-instruction-dialog";
 import { LEAGUES, type LeagueName } from "@/types/dataExplorer";
 import { useTables, useTableData } from "@/hooks/useDataExplorer";
 import { TableBrowser } from "@/components/DataExplorer/TableBrowser";
@@ -304,6 +305,26 @@ export default function DataExplorerPage() {
             </TabsContent>
           </Tabs>
         )}
+
+        {/* Instructions Dialog */}
+        <PageInstructionDialog
+          pageKey="data-explorer"
+          title="Data Explorer"
+          description="Browse and query league databases"
+          icon={<Database className="w-5 h-5" />}
+          steps={[
+            { text: "Select a league from the dropdown to load its database." },
+            {
+              text: 'Use "Browse Tables" to view data. Select a table and season to see records.',
+            },
+            {
+              text: 'Use "Custom SQL" to write your own queries against the selected league.',
+            },
+            {
+              text: 'Check "Schema" to see table structures and column definitions.',
+            },
+          ]}
+        />
       </div>
     </div>
   );

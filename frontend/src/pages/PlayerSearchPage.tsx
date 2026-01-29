@@ -3,6 +3,7 @@ import { Search } from "lucide-react";
 import { usePlayerSearch } from "../hooks/usePlayerSearch";
 import PlayerCard from "../components/PlayerSearch/PlayerCard";
 import PlayerDetailModal from "../components/PlayerSearch/PlayerDetailModal";
+import { PageInstructionDialog } from "../components/ui/page-instruction-dialog";
 import {
   LEAGUES,
   MIN_SEARCH_LENGTH,
@@ -166,6 +167,21 @@ export default function PlayerSearchPage() {
           onClose={() => setSelectedPlayer(null)}
         />
       )}
+
+      {/* Instructions Dialog */}
+      <PageInstructionDialog
+        pageKey="player-search"
+        title="Player Search"
+        description="Find players across Canadian basketball leagues"
+        icon={<Search className="w-5 h-5" />}
+        steps={[
+          { text: "Type a player's name (first or last) in the search bar." },
+          { text: "Use league filters to narrow results to specific leagues." },
+          {
+            text: "Click on a player card to view detailed stats and performance data.",
+          },
+        ]}
+      />
     </div>
   );
 }

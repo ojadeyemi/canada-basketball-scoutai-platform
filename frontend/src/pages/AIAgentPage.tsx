@@ -2,6 +2,7 @@ import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { PageInstructionDialog } from "@/components/ui/page-instruction-dialog";
 import { streamChat } from "@/services/agentService";
 import type {
   PlayerSelectionInterrupt,
@@ -47,7 +48,7 @@ export default function AIAgentPage() {
     isResume = false,
     interruptType?:
       | typeof INTERRUPT_TYPES.PLAYER_SELECTION
-      | typeof INTERRUPT_TYPES.SCOUTING_CONFIRMATION
+      | typeof INTERRUPT_TYPES.SCOUTING_CONFIRMATION,
   ) => {
     setIsStreaming(true);
     setCurrentNode(null);
@@ -58,7 +59,7 @@ export default function AIAgentPage() {
         userInput,
         sessionId,
         isResume,
-        interruptType
+        interruptType,
       )) {
         const { node, output } = event;
 
@@ -137,7 +138,7 @@ export default function AIAgentPage() {
       toast.error(
         error instanceof Error
           ? error.message
-          : "Connection error. Please try again."
+          : "Connection error. Please try again.",
       );
       setRouterOutput(null);
       setMessages((prev) => [
@@ -281,6 +282,28 @@ export default function AIAgentPage() {
           onCancel={() => handleScoutingConfirmation(false)}
         />
       )}
+
+      {/* Instructions Dialog */}
+      <PageInstructionDialog
+        pageKey="ai-agent"
+        title="AI Scouting Agent"
+        description="Your basketball analytics assistant"
+        icon={<Sparkles className="w-5 h-5" />}
+        steps={[
+          {
+            text: "Ask questions about players from CEBL, U SPORTS (men's & women's), CCAA, or HoopQueens.",
+          },
+          {
+            text: 'Be specific with your request. Example: "Find top scorers in CEBL with PER above 20."',
+          },
+          {
+            text: 'Request scouting reports explicitly. Example: "Generate a scouting report for [Player Name]."',
+          },
+          {
+            text: "The agent will query databases and may ask you to confirm player selection or report generation.",
+          },
+        ]}
+      />
     </div>
   );
 }

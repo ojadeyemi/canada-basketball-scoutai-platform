@@ -4,6 +4,7 @@ import CardNav from "./components/CardNav";
 import type { CardNavItem } from "./components/CardNav";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Footer from "./components/Footer";
+import { FeedbackButton } from "./components/FeedbackButton";
 import logo from "./assets/logo.svg";
 import { Toaster } from "@/components/ui/sonner";
 import { APP_CONFIG } from "./constants";
@@ -115,10 +116,11 @@ function App() {
 
           <Footer />
         </div>
+        <FeedbackButton />
         <Toaster
-          position="bottom-right"
+          position="top-right"
           toastOptions={{ className: "z-50" }}
-          offset="40px"
+          offset="80px"
           expand
         />
       </BrowserRouter>

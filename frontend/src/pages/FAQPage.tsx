@@ -118,7 +118,7 @@ export default function FAQPage() {
                 href="mailto:ojieadeyemi@gmail.com"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 transition-colors"
               >
-                Contact Us
+                Contact
               </a>
             </CardContent>
           </Card>

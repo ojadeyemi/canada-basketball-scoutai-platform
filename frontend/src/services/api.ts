@@ -39,7 +39,7 @@ api.interceptors.response.use(
       message: error.message,
     });
     return Promise.reject(error);
-  }
+  },
 );
 
 // Player Search
@@ -63,7 +63,7 @@ export const searchPlayers = async (params: {
 // Get Player Details
 export const getPlayerDetail = async (
   league: string,
-  playerId: string
+  playerId: string,
 ): Promise<PlayerDetail> => {
   const { data } = await api.get(`/search/player/${league}/${playerId}`);
   return data;
@@ -71,16 +71,16 @@ export const getPlayerDetail = async (
 
 export const getShotChartData = async (
   league: string,
-  playerId: string
+  playerId: string,
 ): Promise<ShotChartData> => {
   const { data } = await api.get(
-    `/search/player/${league}/${playerId}/shot-chart`
+    `/search/player/${league}/${playerId}/shot-chart`,
   );
   return data;
 };
 
 export const getShotChartDataByName = async (
-  playerName: string
+  playerName: string,
 ): Promise<ShotChartData> => {
   const { data } = await api.get(`/search/player/cebl/shot-chart-by-name`, {
     params: { player_name: playerName },
