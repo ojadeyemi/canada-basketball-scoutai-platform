@@ -1,6 +1,10 @@
 # Canada Basketball Scouting Platform
 
-![Canada Basketball Scouting Platform](./assets/oldscreenshot.png)
+<div align="center">
+  <video src="./assets/canada_basketball_scout_ai_demo.mp4" autoplay loop muted playsinline controls width="100%" style="max-width: 900px;">
+    Your browser does not support the video tag.
+  </video>
+</div>
 
 **Scouting platform for identifying Canadian basketball talent.** Ask questions in plain English, get instant insights across 25,000+ players from [U SPORTS](https://en.usports.ca/landing/index), [CCAA](https://www.ccaa.ca/landing/index), [CEBL](https://cebl.ca), and [HoopQueens](https://www.thehoopqueens.com/the-league).
 
