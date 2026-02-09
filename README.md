@@ -1,7 +1,7 @@
 # Canada Basketball Scouting Platform
 
 <div align="center">
-  <video src="./assets/canada_basketball_scout_ai_demo.mp4" autoplay loop muted playsinline controls width="100%" style="max-width: 900px;">
+  <video src="./assets/canada_basketball_scout_ai_demo_compressed.mp4" autoplay loop muted playsinline controls width="100%" style="max-width: 900px;">
     Your browser does not support the video tag.
   </video>
 </div>
