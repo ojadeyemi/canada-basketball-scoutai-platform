@@ -19,10 +19,10 @@ export interface TableListResponse {
 export interface TableDataResponse {
   league: string;
   table_name: string;
-  data: Record<string, any>[];
+  data: Record<string, unknown>[];
   columns: string[];
   row_count: number;
-  filters_applied: Record<string, any>;
+  filters_applied: Record<string, unknown>;
 }
 
 export type LeagueName = "usports" | "ccaa" | "cebl" | "hoopqueens";

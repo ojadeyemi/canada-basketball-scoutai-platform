@@ -68,12 +68,8 @@ interface SQLEditorProps {
   chartTitle?: string;
 }
 
-function RawQueryResultTable({ data }: { data: Record<string, any>[] }) {
+function RawQueryResultTable({ data }: { data: Record<string, unknown>[] }) {
   const [sorting, setSorting] = useState<SortingState>([]);
-
-  if (!data || data.length === 0) {
-    return <p className="text-sm text-muted-foreground">No results found.</p>;
-  }
 
   const formatCellValue = (value: number | string | unknown): string => {
     if (value === null || value === undefined) return "—";
@@ -83,8 +79,8 @@ function RawQueryResultTable({ data }: { data: Record<string, any>[] }) {
     return String(value);
   };
 
-  const columnKeys = Object.keys(data[0]);
-  const columns: ColumnDef<Record<string, undefined>>[] = columnKeys.map(
+  const columnKeys = data && data.length > 0 ? Object.keys(data[0]) : [];
+  const columns: ColumnDef<Record<string, unknown>>[] = columnKeys.map(
     (key) => ({
       accessorKey: key,
       header: ({ column }) => {
@@ -111,13 +107,17 @@ function RawQueryResultTable({ data }: { data: Record<string, any>[] }) {
   );
 
   const table = useReactTable({
-    data,
+    data: data || [],
     columns,
     state: { sorting },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
+
+  if (!data || data.length === 0) {
+    return <p className="text-sm text-muted-foreground">No results found.</p>;
+  }
 
   return (
     <div className="rounded-md border border-border/40 overflow-auto bg-card max-h-[600px]">
@@ -263,6 +263,7 @@ export function SQLEditor({ sqlQuery, dbName, chartTitle }: SQLEditorProps) {
           endColumn: word.endColumn,
         };
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const suggestions: any[] = [];
 
         schema.tables.forEach((table) => {
@@ -290,8 +291,10 @@ export function SQLEditor({ sqlQuery, dbName, chartTitle }: SQLEditorProps) {
       },
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const validateSQL = (model: any) => {
       const value = model.getValue();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const markers: any[] = [];
 
       const lines = value.split("\n");

@@ -16,69 +16,71 @@ const AIAgentPage = lazy(() => import("./pages/AIAgentPage"));
 const DataExplorerPage = lazy(() => import("./pages/DataExplorerPage"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
 const FAQPage = lazy(() => import("./pages/FAQPage"));
+
+const navItems: CardNavItem[] = [
+  {
+    label: "Tools",
+    bgColor: "#BA0C2F",
+    textColor: "#fff",
+    links: [
+      {
+        label: "Player Search",
+        href: "/player-search",
+        ariaLabel: "Search for players",
+      },
+      {
+        label: "AI Agent",
+        href: "/agent",
+        ariaLabel: "Chat with AI scouting agent",
+      },
+      {
+        label: "Data Explorer",
+        href: "/data-explorer",
+        ariaLabel: "Explore league databases",
+      },
+    ],
+  },
+  {
+    label: "About",
+    bgColor: "#8B0000",
+    textColor: "#fff",
+    links: [
+      {
+        label: "About This Tool",
+        href: "/about",
+        ariaLabel: "Learn about this tool",
+      },
+      { label: "FAQ", href: "/faq", ariaLabel: "Frequently asked questions" },
+    ],
+  },
+  {
+    label: "Contact",
+    bgColor: "#4A4A4A",
+    textColor: "#fff",
+    links: [
+      {
+        label: "Feedback",
+        href: APP_CONFIG.FEEDBACK_URL,
+        ariaLabel: "Submit feedback",
+      },
+      {
+        label: "LinkedIn",
+        href: APP_CONFIG.AUTHOR.LINKEDIN,
+        ariaLabel: "Connect on LinkedIn",
+      },
+      {
+        label: "Email",
+        href: `mailto:${APP_CONFIG.AUTHOR.EMAIL}`,
+        ariaLabel: "Send an email",
+      },
+    ],
+  },
+];
+
 function App() {
   useEffect(() => {
     warmupBackend();
   }, []);
-  const navItems: CardNavItem[] = [
-    {
-      label: "Tools",
-      bgColor: "#BA0C2F",
-      textColor: "#fff",
-      links: [
-        {
-          label: "Player Search",
-          href: "/player-search",
-          ariaLabel: "Search for players",
-        },
-        {
-          label: "AI Agent",
-          href: "/agent",
-          ariaLabel: "Chat with AI scouting agent",
-        },
-        {
-          label: "Data Explorer",
-          href: "/data-explorer",
-          ariaLabel: "Explore league databases",
-        },
-      ],
-    },
-    {
-      label: "About",
-      bgColor: "#8B0000",
-      textColor: "#fff",
-      links: [
-        {
-          label: "About This Tool",
-          href: "/about",
-          ariaLabel: "Learn about this tool",
-        },
-        { label: "FAQ", href: "/faq", ariaLabel: "Frequently asked questions" },
-      ],
-    },
-    {
-      label: "Contact",
-      bgColor: "#4A4A4A",
-      textColor: "#fff",
-      links: [
-        {
-          label: "Feedback",
-          href: APP_CONFIG.FEEDBACK_URL,
-          ariaLabel: "Submit feedback",
-        },
-        {
-          label: "LinkedIn",
-          href: APP_CONFIG.AUTHOR.LINKEDIN,
-          ariaLabel: "Connect on LinkedIn",
-        },
-        {
-          label: "Email",
-          href: `mailto:${APP_CONFIG.AUTHOR.EMAIL}`,
-          ariaLabel: "Send an email",
-        },
-      ],
-    },
-  ];
 
   return (
     <ErrorBoundary>

@@ -33,7 +33,7 @@ export default function AboutPage() {
       />
       <div className="max-w-6xl mx-auto w-full relative z-10">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 to-gray-800 bg-clip-text text-transparent mb-4">
+          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-red-600 to-gray-800 bg-clip-text text-transparent mb-4">
             About Canada Basketball Scouting Platform
           </h1>
           <p className="text-muted-foreground text-xl max-w-3xl mx-auto">
@@ -45,7 +45,7 @@ export default function AboutPage() {
           {/* About Canada Basketball */}
           <Card className="border-2">
             <CardHeader>
-              <CardTitle className="text-3xl font-bold text-foreground">
+              <CardTitle className="text-2xl sm:text-3xl font-bold text-foreground">
                 About Canada Basketball
               </CardTitle>
             </CardHeader>
@@ -74,7 +74,7 @@ export default function AboutPage() {
           {/* About This Tool */}
           <Card className="border-2">
             <CardHeader>
-              <CardTitle className="text-3xl font-bold text-foreground">
+              <CardTitle className="text-2xl sm:text-3xl font-bold text-foreground">
                 About This Tool
               </CardTitle>
             </CardHeader>
@@ -94,7 +94,7 @@ export default function AboutPage() {
           {/* Leagues */}
           <Card className="border-2">
             <CardHeader>
-              <CardTitle className="text-3xl font-bold text-foreground">
+              <CardTitle className="text-2xl sm:text-3xl font-bold text-foreground">
                 Leagues Covered
               </CardTitle>
               <CardDescription className="text-base">
@@ -193,7 +193,7 @@ export default function AboutPage() {
           {/* Created By */}
           <Card className="border-2">
             <CardHeader>
-              <CardTitle className="text-3xl font-bold text-foreground">
+              <CardTitle className="text-2xl sm:text-3xl font-bold text-foreground">
                 Created By
               </CardTitle>
             </CardHeader>
@@ -261,7 +261,7 @@ export default function AboutPage() {
           {/* Technical Stack */}
           <Card className="border-2">
             <CardHeader>
-              <CardTitle className="text-3xl font-bold text-foreground">
+              <CardTitle className="text-2xl sm:text-3xl font-bold text-foreground">
                 Technical Stack
               </CardTitle>
             </CardHeader>

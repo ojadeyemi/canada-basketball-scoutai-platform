@@ -208,7 +208,7 @@ export default function AIAgentPage() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-10rem)] max-w-7xl mx-auto w-full">
+    <div className="flex flex-col h-[calc(100dvh-10rem)] max-w-7xl mx-auto w-full">
       {/* Header - only show when no messages */}
       {messages.length === 0 && (
         <div className="text-center mb-6">

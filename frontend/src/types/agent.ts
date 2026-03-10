@@ -73,7 +73,7 @@ export interface ChartConfig {
 }
 
 export interface QueryResult {
-  data: Record<string, any>[];
+  data: Record<string, unknown>[];
   sql_query: string | undefined;
   db_name: LeagueDBName;
   chart_config: ChartConfig | undefined;
@@ -188,7 +188,7 @@ export interface ScoutingReport {
   report_id: string;
   generated_at: string;
   player_profile: PlayerProfile;
-  player_detail: any | null; // Full PlayerDetail from search API
+  player_detail: unknown | null; // Full PlayerDetail from search API
   archetype: string;
   archetype_description: string;
   strengths: StrengthWeakness[];
@@ -228,7 +228,7 @@ interface QueryResultResponse {
   node: "generate_response";
   response_type: "query_result";
   main_response: string;
-  data: Record<string, any>[];
+  data: Record<string, unknown>[];
   chart_config: ChartConfig | null;
   query_result: QueryResult;
 }

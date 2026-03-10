@@ -21,7 +21,7 @@ import { BarChart3, TrendingUp, PieChart, Activity } from "lucide-react";
 interface VisualizationModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  data: Record<string, any>[];
+  data: Record<string, unknown>[];
   tableName: string;
   availableSeasons?: (string | number)[];
 }
@@ -63,7 +63,7 @@ export function VisualizationModal({
 
     const seasons = Array.from(
       new Set(data.map((row) => row[seasonKey]).filter(Boolean)),
-    );
+    ) as (string | number)[];
     return seasons.sort((a, b) => (b > a ? 1 : -1));
   }, [data, propSeasons]);
 

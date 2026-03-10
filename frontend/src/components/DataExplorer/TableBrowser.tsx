@@ -49,7 +49,7 @@ import { cn } from "@/lib/utils";
 import { VisualizationModal } from "./VisualizationModal";
 
 interface TableBrowserProps {
-  data: Record<string, any>[];
+  data: Record<string, unknown>[];
   tableName: string;
   isLoading?: boolean;
 }
@@ -75,12 +75,12 @@ export function TableBrowser({
 
     const seasons = Array.from(
       new Set(data.map((row) => row[seasonKey]).filter(Boolean)),
-    );
+    ) as (string | number)[];
     return seasons.sort((a, b) => (b > a ? 1 : -1));
   }, [data]);
 
   // Format cell value
-  const formatValue = (value: any): string => {
+  const formatValue = (value: unknown): string => {
     if (value === null || value === undefined) return "—";
     if (typeof value === "number") {
       return Number.isInteger(value)
@@ -92,7 +92,7 @@ export function TableBrowser({
   };
 
   // Generate columns dynamically
-  const columns = useMemo<ColumnDef<Record<string, any>>[]>(() => {
+  const columns = useMemo<ColumnDef<Record<string, unknown>>[]>(() => {
     if (data.length === 0) return [];
 
     const columnKeys = Object.keys(data[0]);

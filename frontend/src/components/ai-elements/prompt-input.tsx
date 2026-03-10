@@ -559,9 +559,13 @@ export const PromptInput = ({
           return [];
         });
 
-  const openFileDialog = usingProvider
-    ? () => controller.attachments.openFileDialog()
-    : openFileDialogLocal;
+  const openFileDialog = useCallback(() => {
+    if (usingProvider) {
+      controller.attachments.openFileDialog();
+    } else {
+      openFileDialogLocal();
+    }
+  }, [usingProvider, controller, openFileDialogLocal]);
 
   // Let provider know about our hidden file input so external menus can call openFileDialog()
   useEffect(() => {

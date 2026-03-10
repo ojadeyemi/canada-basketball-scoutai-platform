@@ -51,8 +51,8 @@ export default function HomePage() {
       />
       <div className="max-w-7xl mx-auto w-full relative z-10">
         <div className="text-center mb-16">
-          <h1 className="text-6xl font-bold bg-gradient-to-r from-red-600 to-gray-800 bg-clip-text text-transparent mb-2">
-            Canada Basketball Scouting Platfrom
+          <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-red-600 to-gray-800 bg-clip-text text-transparent mb-2">
+            Canada Basketball Scouting Platform
           </h1>
           <Badge
             variant="outline"

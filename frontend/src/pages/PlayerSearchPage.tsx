@@ -48,7 +48,7 @@ export default function PlayerSearchPage() {
       <div className="text-center space-y-3">
         <div className="flex items-center justify-center gap-3 mb-3">
           <Search className="w-10 h-10 text-blue-600" />
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-red-600 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-red-600 bg-clip-text text-transparent">
             Player Search
           </h1>
         </div>

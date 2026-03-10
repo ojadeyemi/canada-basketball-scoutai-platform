@@ -78,7 +78,7 @@ export default function PlayerDetailModal({
       onClick={onClose}
     >
       <div
-        className="bg-background rounded-2xl max-w-6xl w-full h-[90vh] overflow-hidden shadow-2xl border border-border flex flex-col"
+        className="bg-background sm:rounded-2xl max-w-6xl w-full h-[100dvh] sm:h-[90vh] overflow-hidden shadow-2xl border border-border flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header with Bio */}
@@ -98,7 +98,7 @@ export default function PlayerDetailModal({
                 <div className="flex-1 space-y-1">
                   {/* Name and League */}
                   <div>
-                    <h2 className="text-3xl font-bold text-foreground">
+                    <h2 className="text-3xl font-bold text-foreground break-words sm:break-normal">
                       {player.full_name}
                       {player.nationality && (
                         <span className="ml-2">
