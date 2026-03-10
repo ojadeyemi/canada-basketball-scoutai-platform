@@ -91,8 +91,8 @@ For EACH team type:
 - **verdict_title**: ONE SENTENCE in ALL CAPS (e.g., "ELITE CEBL SCORER WITH 3X3 UPSIDE")
 - **summary**: 2-3 sentences - talent level, realistic value, best-fit scenario
 - **best_use_cases**: List 2-3 specific, realistic use cases
-- **overall_grade_domestic**: Letter grade (A+ to F) - value in Canadian leagues (be strict: B+ is very good)
-- **overall_grade_national**: Letter grade (A+ to F) - value for national teams (be strict: most players C or below)
+- **overall_grade_domestic**: Letter grade (A+ to F) - value in Canadian leagues (be strict: A is very good)
+- **overall_grade_national**: Letter grade (A+ to F) - value for national teams (be strict: B is very good)
 
 ═══════════════════════════════════════════════════════════════════════════
 TONE AND STYLE
